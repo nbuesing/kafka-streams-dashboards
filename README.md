@@ -6,3 +6,37 @@
 * This is the code and dashboards as the basis of a Kafka Summit Europe 2021 presentation titled,
 [What is the State of my Kafka Streams Application? Unleashing Metrics.](https://www.kafka-summit.org/sessions/what-is-the-state-of-my-kafka-streams-application-unleashing-metrics).
 
+## TL;TR
+
+* Setup and Configuration all in the `./scripts/startup.sh` script; execute from root directory to get everything running.
+
+* Grafana Dashboard 
+
+  * `https://localhost:3000`
+  * Credentials:
+    * username: `admin`
+    * password: `grafana`
+
+
+## Examples
+
+### Kafka Streams Threads Dashboard
+![Kafka Streams Threads](./doc/streams_thread_dashboard.png)
+
+## Docker 
+
+* This project leverages docker and docker compose for easy of demonstration.
+
+* to minimize having to start up all components, separate `docker-compose.yml` for each logical-unit and a common bridge network `ksm`.
+
+## OpenSource libraries
+
+* FasterXML Jackson
+
+* Lombok
+
+* JCommander
+
+* Logback
+
+* Apache Commons

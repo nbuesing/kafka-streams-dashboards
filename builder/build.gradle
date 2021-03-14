@@ -1,0 +1,9 @@
+
+dependencies {
+    implementation project(':common')
+    implementation 'org.apache.commons:commons-csv:1.8'
+}
+
+application {
+    mainClass = "dev.buesing.ksd.${project.name}.Main"
+}

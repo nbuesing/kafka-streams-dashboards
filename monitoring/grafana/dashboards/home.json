@@ -1,0 +1,103 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": "-- Grafana --",
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": true,
+  "gnetId": null,
+  "graphTooltip": 0,
+  "id": 6,
+  "links": [],
+  "panels": [
+    {
+      "datasource": null,
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {}
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 21,
+        "w": 12,
+        "x": 0,
+        "y": 0
+      },
+      "id": 18,
+      "options": {
+        "folderId": null,
+        "maxItems": 100,
+        "query": "",
+        "showHeadings": false,
+        "showRecentlyViewed": false,
+        "showSearch": true,
+        "showStarred": false,
+        "tags": []
+      },
+      "pluginVersion": "7.4.2",
+      "targets": [
+        {
+          "queryType": "randomWalk",
+          "refId": "A"
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Dashboards",
+      "type": "dashlist"
+    }
+  ],
+  "refresh": "5s",
+  "schemaVersion": 27,
+  "style": "dark",
+  "tags": [
+    "home"
+  ],
+  "templating": {
+    "list": []
+  },
+  "time": {
+    "from": "now-6h",
+    "to": "now"
+  },
+  "timepicker": {
+    "hidden": true,
+    "refresh_intervals": [
+      "5s",
+      "10s",
+      "30s",
+      "1m",
+      "5m",
+      "15m",
+      "30m",
+      "1h",
+      "2h",
+      "1d"
+    ],
+    "time_options": [
+      "5m",
+      "15m",
+      "1h",
+      "6h",
+      "12h",
+      "24h",
+      "2d",
+      "7d",
+      "30d"
+    ]
+  },
+  "timezone": "",
+  "title": "Home",
+  "uid": "home",
+  "version": 1
+}

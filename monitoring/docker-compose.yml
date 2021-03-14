@@ -1,0 +1,48 @@
+---
+version: '3.7'
+
+networks:
+  default:
+    external:
+      name: ksd
+
+services:
+
+  prometheus:
+    hostname: prometheus
+    container_name: ksd_prometheus
+    image: prom/prometheus
+    privileged: true
+    ports:
+      - '9090:9090'
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      - ./prometheus/targets.json:/etc/prometheus/targets.json
+
+  grafana:
+    hostname: grafana
+    image: grafana/grafana:7.4.2
+    container_name: ksd_grafana
+    depends_on:
+      - prometheus
+    ports:
+      - '3000:3000'
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: grafana
+      GF_AUTH_ANONYMOUS_ENABLED: "true"
+    volumes:
+      - ./grafana/grafana.ini:/etc/grafana/grafana.ini
+      - ./grafana/grafana.db:/var/lib/grafana
+      - ./grafana/prometheus.yml:/etc/grafana/provisioning/datasources/prometheus.yml
+      - ./grafana/dashboards.yml:/etc/grafana/provisioning/dashboards/dashboards.yml
+      - ./grafana/dashboards:/var/lib/grafana/dashboards
+
+#  kowl:
+#    image: quay.io/cloudhut/kowl:v1.2.2
+#    hostname: kowl
+#    container_name: ksd_kowl
+#    volumes:
+#      - ./kowl/config.yaml:/etc/kowl/config.yaml
+#    ports:
+#      - "8080:8080"
+#    entrypoint: ./kowl --config.filepath=/etc/kowl/config.yaml

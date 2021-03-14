@@ -1,0 +1,18 @@
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath "com.avast.gradle:gradle-docker-compose-plugin:0.12.1"
+    }
+}
+
+apply plugin: 'docker-compose'
+
+/**
+ * Make sure 'projectName' is the same as the COMPOSE_PROJECT_NAME within .env, this is to ensure the same project
+ * name is used if you execute docker compose through gradle or from the command line.
+ */
+dockerCompose {
+    projectName = "kdk"
+}

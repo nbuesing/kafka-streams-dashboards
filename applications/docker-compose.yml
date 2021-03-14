@@ -1,0 +1,39 @@
+---
+version: '3.7'
+
+networks:
+  default:
+    external:
+      name: ksd
+
+services:
+
+  stream:
+    image: nbuesing/ksd_streams:latest
+    hostname: stream
+    container_name: stream
+    # provides network privileges to allow 'tc' to be used
+    cap_add:
+      - NET_ADMIN
+    ports:
+      - '7071:7071'
+    volumes:
+      - ./streams.properties:/streams.properties
+      - ./scripts:/scripts
+    environment:
+      BOOTSTRAP_SERVERS: broker-1:9092,broker-2:9092,broker-3:9092
+      CLIENT_ID: '1'
+
+  stream2:
+    image: nbuesing/ks2021_streams:latest
+    hostname: stream2
+    container_name: stream2
+    # provides network privileges to allow 'tc' to be used
+    cap_add:
+      - NET_ADMIN
+    volumes:
+      - ./streams.properties:/streams.properties
+      - ./scripts:/scripts
+    environment:
+      BOOTSTRAP_SERVERS: broker-1:9092,broker-2:9092,broker-3:9092
+      CLIENT_ID: '2'

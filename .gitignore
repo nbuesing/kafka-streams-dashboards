@@ -1,0 +1,10 @@
+.DS_Store
+.idea
+.gradle
+grafana.db
+build
+/tmp
+.settings
+.classpath
+.project
+/druid/storage

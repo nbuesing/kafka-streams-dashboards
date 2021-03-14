@@ -1,0 +1,1223 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": "-- Grafana --",
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": true,
+  "gnetId": null,
+  "graphTooltip": 0,
+  "iteration": 1615140127239,
+  "links": [],
+  "panels": [
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "prometheus",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {}
+        },
+        "overrides": []
+      },
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 7,
+        "w": 20,
+        "x": 0,
+        "y": 0
+      },
+      "hiddenSeries": false,
+      "id": 36,
+      "interval": "15",
+      "legend": {
+        "alignAsTable": false,
+        "avg": false,
+        "current": true,
+        "hideEmpty": false,
+        "hideZero": true,
+        "max": false,
+        "min": false,
+        "rightSide": false,
+        "show": true,
+        "sort": "current",
+        "sortDesc": false,
+        "total": false,
+        "values": true
+      },
+      "lines": true,
+      "linewidth": 1,
+      "links": [],
+      "nullPointMode": "connected",
+      "options": {
+        "alertThreshold": true
+      },
+      "percentage": false,
+      "pluginVersion": "7.4.2",
+      "pointradius": 5,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [
+        {}
+      ],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "expr": "sum without(job,instance,thread) (kafka_streams_stream_thread_metrics_${measurement}_total{instance=~\"${instance}\", thread_id=~\"${thread}\", job=~\"${job}\"})",
+          "format": "time_series",
+          "hide": false,
+          "instant": false,
+          "interval": "",
+          "intervalFactor": 1,
+          "legendFormat": "{{thread_id}}",
+          "refId": "A"
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "${measurement} total",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "$$hashKey": "object:398",
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "$$hashKey": "object:399",
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "datasource": "prometheus",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {},
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 4,
+        "x": 20,
+        "y": 0
+      },
+      "id": 2,
+      "interval": "5",
+      "links": [],
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "text": {},
+        "textMode": "value"
+      },
+      "pluginVersion": "7.4.2",
+      "repeat": null,
+      "targets": [
+        {
+          "expr": "sum (kafka_streams_stream_thread_metrics_${measurement}_total{thread_id=~\"${thread}\", instance=~\"${instance}\", job=~\"${job}\"})",
+          "format": "time_series",
+          "hide": false,
+          "instant": true,
+          "interval": "",
+          "intervalFactor": 1,
+          "legendFormat": "{{thread_id}}",
+          "refId": "A"
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "${measurement} total",
+      "type": "stat"
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "prometheus",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {}
+        },
+        "overrides": []
+      },
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 7,
+        "w": 20,
+        "x": 0,
+        "y": 7
+      },
+      "hiddenSeries": false,
+      "id": 26,
+      "interval": "15",
+      "legend": {
+        "alignAsTable": false,
+        "avg": false,
+        "current": true,
+        "hideEmpty": false,
+        "hideZero": true,
+        "max": false,
+        "min": false,
+        "rightSide": false,
+        "show": true,
+        "sort": "current",
+        "sortDesc": false,
+        "total": false,
+        "values": true
+      },
+      "lines": true,
+      "linewidth": 1,
+      "links": [],
+      "nullPointMode": "connected",
+      "options": {
+        "alertThreshold": true
+      },
+      "percentage": false,
+      "pluginVersion": "7.4.2",
+      "pointradius": 5,
+      "points": false,
+      "renderer": "flot",
+      "repeat": null,
+      "seriesOverrides": [
+        {}
+      ],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "expr": "sum without(job,instance,thread) (kafka_streams_stream_thread_metrics_${measurement}_rate{instance=~\"${instance}\", thread_id=~\"${thread}\", job=~\"${job}\"})",
+          "format": "time_series",
+          "hide": false,
+          "instant": false,
+          "interval": "",
+          "intervalFactor": 1,
+          "legendFormat": "{{thread_id}}",
+          "refId": "A"
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "${measurement} rate",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "$$hashKey": "object:398",
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "$$hashKey": "object:399",
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "datasource": "prometheus",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {},
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 4,
+        "x": 20,
+        "y": 7
+      },
+      "id": 30,
+      "interval": "5",
+      "links": [],
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "mean"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "text": {},
+        "textMode": "auto"
+      },
+      "pluginVersion": "7.4.2",
+      "targets": [
+        {
+          "expr": "sum (kafka_streams_stream_thread_metrics_${measurement}_rate{thread_id=~\"${thread}\", instance=~\"${instance}\", job=~\"${job}\"})",
+          "format": "time_series",
+          "hide": false,
+          "instant": true,
+          "interval": "",
+          "intervalFactor": 1,
+          "legendFormat": "{{thread_id}}",
+          "refId": "A"
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "${measurement} rate",
+      "type": "stat"
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "prometheus",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {}
+        },
+        "overrides": []
+      },
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 7,
+        "w": 20,
+        "x": 0,
+        "y": 14
+      },
+      "hiddenSeries": false,
+      "id": 27,
+      "interval": "5",
+      "legend": {
+        "alignAsTable": false,
+        "avg": false,
+        "current": true,
+        "hideEmpty": false,
+        "hideZero": true,
+        "max": false,
+        "min": false,
+        "rightSide": false,
+        "show": true,
+        "sort": "current",
+        "sortDesc": false,
+        "total": false,
+        "values": true
+      },
+      "lines": true,
+      "linewidth": 1,
+      "links": [],
+      "nullPointMode": "connected",
+      "options": {
+        "alertThreshold": true
+      },
+      "percentage": false,
+      "pluginVersion": "7.4.2",
+      "pointradius": 5,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [
+        {}
+      ],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "expr": "sum without(job,instance,thread) (rate(kafka_streams_stream_thread_metrics_${measurement}_total{thread_id=~\"${thread}\", instance=~\"${instance}\", job=~\"${job}\"}[1m]))",
+          "format": "time_series",
+          "hide": false,
+          "instant": false,
+          "interval": "",
+          "intervalFactor": 1,
+          "legendFormat": "{{thread_id}}",
+          "refId": "A"
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "${measurement} rate (grafana computed)",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "$$hashKey": "object:536",
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "$$hashKey": "object:537",
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "datasource": "prometheus",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {},
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 4,
+        "x": 20,
+        "y": 14
+      },
+      "id": 37,
+      "interval": "5",
+      "links": [],
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "mean"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "text": {},
+        "textMode": "auto"
+      },
+      "pluginVersion": "7.4.2",
+      "targets": [
+        {
+          "expr": "sum (rate(kafka_streams_stream_thread_metrics_${measurement}_total{thread_id=~\"${thread}\", instance=~\"${instance}\", job=~\"${job}\"}[1m]))",
+          "format": "time_series",
+          "hide": false,
+          "instant": true,
+          "interval": "",
+          "intervalFactor": 1,
+          "legendFormat": "{{thread_id}}",
+          "refId": "A"
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "${measurement} rate (grafana computed)",
+      "type": "stat"
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "prometheus",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {}
+        },
+        "overrides": []
+      },
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 7,
+        "w": 20,
+        "x": 0,
+        "y": 21
+      },
+      "hiddenSeries": false,
+      "id": 35,
+      "interval": "15",
+      "legend": {
+        "alignAsTable": false,
+        "avg": false,
+        "current": true,
+        "hideEmpty": false,
+        "hideZero": true,
+        "max": false,
+        "min": false,
+        "rightSide": false,
+        "show": true,
+        "sort": "current",
+        "sortDesc": false,
+        "total": false,
+        "values": true
+      },
+      "lines": true,
+      "linewidth": 1,
+      "links": [],
+      "nullPointMode": "connected",
+      "options": {
+        "alertThreshold": true
+      },
+      "percentage": false,
+      "pluginVersion": "7.4.2",
+      "pointradius": 5,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [
+        {}
+      ],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "expr": "avg without(job,instance,thread) (kafka_streams_stream_thread_metrics_${measurement}_ratio{instance=~\"${instance}\", thread_id=~\"${thread}\", job=~\"${job}\"})",
+          "format": "time_series",
+          "hide": false,
+          "instant": false,
+          "interval": "",
+          "intervalFactor": 1,
+          "legendFormat": "{{thread_id}}",
+          "refId": "A"
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "${measurement} ratio",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "$$hashKey": "object:288",
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "$$hashKey": "object:289",
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "datasource": "prometheus",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {},
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 4,
+        "x": 20,
+        "y": 21
+      },
+      "id": 38,
+      "interval": "5",
+      "links": [],
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "mean"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "text": {},
+        "textMode": "auto"
+      },
+      "pluginVersion": "7.4.2",
+      "targets": [
+        {
+          "expr": "avg (kafka_streams_stream_thread_metrics_${measurement}_ratio{instance=~\"${instance}\", thread_id=~\"${thread}\", job=~\"${job}\"})",
+          "format": "time_series",
+          "hide": false,
+          "instant": true,
+          "interval": "",
+          "intervalFactor": 1,
+          "legendFormat": "{{thread_id}}",
+          "refId": "A"
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "${measurement} ratio",
+      "type": "stat"
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "prometheus",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {}
+        },
+        "overrides": []
+      },
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 7,
+        "w": 20,
+        "x": 0,
+        "y": 28
+      },
+      "hiddenSeries": false,
+      "id": 34,
+      "interval": "15",
+      "legend": {
+        "alignAsTable": false,
+        "avg": false,
+        "current": true,
+        "hideEmpty": false,
+        "hideZero": true,
+        "max": false,
+        "min": false,
+        "rightSide": false,
+        "show": true,
+        "sort": "current",
+        "sortDesc": false,
+        "total": false,
+        "values": true
+      },
+      "lines": true,
+      "linewidth": 1,
+      "links": [],
+      "nullPointMode": "connected",
+      "options": {
+        "alertThreshold": true
+      },
+      "percentage": false,
+      "pluginVersion": "7.4.2",
+      "pointradius": 5,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [
+        {}
+      ],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "expr": "avg without(job,instance,thread) (kafka_streams_stream_thread_metrics_${measurement}_latency_avg{instance=~\"${instance}\", thread_id=~\"${thread}\", job=~\"${job}\"})",
+          "format": "time_series",
+          "hide": false,
+          "instant": false,
+          "interval": "",
+          "intervalFactor": 1,
+          "legendFormat": "{{thread_id}}",
+          "refId": "A"
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "${measurement} latency",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "$$hashKey": "object:288",
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "$$hashKey": "object:289",
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "datasource": "prometheus",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {},
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 4,
+        "x": 20,
+        "y": 28
+      },
+      "id": 39,
+      "interval": "5",
+      "links": [],
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "mean"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "text": {},
+        "textMode": "auto"
+      },
+      "pluginVersion": "7.4.2",
+      "targets": [
+        {
+          "expr": "avg (kafka_streams_stream_thread_metrics_${measurement}_latency_avg{instance=~\"${instance}\", thread_id=~\"${thread}\", job=~\"${job}\"})",
+          "format": "time_series",
+          "hide": false,
+          "instant": true,
+          "interval": "",
+          "intervalFactor": 1,
+          "legendFormat": "{{thread_id}}",
+          "refId": "A"
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "${measurement} ratio",
+      "type": "stat"
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "prometheus",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {}
+        },
+        "overrides": []
+      },
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 7,
+        "w": 20,
+        "x": 0,
+        "y": 35
+      },
+      "hiddenSeries": false,
+      "id": 40,
+      "interval": "15",
+      "legend": {
+        "alignAsTable": false,
+        "avg": false,
+        "current": true,
+        "hideEmpty": false,
+        "hideZero": true,
+        "max": false,
+        "min": false,
+        "rightSide": false,
+        "show": true,
+        "sort": "current",
+        "sortDesc": false,
+        "total": false,
+        "values": true
+      },
+      "lines": true,
+      "linewidth": 1,
+      "links": [],
+      "nullPointMode": "connected",
+      "options": {
+        "alertThreshold": true
+      },
+      "percentage": false,
+      "pluginVersion": "7.4.2",
+      "pointradius": 5,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [
+        {}
+      ],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "expr": "avg without(job,instance,thread) (kafka_streams_stream_thread_metrics_${measurement}_records_avg{instance=~\"${instance}\", thread_id=~\"${thread}\", job=~\"${job}\"})",
+          "format": "time_series",
+          "hide": false,
+          "instant": false,
+          "interval": "",
+          "intervalFactor": 1,
+          "legendFormat": "{{thread_id}}",
+          "refId": "A"
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "${measurement} records (avg)",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "$$hashKey": "object:288",
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "$$hashKey": "object:289",
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "datasource": "prometheus",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {},
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 4,
+        "x": 20,
+        "y": 35
+      },
+      "id": 41,
+      "interval": "5",
+      "links": [],
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "mean"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "text": {},
+        "textMode": "auto"
+      },
+      "pluginVersion": "7.4.2",
+      "targets": [
+        {
+          "expr": "avg (kafka_streams_stream_thread_metrics_${measurement}_records_avg{instance=~\"${instance}\", thread_id=~\"${thread}\", job=~\"${job}\"})",
+          "format": "time_series",
+          "hide": false,
+          "instant": true,
+          "interval": "",
+          "intervalFactor": 1,
+          "legendFormat": "{{thread_id}}",
+          "refId": "A"
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "${measurement} records (avg)",
+      "type": "stat"
+    }
+  ],
+  "refresh": "1s",
+  "schemaVersion": 27,
+  "style": "dark",
+  "tags": [
+    "streams"
+  ],
+  "templating": {
+    "list": [
+      {
+        "allValue": null,
+        "current": {
+          "selected": true,
+          "text": "process",
+          "value": "process"
+        },
+        "description": null,
+        "error": null,
+        "hide": 0,
+        "includeAll": false,
+        "label": null,
+        "multi": false,
+        "name": "measurement",
+        "options": [
+          {
+            "selected": false,
+            "text": "commit",
+            "value": "commit"
+          },
+          {
+            "selected": false,
+            "text": "poll",
+            "value": "poll"
+          },
+          {
+            "selected": true,
+            "text": "process",
+            "value": "process"
+          }
+        ],
+        "query": "commit, poll, process",
+        "queryValue": "",
+        "skipUrlSync": false,
+        "type": "custom"
+      },
+      {
+        "allValue": null,
+        "current": {
+          "selected": false,
+          "text": "streams",
+          "value": "streams"
+        },
+        "datasource": "prometheus",
+        "definition": "kafka_streams_stream_thread_metrics_task_created_total",
+        "description": null,
+        "error": null,
+        "hide": 0,
+        "includeAll": false,
+        "label": null,
+        "multi": false,
+        "name": "job",
+        "options": [],
+        "query": {
+          "query": "kafka_streams_stream_thread_metrics_task_created_total",
+          "refId": "prometheus-job-Variable-Query"
+        },
+        "refresh": 1,
+        "regex": "/job=\\\"(.*)\\\",/",
+        "skipUrlSync": false,
+        "sort": 0,
+        "tagValuesQuery": "",
+        "tags": [],
+        "tagsQuery": "",
+        "type": "query",
+        "useTags": false
+      },
+      {
+        "allValue": null,
+        "current": {
+          "selected": true,
+          "text": "All",
+          "value": "$__all"
+        },
+        "datasource": "prometheus",
+        "definition": "application_streams",
+        "description": null,
+        "error": null,
+        "hide": 0,
+        "includeAll": true,
+        "label": "instance",
+        "multi": false,
+        "name": "instance",
+        "options": [],
+        "query": {
+          "query": "application_streams",
+          "refId": "StandardVariableQuery"
+        },
+        "refresh": 1,
+        "regex": "/.*instance=\"(.*)\",job.*$/",
+        "skipUrlSync": false,
+        "sort": 0,
+        "tagValuesQuery": "",
+        "tags": [],
+        "tagsQuery": "",
+        "type": "query",
+        "useTags": false
+      },
+      {
+        "allValue": null,
+        "current": {
+          "selected": true,
+          "text": "All",
+          "value": "$__all"
+        },
+        "datasource": "prometheus",
+        "definition": "kafka_streams_stream_thread_metrics_task_created_total{instance=~\"$instance\"}",
+        "description": null,
+        "error": null,
+        "hide": 0,
+        "includeAll": true,
+        "label": "thread",
+        "multi": false,
+        "name": "thread",
+        "options": [],
+        "query": {
+          "query": "kafka_streams_stream_thread_metrics_task_created_total{instance=~\"$instance\"}",
+          "refId": "StandardVariableQuery"
+        },
+        "refresh": 1,
+        "regex": "/.*thread_id=\"(.*)\"}$/",
+        "skipUrlSync": false,
+        "sort": 0,
+        "tagValuesQuery": "",
+        "tags": [],
+        "tagsQuery": "",
+        "type": "query",
+        "useTags": false
+      }
+    ]
+  },
+  "time": {
+    "from": "now-1m",
+    "to": "now"
+  },
+  "timepicker": {
+    "refresh_intervals": [
+      "1s",
+      "5s",
+      "10s",
+      "30s",
+      "1m",
+      "5m",
+      "15m",
+      "30m",
+      "1h",
+      "2h",
+      "1d"
+    ],
+    "time_options": [
+      "5m",
+      "15m",
+      "1h",
+      "6h",
+      "12h",
+      "24h",
+      "2d",
+      "7d",
+      "30d"
+    ]
+  },
+  "timezone": "",
+  "title": "Streams Threads",
+  "uid": "streams_thread",
+  "version": 2
+}

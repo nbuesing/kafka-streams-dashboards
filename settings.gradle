@@ -1,0 +1,16 @@
+rootProject.name = 'kafka-streams-dashboards'
+
+buildscript {
+	repositories {
+		jcenter()
+	}
+	dependencies {
+	}
+}
+
+include 'cluster'
+include 'monitoring'
+include 'common'
+include 'builder'
+include 'publisher'
+include 'streams'
