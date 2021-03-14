@@ -25,7 +25,7 @@ services:
       CLIENT_ID: '1'
 
   stream2:
-    image: nbuesing/ks2021_streams:latest
+    image: nbuesing/ksd_streams:latest
     hostname: stream2
     container_name: stream2
     # provides network privileges to allow 'tc' to be used

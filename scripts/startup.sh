@@ -20,8 +20,8 @@ fi
 sleep 2
 (cd cluster; docker-compose up -d)
 sleep 2
-(cd builder; gradle run)
+./gradlew clean build
+(cd builder; ../gradlew run)
 (cd monitoring; docker-compose up -d)
-(cd streams; gradle build)
 (cd applications; docker-compose up -d)
-(cd publisher; gradle run)
+(cd publisher; ../gradlew run)

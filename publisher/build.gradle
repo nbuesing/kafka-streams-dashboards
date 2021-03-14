@@ -15,8 +15,8 @@ application {
 
 task buildDockerImage(type: Exec) {
     inputs.files 'Dockerfile'
-    commandLine 'docker', 'rmi', "nbuesing/ks2021_${project.name}:latest"
-    commandLine 'docker', 'build', '-t', "nbuesing/ks2021_${project.name}:latest", '.'
+    commandLine 'docker', 'rmi', "nbuesing/ksd_${project.name}:latest"
+    commandLine 'docker', 'build', '-t', "nbuesing/ksd_${project.name}:latest", '.'
 }
 
 build.dependsOn buildDockerImage
