@@ -6,8 +6,11 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import dev.buesing.ksd.common.config.CommonConfigs;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.tuple.Pair;
+import org.apache.kafka.clients.CommonClientConfigs;
+import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.clients.producer.ProducerRecord;
@@ -15,11 +18,13 @@ import org.apache.kafka.common.MetricName;
 import org.apache.kafka.common.metrics.KafkaMetric;
 import org.apache.kafka.common.metrics.MetricsReporter;
 import org.apache.kafka.common.serialization.StringSerializer;
+import org.apache.kafka.streams.StreamsConfig;
 
 import java.time.Duration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -45,17 +50,47 @@ public class KafkaMetricsReporter implements MetricsReporter {
 
     private KafkaProducer<String, String> producer;
 
+    private String topic;
+
+    private String applicationId;
+    private String groupId;
+    private String clientId;
+
     @Override
     public void configure(final Map<String, ?> configs) {
+
         final Map<String, Object> map = new HashMap<>(configs);
         map.putAll(defaults);
         producer = new KafkaProducer<>(map);
+
+        applicationId = (String) configs.get(StreamsConfig.APPLICATION_ID_CONFIG);
+        groupId = (String) configs.get(ConsumerConfig.GROUP_ID_CONFIG);
+        clientId = (String) configs.get(CommonClientConfigs.CLIENT_ID_CONFIG);
+
+        topic = (String) configs.get(CommonConfigs.METRICS_REPORTER_CONFIG);
+
+        if (clientId == null) {
+            clientId = UUID.randomUUID().toString();
+        }
+
+        log.debug("applicationId={}", applicationId);
+        log.debug("groupId={}", groupId);
+        log.debug("clientId={}", clientId);
+        log.debug("topic={}", topic);
     }
 
 
     private final Runnable runnable = new Runnable() {
         @Override
         public void run() {
+
+            log.debug("sending metrics");
+
+            if (topic == null) {
+                log.warn("metric topic not defined.");
+                return;
+            }
+
             map.forEach((k, v) -> {
                 final KafkaMetric metric = v.getKey();
                 final ObjectNode node = v.getValue();
@@ -65,9 +100,11 @@ public class KafkaMetricsReporter implements MetricsReporter {
 
                 // TODO determine a better key to use
                 producer.send(
-                        new ProducerRecord<>("jmx-metrics", null, null, metric.metricName().name(), serialize(node)),
+                        new ProducerRecord<>(topic, null, null, metric.metricName().name(), serialize(node)),
                         (metadata, e) -> {
-                            //TODO
+                            if (e != null) {
+                                log.warn("unable to publish to metrics topic e={}", e.getMessage());
+                            }
                         }
                 );
             });
@@ -83,8 +120,6 @@ public class KafkaMetricsReporter implements MetricsReporter {
 
         executor.scheduleAtFixedRate(runnable, INTERVAL.toMillis(), INTERVAL.toMillis(), TimeUnit.MILLISECONDS);
     }
-
-    private int i = 0;
 
     @Override
     public void metricChange(final KafkaMetric metric) {
@@ -114,10 +149,12 @@ public class KafkaMetricsReporter implements MetricsReporter {
         }
     }
 
-    private static ObjectNode jsonNode(final KafkaMetric metric) {
+    private ObjectNode jsonNode(final KafkaMetric metric) {
 
         final ObjectNode objectNode = JsonNodeFactory.instance.objectNode();
 
+        objectNode.put("group-id", applicationId != null ? applicationId : groupId);
+        objectNode.put("client-id", clientId);
         objectNode.put("name", metric.metricName().name());
         objectNode.put("group", metric.metricName().group());
 

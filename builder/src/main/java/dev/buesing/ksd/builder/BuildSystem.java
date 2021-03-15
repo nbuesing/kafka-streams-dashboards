@@ -34,10 +34,23 @@ public class BuildSystem {
 
     private static final short REPLICATION_FACTOR = 3;
     private static final int PARTITIONS = 4;
+    private static final Map<String, String> CONFIGS = Map.ofEntries(
+            Map.entry("retention.ms", "86400") // 1 day
+    );
+
+
+    private static final short GLOBAL_REPLICATION_FACTOR = 3;
     private static final int GLOBAL_PARTITIONS = 1;
-    private static final Map<String, String> COMPACTED_CONFIGS = Map.ofEntries(
+    private static final Map<String, String> GLOBAL_CONFIGS = Map.ofEntries(
             Map.entry("cleanup.policy", "compact"),
             Map.entry("retention.ms", "-1")
+    );
+
+    private static final short METRICS_REPLICATION_FACTOR = 3;
+    private static final int METRICS_PARTITIONS = 4;
+    private static final Map<String, String> METRICS_CONFIGS = Map.ofEntries(
+            Map.entry("retention.ms", "3600"), // 1 hour
+            Map.entry("min.insync.replicas", "1")
     );
 
     private static final Random RANDOM = new Random();
@@ -58,20 +71,25 @@ public class BuildSystem {
 
         final AdminClient admin = KafkaAdminClient.create(properties(options));
 
-        NewTopic store = new NewTopic(options.getStoreTopic(), GLOBAL_PARTITIONS, REPLICATION_FACTOR);
-        store.configs(COMPACTED_CONFIGS);
+        NewTopic store = new NewTopic(options.getStoreTopic(), GLOBAL_PARTITIONS, GLOBAL_REPLICATION_FACTOR);
+        store.configs(GLOBAL_CONFIGS);
 
         NewTopic user = new NewTopic(options.getUserTopic(), PARTITIONS, REPLICATION_FACTOR);
-        user.configs(COMPACTED_CONFIGS);
+        user.configs(GLOBAL_CONFIGS);
 
         NewTopic product = new NewTopic(options.getProductTopic(), PARTITIONS, REPLICATION_FACTOR);
-        product.configs(COMPACTED_CONFIGS);
+        product.configs(GLOBAL_CONFIGS);
 
         NewTopic purchaseOrders = new NewTopic(options.getPurchaseTopic(), PARTITIONS, REPLICATION_FACTOR);
+        purchaseOrders.configs(CONFIGS);
 
         NewTopic pickupOrders = new NewTopic(options.getPickupTopic(), PARTITIONS, REPLICATION_FACTOR);
+        pickupOrders.configs(CONFIGS);
 
-        final List<NewTopic> topics = Arrays.asList(store, user, product, purchaseOrders, pickupOrders);
+        NewTopic customMetricsTopic = new NewTopic(options.getCustomMetricsTopic(), METRICS_PARTITIONS, METRICS_REPLICATION_FACTOR);
+        customMetricsTopic.configs(METRICS_CONFIGS);
+
+        final List<NewTopic> topics = Arrays.asList(store, user, product, purchaseOrders, pickupOrders, customMetricsTopic);
 
         if (options.isDeleteTopics()) {
             admin.deleteTopics(topics.stream().map(NewTopic::name).collect(Collectors.toList())).values().forEach((k, v) -> {

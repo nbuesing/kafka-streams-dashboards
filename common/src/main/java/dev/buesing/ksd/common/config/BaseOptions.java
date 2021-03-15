@@ -36,6 +36,9 @@ public abstract class BaseOptions {
     @Parameter(names = { "--pickup-topic" }, description = "")
     private String pickupTopic = "orders-pickup";
 
+    @Parameter(names = { "--custom-metrics-topic" }, description = "custom metrics topic")
+    private String customMetricsTopic = "_metrics-kafka-streams";
+
 
     private int numberOfStores = 1000;
     private int numberOfUsers = 10_000;

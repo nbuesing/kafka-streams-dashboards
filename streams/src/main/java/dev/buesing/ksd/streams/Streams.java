@@ -7,6 +7,7 @@
 
 package dev.buesing.ksd.streams;
 
+import dev.buesing.ksd.common.config.CommonConfigs;
 import dev.buesing.ksd.common.domain.Product;
 import dev.buesing.ksd.common.domain.PurchaseOrder;
 import dev.buesing.ksd.common.domain.Store;
@@ -51,7 +52,8 @@ public class Streams {
                 Map.entry(StreamsConfig.METRICS_RECORDING_LEVEL_CONFIG, "DEBUG"),
       //          Map.entry("built.in.metrics.version", "0.10.0-2.4"),
                 //Map.entry(StreamsConfig.NUM_STREAM_THREADS_CONFIG, 2),
-                Map.entry(StreamsConfig.METRIC_REPORTER_CLASSES_CONFIG, JmxReporter.class.getName() + "," + KafkaMetricsReporter.class.getName())
+                Map.entry(StreamsConfig.METRIC_REPORTER_CLASSES_CONFIG, JmxReporter.class.getName() + "," + KafkaMetricsReporter.class.getName()),
+                Map.entry(CommonConfigs.METRICS_REPORTER_CONFIG, options.getCustomMetricsTopic())
         );
 
         final Map<String, Object> map = new HashMap<>(defaults);
