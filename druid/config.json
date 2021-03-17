@@ -1,0 +1,51 @@
+{
+  "type": "kafka",
+  "spec": {
+    "ioConfig": {
+      "type": "kafka",
+      "consumerProperties": {
+        "bootstrap.servers": "broker-1:9092"
+      },
+      "topic": "_metrics-kafka-streams",
+      "inputFormat": {
+        "type": "json"
+      },
+      "useEarliestOffset": true
+    },
+    "tuningConfig": {
+      "type": "kafka"
+    },
+    "dataSchema": {
+      "dataSource": "_metrics-kafka-streams",
+      "granularitySpec": {
+        "type": "uniform",
+        "queryGranularity": "fifteen_minute",
+        "segmentGranularity": "fifteen_minute",
+        "rollup": true
+      },
+      "timestampSpec": {
+        "column": "timestamp",
+        "format": "millis"
+      },
+      "dimensionsSpec": {
+        "dimensions": [
+          "client-id",
+          "group",
+          "group-id",
+          "name"
+        ]
+      },
+      "metricsSpec": [
+        {
+          "name": "count",
+          "type": "count"
+        },
+        {
+          "name": "sum_value",
+          "type": "doubleSum",
+          "fieldName": "value"
+        }
+      ]
+    }
+  }
+}

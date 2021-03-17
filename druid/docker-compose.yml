@@ -1,0 +1,122 @@
+---
+version: '3.7'
+
+networks:
+  default:
+    external:
+      name: ksd
+
+#volumes:
+#  metadata_data: {}
+#  middle_var: {}
+#  historical_var: {}
+#  broker_var: {}
+#  coordinator_var: {}
+#  router_var: {}
+
+services:
+  druid-postgres:
+    container_name: ksd_druid-postgres
+    hostname: druid-postgres
+    image: postgres:latest
+    #volumes:
+    #  - metadata_data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_PASSWORD=FoolishPassword
+      - POSTGRES_USER=druid
+      - POSTGRES_DB=druid
+
+  # Need 3.5 or later for container nodes
+  druid-zookeeper:
+    container_name: ksd_druid-zookeeper
+    hostname: druid-zookeeper
+    image: zookeeper:3.5
+    environment:
+      - ZOO_MY_ID=1
+
+  druid-coordinator:
+    image: apache/druid:0.20.1
+    container_name: ksd_druid-coordinator
+    hostname: druid-coordinator
+    #volumes:
+    #  - ./storage:/opt/data
+    #  - coordinator_var:/opt/druid/var
+    depends_on: 
+      - druid-zookeeper
+      - druid-postgres
+    ports:
+      - "18081:8081"
+    command:
+      - coordinator
+    env_file:
+      - environment
+
+  druild_broker:
+    image: apache/druid:0.20.1
+    container_name: ksd_druid-broker
+    hostname: druid-broker
+    #volumes:
+    #  - broker_var:/opt/druid/var
+    depends_on: 
+      - druid-zookeeper
+      - druid-postgres
+      - druid-coordinator
+    ports:
+      - "18082:8082"
+    command:
+      - broker
+    env_file:
+      - environment
+
+  historical:
+    image: apache/druid:0.20.1
+    container_name: ksd_druid-historical
+    hostname: druid-historical
+    #volumes:
+    #  - ./storage:/opt/data
+    #  - historical_var:/opt/druid/var
+    depends_on: 
+      - druid-zookeeper
+      - druid-postgres
+      - druid-coordinator
+    ports:
+      - "18083:8083"
+    command:
+      - historical
+    env_file:
+      - environment
+
+  druid-middlemanager:
+    image: apache/druid:0.20.1
+    container_name: ksd_druid-middlemanager
+    hostname: druid-middlemanager
+    #volumes:
+    #  - ./storage:/opt/data
+    #  - middle_var:/opt/druid/var
+    depends_on: 
+      - druid-zookeeper
+      - druid-postgres
+      - druid-coordinator
+    ports:
+      - "18091:8091"
+    command:
+      - middleManager
+    env_file:
+      - environment
+
+  druid-router:
+    image: apache/druid:0.20.1
+    container_name: ksd_druid-router
+    hostname: druid-router
+    #volumes:
+    #  - router_var:/opt/druid/var
+    depends_on:
+      - druid-zookeeper
+      - druid-postgres
+      - druid-coordinator
+    ports:
+      - "18888:8888"
+    command:
+      - router
+    env_file:
+      - environment
