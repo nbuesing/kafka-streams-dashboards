@@ -24,4 +24,9 @@ sleep 2
 (cd builder; ../gradlew run)
 (cd monitoring; docker-compose up -d)
 (cd applications; docker-compose up -d)
+
+if [ $(uname) == "Darwin" ]; then
+  open http://localhost:3000
+fi
+
 (cd publisher; ../gradlew run)
