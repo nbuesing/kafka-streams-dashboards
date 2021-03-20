@@ -1,0 +1,5 @@
+
+
+druid://admin:admin@druid-router:8888/druid/v2/sql
+
+WTF_CSRF_ENABLED = False

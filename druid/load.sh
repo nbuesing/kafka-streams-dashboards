@@ -14,3 +14,4 @@ curl -X POST -H 'Content-Type:application/json' -d @$DATA http://localhost:18081
 #TASK=task
 #curl -X POST -H $CONTENT_TYPE_HDR -d @$DATA $URL/druid/indexer/v1/$TASK
 
+#http://localhost:18888/unified-console.html#query

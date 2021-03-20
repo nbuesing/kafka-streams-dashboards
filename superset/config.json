@@ -1,0 +1,17 @@
+{
+    "allow_csv_upload": false,
+    "allow_ctas": false,
+    "allow_cvas": false,
+    "allow_dml": false,
+    "allow_multi_schema_metadata_fetch": false,
+    "allow_run_async": false,
+    "cache_timeout": null,
+    "database_name": "druid",
+    "encrypted_extra": null,
+    "expose_in_sqllab": true,
+    "extra": "{\n    \"metadata_params\": {},\n    \"engine_params\": {},\n    \"metadata_cache_timeout\": {},\n    \"schemas_allowed_for_csv_upload\": []\n}\n",
+    "force_ctas_schema": null,
+    "impersonate_user": false,
+    "server_cert": null,
+    "sqlalchemy_uri": "druid://druid:XXXXXXXXXX@druid-router:8888/druid/v2/sql"
+}
