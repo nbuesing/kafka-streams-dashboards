@@ -16,7 +16,6 @@ if [ $? -ne 0 ]; then
   exit
 fi
 
-
 #
 # creates a network unique to this project that can be shared between docker compose instances
 # kafka-streams-monitoring -> ksm

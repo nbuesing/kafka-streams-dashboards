@@ -10,6 +10,8 @@
 
 * Setup and Configuration all in the `./scripts/startup.sh` script; execute from root directory to get everything running.
 
+* Shut it all down, use `./scripts/teardown.sh` script.
+
 * Grafana Dashboard 
 
   * `https://localhost:3000`
@@ -17,6 +19,9 @@
     * username: `admin`
     * password: `grafana`
 
+  * on MacOS your the grafana dashboard will auto open in your default browser.
+
+* Leverages Docker and Docker Container extensively
 
 ## Examples
 
@@ -27,16 +32,20 @@
 
 * This project leverages docker and docker compose for easy of demonstration.
 
-* to minimize having to start up all components, separate `docker-compose.yml` for each logical-unit and a common bridge network `ksm`.
+* to minimize having to start up all components, separate `docker-compose.yml` for each logical-unit and a common bridge network `ksd`.
+
+* docker compose .env files used to keep container names short and consistent but hopefully not clash with any existing docker containers you are using.
 
 ## OpenSource libraries
 
-* FasterXML Jackson
+* The primary software libraries used in addition to Apache Kafka Client and Streams Libraries.
 
-* Lombok
+  * FasterXML Jackson
 
-* JCommander
+  * Lombok
 
-* Logback
+  * JCommander
 
-* Apache Commons
+  * Logback
+
+  * Apache Commons
