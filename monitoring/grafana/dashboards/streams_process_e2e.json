@@ -15,7 +15,7 @@
   "editable": true,
   "gnetId": null,
   "graphTooltip": 0,
-  "iteration": 1616352741683,
+  "iteration": 1616351950449,
   "links": [],
   "panels": [
     {
@@ -37,13 +37,13 @@
       "fill": 1,
       "fillGradient": 0,
       "gridPos": {
-        "h": 7,
+        "h": 8,
         "w": 16,
         "x": 0,
         "y": 0
       },
       "hiddenSeries": false,
-      "id": 30,
+      "id": 37,
       "legend": {
         "avg": false,
         "current": false,
@@ -65,14 +65,13 @@
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
-      "repeat": null,
       "seriesOverrides": [],
       "spaceLength": 10,
       "stack": false,
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum without(partition_id) (kafka_streams_stream_processor_node_metrics_process_total{partition_id=~\"${partition}\", processor_node_id=~\"${process}\", task_id=~\"${task}\", thread_id=~\"${thread}\", instance=~\"${instance}\", job=~\"${job}\"})",
+          "expr": "sum without(partition_id) ((kafka_streams_stream_processor_node_metrics_record_e2e_latency_avg{partition_id=~\"${partition}\", processor_node_id=~\"${process}\", task_id=~\"${task}\", thread_id=~\"${thread}\", job=~\"${job}\"}) >=0)",
           "format": "time_series",
           "hide": false,
           "instant": false,
@@ -86,7 +85,7 @@
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "process total",
+      "title": "e2e latency (avg)",
       "tooltip": {
         "shared": true,
         "sort": 0,
@@ -102,7 +101,7 @@
       },
       "yaxes": [
         {
-          "$$hashKey": "object:34",
+          "$$hashKey": "object:649",
           "format": "short",
           "label": null,
           "logBase": 1,
@@ -111,7 +110,7 @@
           "show": true
         },
         {
-          "$$hashKey": "object:35",
+          "$$hashKey": "object:650",
           "format": "short",
           "label": null,
           "logBase": 1,
@@ -144,12 +143,12 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 7,
+        "h": 8,
         "w": 8,
         "x": 16,
         "y": 0
       },
-      "id": 41,
+      "id": 43,
       "links": [],
       "options": {
         "colorMode": "value",
@@ -167,10 +166,9 @@
         "textMode": "auto"
       },
       "pluginVersion": "7.4.2",
-      "repeat": null,
       "targets": [
         {
-          "expr": "sum  (kafka_streams_stream_processor_node_metrics_process_total{partition_id=~\"${partition}\", processor_node_id=~\"${process}\", task_id=~\"${task}\", thread_id=~\"${thread}\", instance=~\"${instance}\", job=~\"${job}\"})",
+          "expr": "avg  ((kafka_streams_stream_processor_node_metrics_record_e2e_latency_avg{partition_id=~\"${partition}\", processor_node_id=~\"${process}\", task_id=~\"${task}\", thread_id=~\"${thread}\", instance=~\"${instance}\", job=~\"${job}\"}) >=0)",
           "format": "time_series",
           "hide": false,
           "instant": true,
@@ -182,7 +180,8 @@
       ],
       "timeFrom": null,
       "timeShift": null,
-      "title": "process total",
+      "title": "e2e latency (avg)",
+      "transformations": [],
       "type": "stat"
     },
     {
@@ -204,13 +203,13 @@
       "fill": 1,
       "fillGradient": 0,
       "gridPos": {
-        "h": 7,
+        "h": 8,
         "w": 16,
         "x": 0,
-        "y": 7
+        "y": 8
       },
       "hiddenSeries": false,
-      "id": 39,
+      "id": 38,
       "legend": {
         "avg": false,
         "current": false,
@@ -238,7 +237,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum without(partition_id) (kafka_streams_stream_processor_node_metrics_process_rate{partition_id=~\"${partition}\", processor_node_id=~\"${process}\", task_id=~\"${task}\", thread_id=~\"${thread}\", job=~\"${job}\"})",
+          "expr": "min without(partition_id) ((kafka_streams_stream_processor_node_metrics_record_e2e_latency_min{partition_id=~\"${partition}\", processor_node_id=~\"${process}\", task_id=~\"${task}\", thread_id=~\"${thread}\", job=~\"${job}\"}) >= 0)",
           "format": "time_series",
           "hide": false,
           "instant": false,
@@ -252,7 +251,7 @@
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "process rate",
+      "title": "e2e latency (min)",
       "tooltip": {
         "shared": true,
         "sort": 0,
@@ -310,12 +309,12 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 7,
+        "h": 8,
         "w": 8,
         "x": 16,
-        "y": 7
+        "y": 8
       },
-      "id": 42,
+      "id": 44,
       "links": [],
       "options": {
         "colorMode": "value",
@@ -335,7 +334,7 @@
       "pluginVersion": "7.4.2",
       "targets": [
         {
-          "expr": "sum  (kafka_streams_stream_processor_node_metrics_process_rate{partition_id=~\"${partition}\", processor_node_id=~\"${process}\", task_id=~\"${task}\", thread_id=~\"${thread}\", instance=~\"${instance}\", job=~\"${job}\"})",
+          "expr": "avg  ((kafka_streams_stream_processor_node_metrics_record_e2e_latency_min{partition_id=~\"${partition}\", processor_node_id=~\"${process}\", task_id=~\"${task}\", thread_id=~\"${thread}\", instance=~\"${instance}\", job=~\"${job}\"}) >=0)",
           "format": "time_series",
           "hide": false,
           "instant": true,
@@ -347,7 +346,172 @@
       ],
       "timeFrom": null,
       "timeShift": null,
-      "title": "process rate",
+      "title": "e2e latency (min)",
+      "type": "stat"
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "prometheus",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {},
+          "thresholds": {
+            "mode": "absolute",
+            "steps": []
+          }
+        },
+        "overrides": []
+      },
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 8,
+        "w": 16,
+        "x": 0,
+        "y": 16
+      },
+      "hiddenSeries": false,
+      "id": 35,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "links": [],
+      "nullPointMode": "null",
+      "options": {
+        "alertThreshold": true
+      },
+      "percentage": false,
+      "pluginVersion": "7.4.2",
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "expr": "max without(partition_id) ((kafka_streams_stream_processor_node_metrics_record_e2e_latency_max{partition_id=~\"${partition}\", processor_node_id=~\"${process}\", task_id=~\"${task}\", thread_id=~\"${thread}\", job=\"${job}\"}) >= 0)",
+          "format": "time_series",
+          "hide": false,
+          "instant": false,
+          "interval": "",
+          "intervalFactor": 1,
+          "legendFormat": "{{task_id}}/{{processor_node_id}}",
+          "refId": "A"
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "e2e latency (max)",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "$$hashKey": "object:897",
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "$$hashKey": "object:898",
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "datasource": "prometheus",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {},
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 16,
+        "y": 16
+      },
+      "id": 45,
+      "links": [],
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "mean"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "text": {},
+        "textMode": "auto"
+      },
+      "pluginVersion": "7.4.2",
+      "targets": [
+        {
+          "expr": "avg  ((kafka_streams_stream_processor_node_metrics_record_e2e_latency_max{partition_id=~\"${partition}\", processor_node_id=~\"${process}\", task_id=~\"${task}\", thread_id=~\"${thread}\", instance=~\"${instance}\", job=~\"${job}\"}) >=0)",
+          "format": "time_series",
+          "hide": false,
+          "instant": true,
+          "interval": "",
+          "intervalFactor": 1,
+          "legendFormat": "{{task_id}}",
+          "refId": "A"
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "e2e latency (max)",
       "type": "stat"
     }
   ],
@@ -517,12 +681,12 @@
       {
         "allValue": ".*",
         "current": {
-          "selected": false,
+          "selected": true,
           "text": "All",
           "value": "$__all"
         },
         "datasource": "prometheus",
-        "definition": "kafka_streams_stream_processor_node_metrics_process_total{task_id=~\"$task\",thread_id=~\"${thread}\",instance=~\"$instance\",job=~\"$job\"}\n",
+        "definition": "kafka_streams_stream_processor_node_metrics_record_e2e_latency_avg{task_id=~\"$task\",thread_id=~\"${thread}\",instance=~\"$instance\",job=~\"$job\"}\n",
         "description": null,
         "error": null,
         "hide": 0,
@@ -532,7 +696,7 @@
         "name": "process",
         "options": [],
         "query": {
-          "query": "kafka_streams_stream_processor_node_metrics_process_total{task_id=~\"$task\",thread_id=~\"${thread}\",instance=~\"$instance\",job=~\"$job\"}\n",
+          "query": "kafka_streams_stream_processor_node_metrics_record_e2e_latency_avg{task_id=~\"$task\",thread_id=~\"${thread}\",instance=~\"$instance\",job=~\"$job\"}\n",
           "refId": "StandardVariableQuery"
         },
         "refresh": 1,
@@ -609,7 +773,7 @@
     ]
   },
   "timezone": "",
-  "title": "Streams Processes",
-  "uid": "streams_process",
-  "version": 2
+  "title": "Streams Processes 2E2",
+  "uid": "streams_process_e2e",
+  "version": 1
 }
