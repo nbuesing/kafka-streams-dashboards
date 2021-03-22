@@ -8,8 +8,6 @@ buildscript {
 	}
 }
 
-include 'cluster'
-include 'monitoring'
 include 'common'
 include 'builder'
 include 'publisher'
