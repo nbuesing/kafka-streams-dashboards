@@ -155,15 +155,23 @@ public class KafkaMetricsReporter implements MetricsReporter {
         final ObjectNode objectNode = JsonNodeFactory.instance.objectNode();
 
         objectNode.put("group-id", applicationId != null ? applicationId : groupId);
-        objectNode.put("client-id", clientId);
+        // objectNode.put("client-id", clientId); -- should be part of the tags
         objectNode.put("name", metric.metricName().name());
         objectNode.put("group", metric.metricName().group());
 
-        final ObjectNode tags = JsonNodeFactory.instance.objectNode();
+        metric.metricName().tags().forEach((k,v ) -> {
+            objectNode.put(k, v);
+            if ("task-id".equals(k) && v.indexOf('_') > 0) {
+                objectNode.put("subtopology", v.split("_")[0]);
+                objectNode.put("partition", v.split("_")[1]);
+            }
+        });
 
-        metric.metricName().tags().forEach(tags::put);
-
-        objectNode.set("tags", tags);
+        if (objectNode.get("thread-id") == null) {
+            objectNode.set("thread-id", objectNode.get("client-id"));
+        } else if (objectNode.get("client-id") == null) {
+            objectNode.set("client-id", objectNode.get("thread-id"));
+        }
 
         return objectNode;
     }
