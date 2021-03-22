@@ -41,7 +41,6 @@ public class KafkaMetricsReporter implements MetricsReporter {
             Map.entry(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class),
             Map.entry(ProducerConfig.METRICS_RECORDING_LEVEL_CONFIG, "INFO"),
             Map.entry(ProducerConfig.METRIC_REPORTER_CLASSES_CONFIG, "")
-
     );
 
     private final ScheduledThreadPoolExecutor executor = new ScheduledThreadPoolExecutor(1);
@@ -72,6 +71,8 @@ public class KafkaMetricsReporter implements MetricsReporter {
         if (clientId == null) {
             clientId = UUID.randomUUID().toString();
         }
+
+        clientId += "-reporter";
 
         log.debug("applicationId={}", applicationId);
         log.debug("groupId={}", groupId);

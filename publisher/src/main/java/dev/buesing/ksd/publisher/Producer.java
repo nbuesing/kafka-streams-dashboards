@@ -44,10 +44,10 @@ public class Producer {
 
     private int getRandomItemCount() {
 
-        if (options.getLineItemCount().indexOf('-') >= 0) {
+        if (options.getLineItemCount().indexOf('-') < 0) {
             return Integer.parseInt(options.getLineItemCount());
         } else {
-            String[] split = options.getLineItemCount().split(":");
+            String[] split = options.getLineItemCount().split("-");
             int min = Integer.parseInt(split[0]);
             int max = Integer.parseInt(split[1]);
             return RANDOM.nextInt(max + 1 - min) + min;
