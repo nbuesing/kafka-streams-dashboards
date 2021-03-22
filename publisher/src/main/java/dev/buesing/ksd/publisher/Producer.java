@@ -43,7 +43,15 @@ public class Producer {
     }
 
     private int getRandomItemCount() {
-        return options.getLineItemCount(); //RANDOM.nextInt(MAX_ORDER_SIZE) + 1;
+
+        if (options.getLineItemCount().indexOf('-') >= 0) {
+            return Integer.parseInt(options.getLineItemCount());
+        } else {
+            String[] split = options.getLineItemCount().split(":");
+            int min = Integer.parseInt(split[0]);
+            int max = Integer.parseInt(split[1]);
+            return RANDOM.nextInt(max + 1 - min) + min;
+        }
     }
 
     private int getRandomQuantity() {

@@ -19,16 +19,24 @@ import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.metrics.JmxReporter;
+import org.apache.kafka.common.metrics.Sensor;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.streams.*;
 import org.apache.kafka.streams.errors.LogAndContinueExceptionHandler;
 import org.apache.kafka.streams.kstream.*;
+import org.apache.kafka.streams.processor.ProcessorContext;
+import org.apache.kafka.streams.processor.internals.metrics.StreamsMetricsImpl;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 import java.util.stream.Collectors;
+
+import static org.apache.kafka.streams.processor.internals.metrics.StreamsMetricsImpl.PROCESSOR_NODE_LEVEL_GROUP;
+import static org.apache.kafka.streams.processor.internals.metrics.StreamsMetricsImpl.addAvgAndMinAndMaxToSensor;
 
 @Slf4j
 public class Streams {
@@ -50,7 +58,7 @@ public class Streams {
                 Map.entry(StreamsConfig.DEFAULT_DESERIALIZATION_EXCEPTION_HANDLER_CLASS_CONFIG, LogAndContinueExceptionHandler.class),
                 //Map.entry("topology.optimization", "all"),
                 Map.entry(StreamsConfig.METRICS_RECORDING_LEVEL_CONFIG, "DEBUG"),
-      //          Map.entry("built.in.metrics.version", "0.10.0-2.4"),
+                //          Map.entry("built.in.metrics.version", "0.10.0-2.4"),
                 //Map.entry(StreamsConfig.NUM_STREAM_THREADS_CONFIG, 2),
                 Map.entry(StreamsConfig.METRIC_REPORTER_CLASSES_CONFIG, JmxReporter.class.getName() + "," + KafkaMetricsReporter.class.getName()),
                 Map.entry(CommonConfigs.METRICS_REPORTER_CONFIG, options.getCustomMetricsTopic())
@@ -123,35 +131,73 @@ public class Streams {
                 Materialized.as("product-table")
         );
 
-       // AtomicInteger counter = new AtomicInteger();
+        // AtomicInteger counter = new AtomicInteger();
 
         builder.<String, PurchaseOrder>stream(options.getPurchaseTopic(), Consumed.as("purchase-order-source"))
+                .transformValues(() -> new ValueTransformerWithKey<String, PurchaseOrder, PurchaseOrder>() {
+
+                    private Sensor sensor;
+
+                    @Override
+                    public void init(ProcessorContext context) {
+
+                        sensor = createSensor(
+                                Thread.currentThread().getName(),
+                                context.taskId().toString(),
+                                "purchase-order-lineitem-counter",
+                                (StreamsMetricsImpl) context.metrics());
+                    }
+
+                    @Override
+                    public PurchaseOrder transform(String readOnlyKey, PurchaseOrder value) {
+                        sensor.record(value.getItems().size());
+                        return value;
+                    }
+
+                    @Override
+                    public void close() {
+                    }
+
+                    public Sensor createSensor(final String threadId, final String taskId, final String processorNodeId, final StreamsMetricsImpl streamsMetrics) {
+                        final Sensor sensor = streamsMetrics.nodeLevelSensor(threadId, taskId, processorNodeId, processorNodeId + "-lineitems", Sensor.RecordingLevel.INFO);
+                        addAvgAndMinAndMaxToSensor(
+                                sensor,
+                                PROCESSOR_NODE_LEVEL_GROUP,
+                                streamsMetrics.nodeLevelTagMap(threadId, taskId, processorNodeId),
+                                "lineitems",
+                                "average number of line items in purchase orders",
+                                "minimum number of line items in purchase orders",
+                                "maximum number of line items in purchase orders"
+                        );
+                        return sensor;
+                    }
+                }, Named.as("purchase-order-lineitem-counter"))
                 .selectKey((k, v) -> {
-         //           int c = counter.incrementAndGet();
-           //         System.out.println("pausing for " + ((c / 10) * 100L));
-             //       pause((c / 10) * 100L);
+                    //           int c = counter.incrementAndGet();
+                    //         System.out.println("pausing for " + ((c / 10) * 100L));
+                    //       pause((c / 10) * 100L);
 //                    pause(300);
                     //pause(1000L);
-   //                 pause(100);
+                    //                 pause(100);
                     System.out.println("X : " + System.currentTimeMillis());
                     return v.getUserId();
                 }, Named.as("purchase-order-keyByUserId"))
                 .join(users, (purchaseOrder, user) -> {
                     purchaseOrder.setUser(user);
                     //               pause(100);
-            //        System.out.println("Y : " + System.currentTimeMillis());
+                    //        System.out.println("Y : " + System.currentTimeMillis());
                     return purchaseOrder;
                 }, Joined.as("purchase-order-join-user"))
                 .join(stores, (k, v) -> v.getStoreId(), (purchaseOrder, store) -> {
                     purchaseOrder.setStore(store);
-  //                  pause(100);
+                    //                  pause(100);
                     return purchaseOrder;
                 }, Named.as("purchase-order-join-store"))
                 .flatMap((k, v) -> v.getItems().stream().map(item -> KeyValue.pair(item.getSku(), v)).collect(Collectors.toList()),
                         Named.as("purchase-order-products-flatmap"))
                 .join(products, (purchaseOrder, product) -> {
                     purchaseOrder.getItems().stream().filter(item -> item.getSku().equals(product.getSku())).forEach(item -> item.setPrice(product.getPrice()));
-  //                  pause(100);
+                    //                  pause(100);
                     return purchaseOrder;
                 }, Joined.as("purchase-order-join-product"))
                 .groupBy((k, v) -> v.getOrderId(), Grouped.as("pickup-order-groupBy-orderId"))
@@ -166,12 +212,12 @@ public class Streams {
                             }
                         });
                     }
-  //                  pause(100);
+                    //                  pause(100);
                     return aggregate;
                 }, Named.as("pickup-order-reduce"), Materialized.as("pickup-order-reduce-store"))
                 .filter((k, v) -> {
-                 //   pause(2000);
-  //                  pause(100);
+                    //   pause(2000);
+                    //                  pause(100);
                     return v.getItems().stream().allMatch(i -> i.getPrice() != null);
                 }, Named.as("pickup-order-filtered"))
                 .toStream(Named.as("pickup-order-reduce-tostream"))
@@ -181,7 +227,7 @@ public class Streams {
         // e2e
         if (true) {
             builder.<String, PurchaseOrder>stream(options.getPickupTopic(), Consumed.as("pickup-orders-consumed"))
-                    .peek((k,v) -> log.debug("key={}", k));
+                    .peek((k, v) -> log.debug("key={}", k));
         }
 
         return builder;

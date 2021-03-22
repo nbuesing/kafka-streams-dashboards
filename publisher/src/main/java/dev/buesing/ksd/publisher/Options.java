@@ -9,8 +9,8 @@ import lombok.Setter;
 @Setter
 public class Options extends BaseOptions {
 
-    @Parameter(names = { "--line-items" }, description = "")
-    private int lineItemCount= 1;
+    @Parameter(names = { "--line-items" }, description = "use x:y for a range, single value for absolute")
+    private String lineItemCount= "1";
 
     @Parameter(names = { "--pause" }, description = "")
     private Long pause = 1000L;
