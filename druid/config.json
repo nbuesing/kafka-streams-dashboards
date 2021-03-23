@@ -40,14 +40,18 @@
           "topic",
           "record-cache-id",
           "rocksdb-state",
-          "name",
-          "value"
+          "name"
         ]
       },
       "metricsSpec": [
         {
           "name": "count",
           "type": "count"
+        },
+        {
+          "name": "value",
+          "type": "doubleLast",
+          "fieldName": "value"
         }
       ]
     }
