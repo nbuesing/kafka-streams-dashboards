@@ -19,14 +19,15 @@ rules:
     partition_id: "$3"
     record-cache-id: "$4"
     metric: "$5"
-- pattern: kafka.streams<type=stream-state-metrics, thread-id=(.+), task-id=(.+)_(.+), rocksdb-state-id=(.+)><>(.+):.+
+- pattern: kafka.streams<type=stream-state-metrics, thread-id=(.+), task-id=(.+)_(.+), (.+)-id=(.+)><>(.+):.+
   name: kafka_streams_stream_state_metrics
   labels:
     thread_id: "$1"
     task_id: "$2"
     partition_id: "$3"
-    state_id: "$4"
-    metric: "$5"
+    store_type: "$4"
+    state_id: "$5"
+    metric: "$6"
 - pattern: kafka.streams<type=stream-thread-metrics, thread-id=(.+)><>(.+):.+
   name: kafka_streams_stream_thread_metrics_$2
   labels:

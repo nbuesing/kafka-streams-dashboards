@@ -15,7 +15,7 @@
   "editable": true,
   "gnetId": null,
   "graphTooltip": 0,
-  "iteration": 1616868610995,
+  "iteration": 1616882766549,
   "links": [],
   "panels": [
     {
@@ -205,7 +205,7 @@
       {
         "allValue": null,
         "current": {
-          "selected": true,
+          "selected": false,
           "text": "rocksdb-state",
           "value": "rocksdb-state"
         },
@@ -237,8 +237,8 @@
         "allValue": null,
         "current": {
           "selected": true,
-          "text": "get-rate",
-          "value": "get-rate"
+          "text": "bytes-read-rate",
+          "value": "bytes-read-rate"
         },
         "datasource": "prometheus",
         "definition": "kafka_streams_stream_state_metrics",
@@ -255,7 +255,7 @@
           "refId": "StandardVariableQuery"
         },
         "refresh": 1,
-        "regex": "/.*metric=\"((?!bytes-written-rate|bytes-written-total|bytes-written-compaction-rate|bytes-read-rate|bytes-read-total|memtable-bytes-flushed-rate|memtable-bytes-flushed-total|memtable-hit-ratio|block-cache-data-hit-ratio|block-cache-index-hit-ratio|block-cache-filter-hit-ratio|write-stall-duration-avg|write-stall-duration-total|bytes-read-compaction-rate|number-open-files|number-file-errors-total|num-immutable-mem-table|cur-size-active-mem-table|cur-size-all-mem-tables|size-all-mem-tables|num-entries-active-mem-table|num-entries-imm-mem-tables|num-deletes-active-mem-table|num-deletes-imm-mem-tables|mem-table-flush-pending|num-running-flushes|compaction-pending|num-running-compactions|estimate-pending-compaction-bytes|total-ss-files-size|total-sst-files-size|live-sst-files-size|num-live-versions|block-cache-capacity|block-cache-usage|block-cache-pinned-usage|estimate-num-keys|estimate-table-readers-mem|background-errors).*)\",partition.*$/",
+        "regex": "/.*metric=\"(bytes-written-rate|bytes-read-rate|memtable-bytes-flushed-rate|memtable-hit-ratio|block-cache-data-hit-ratio|block-cache-index-hit-ratio|block-cache-filter-hit-ratio|write-stall-duration-avg|write-stall-duration-total|bytes-read-compaction-rate|number-open-files|number-file-errors-total)\",partition.*$/",
         "skipUrlSync": false,
         "sort": 0,
         "tagValuesQuery": "",
@@ -298,7 +298,7 @@
       {
         "allValue": null,
         "current": {
-          "selected": false,
+          "selected": true,
           "text": "All",
           "value": "$__all"
         },
@@ -415,37 +415,6 @@
         "useTags": false
       },
       {
-        "allValue": ".*",
-        "current": {
-          "selected": true,
-          "text": "All",
-          "value": "$__all"
-        },
-        "datasource": "prometheus",
-        "definition": "kafka_streams_stream_state_metrics{task_id=~\"${task}\",instance=~\"${instance}\",thread_id=~\"${thread}\"}",
-        "description": null,
-        "error": null,
-        "hide": 0,
-        "includeAll": true,
-        "label": "state",
-        "multi": false,
-        "name": "state",
-        "options": [],
-        "query": {
-          "query": "kafka_streams_stream_state_metrics{task_id=~\"${task}\",instance=~\"${instance}\",thread_id=~\"${thread}\"}",
-          "refId": "StandardVariableQuery"
-        },
-        "refresh": 1,
-        "regex": "/.*state_id=\"(.*)\",store_type.*$/",
-        "skipUrlSync": false,
-        "sort": 3,
-        "tagValuesQuery": "",
-        "tags": [],
-        "tagsQuery": "",
-        "type": "query",
-        "useTags": true
-      },
-      {
         "allValue": "",
         "current": {
           "selected": false,
@@ -475,6 +444,37 @@
         "tagsQuery": "",
         "type": "query",
         "useTags": false
+      },
+      {
+        "allValue": ".*",
+        "current": {
+          "selected": true,
+          "text": "All",
+          "value": "$__all"
+        },
+        "datasource": "prometheus",
+        "definition": "kafka_streams_stream_state_metrics{task_id=~\"${task}\",instance=~\"${instance}\",thread_id=~\"${thread}\"}",
+        "description": null,
+        "error": null,
+        "hide": 0,
+        "includeAll": true,
+        "label": "state",
+        "multi": false,
+        "name": "state",
+        "options": [],
+        "query": {
+          "query": "kafka_streams_stream_state_metrics{task_id=~\"${task}\",instance=~\"${instance}\",thread_id=~\"${thread}\"}",
+          "refId": "StandardVariableQuery"
+        },
+        "refresh": 1,
+        "regex": "/.*state_id=\"(.*)\",store_type.*$/",
+        "skipUrlSync": false,
+        "sort": 3,
+        "tagValuesQuery": "",
+        "tags": [],
+        "tagsQuery": "",
+        "type": "query",
+        "useTags": true
       }
     ]
   },
@@ -509,7 +509,7 @@
     ]
   },
   "timezone": "",
-  "title": "Streams StateStore",
-  "uid": "streams_statestore",
+  "title": "Streams StateStore RocksDB Statistics",
+  "uid": "streams_statestore_rocksdb_stats",
   "version": 1
 }

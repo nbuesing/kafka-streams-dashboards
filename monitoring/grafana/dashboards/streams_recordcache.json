@@ -15,7 +15,7 @@
   "editable": true,
   "gnetId": null,
   "graphTooltip": 0,
-  "iteration": 1614561253965,
+  "iteration": 1616881163915,
   "links": [],
   "panels": [
     {
@@ -155,22 +155,22 @@
         "colorMode": "value",
         "graphMode": "area",
         "justifyMode": "auto",
-        "orientation": "auto",
+        "orientation": "horizontal",
         "reduceOptions": {
           "calcs": [
             "mean"
           ],
           "fields": "",
-          "values": false
+          "values": true
         },
         "text": {},
-        "textMode": "auto"
+        "textMode": "value_and_name"
       },
       "pluginVersion": "7.4.2",
       "repeat": null,
       "targets": [
         {
-          "expr": "avg without(partition_id,task_id,thread_id,instance) (kafka_streams_stream_record_cache_metrics{metric=\"${metric}\", partition_id=~\"${partition}\", record_cache_id=~\"${state}\", task_id=~\"${task}\", thread_id=~\"${thread}\", instance=~\"${instance}\", job=~\"${job}\"})",
+          "expr": "sort (avg without(partition_id,task_id,thread_id,instance) (kafka_streams_stream_record_cache_metrics{metric=\"${metric}\", partition_id=~\"${partition}\", record_cache_id=~\"${state}\", task_id=~\"${task}\", thread_id=~\"${thread}\", instance=~\"${instance}\", job=~\"${job}\"}))",
           "format": "time_series",
           "hide": false,
           "instant": true,
@@ -197,37 +197,6 @@
       {
         "allValue": null,
         "current": {
-          "selected": false,
-          "text": "streams",
-          "value": "streams"
-        },
-        "datasource": "prometheus",
-        "definition": "kafka_streams_stream_record_cache_metrics",
-        "description": null,
-        "error": null,
-        "hide": 0,
-        "includeAll": false,
-        "label": null,
-        "multi": false,
-        "name": "job",
-        "options": [],
-        "query": {
-          "query": "kafka_streams_stream_record_cache_metrics",
-          "refId": "StandardVariableQuery"
-        },
-        "refresh": 1,
-        "regex": "/job=\\\"(.*)\\\",metric/",
-        "skipUrlSync": false,
-        "sort": 0,
-        "tagValuesQuery": "",
-        "tags": [],
-        "tagsQuery": "",
-        "type": "query",
-        "useTags": false
-      },
-      {
-        "allValue": null,
-        "current": {
           "selected": true,
           "text": "hit-ratio-avg",
           "value": "hit-ratio-avg"
@@ -248,6 +217,37 @@
         },
         "refresh": 1,
         "regex": "/.*metric=\"(.*)\",partition.*$/",
+        "skipUrlSync": false,
+        "sort": 0,
+        "tagValuesQuery": "",
+        "tags": [],
+        "tagsQuery": "",
+        "type": "query",
+        "useTags": false
+      },
+      {
+        "allValue": null,
+        "current": {
+          "selected": false,
+          "text": "streams",
+          "value": "streams"
+        },
+        "datasource": "prometheus",
+        "definition": "kafka_streams_stream_record_cache_metrics",
+        "description": null,
+        "error": null,
+        "hide": 0,
+        "includeAll": false,
+        "label": null,
+        "multi": false,
+        "name": "job",
+        "options": [],
+        "query": {
+          "query": "kafka_streams_stream_record_cache_metrics",
+          "refId": "StandardVariableQuery"
+        },
+        "refresh": 1,
+        "regex": "/job=\\\"(.*)\\\",metric/",
         "skipUrlSync": false,
         "sort": 0,
         "tagValuesQuery": "",
@@ -290,7 +290,7 @@
       {
         "allValue": null,
         "current": {
-          "selected": false,
+          "selected": true,
           "text": "All",
           "value": "$__all"
         },
@@ -321,7 +321,7 @@
       {
         "allValue": null,
         "current": {
-          "selected": false,
+          "selected": true,
           "text": "All",
           "value": "$__all"
         },
@@ -373,7 +373,7 @@
       {
         "allValue": ".*",
         "current": {
-          "selected": false,
+          "selected": true,
           "text": "All",
           "value": "$__all"
         },
@@ -467,5 +467,5 @@
   "timezone": "",
   "title": "Streams Record Cache",
   "uid": "streams_recordcache",
-  "version": 83
+  "version": 1
 }

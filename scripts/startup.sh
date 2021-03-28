@@ -49,4 +49,4 @@ if [ $(uname) == "Darwin" ]; then
   open http://localhost:3000
 fi
 
-(cd publisher; ../gradlew run)
+#(cd publisher; ../gradlew run)

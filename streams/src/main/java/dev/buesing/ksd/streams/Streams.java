@@ -21,11 +21,13 @@ import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.metrics.JmxReporter;
 import org.apache.kafka.common.metrics.Sensor;
 import org.apache.kafka.common.serialization.Serdes;
+import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.*;
 import org.apache.kafka.streams.errors.LogAndContinueExceptionHandler;
 import org.apache.kafka.streams.kstream.*;
 import org.apache.kafka.streams.processor.ProcessorContext;
 import org.apache.kafka.streams.processor.internals.metrics.StreamsMetricsImpl;
+import org.apache.kafka.streams.state.KeyValueStore;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -131,7 +133,12 @@ public class Streams {
                 Materialized.as("product-table")
         );
 
-        // AtomicInteger counter = new AtomicInteger();
+
+        final Materialized<String, PurchaseOrder, KeyValueStore<Bytes, byte[]>> materialized =
+                Materialized.<String, PurchaseOrder, KeyValueStore<Bytes, byte[]>>as("pickup-order-reduce-store")
+                        ;
+                        //.withCachingDisabled();
+
 
         builder.<String, PurchaseOrder>stream(options.getPurchaseTopic(), Consumed.as("purchase-order-source"))
                 .transformValues(() -> new ValueTransformerWithKey<String, PurchaseOrder, PurchaseOrder>() {
@@ -214,7 +221,7 @@ public class Streams {
                     }
                     //                  pause(100);
                     return aggregate;
-                }, Named.as("pickup-order-reduce"), Materialized.as("pickup-order-reduce-store"))
+                }, Named.as("pickup-order-reduce"), materialized)
                 .filter((k, v) -> {
                     //   pause(2000);
                     //                  pause(100);
