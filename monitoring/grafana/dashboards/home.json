@@ -35,16 +35,17 @@
       },
       "id": 18,
       "options": {
-        "folderId": null,
         "maxItems": 100,
         "query": "",
         "showHeadings": false,
         "showRecentlyViewed": false,
         "showSearch": true,
         "showStarred": false,
-        "tags": []
+        "tags": [
+          "streams"
+        ]
       },
-      "pluginVersion": "7.4.2",
+      "pluginVersion": "7.4.3",
       "targets": [
         {
           "queryType": "randomWalk",
@@ -53,7 +54,46 @@
       ],
       "timeFrom": null,
       "timeShift": null,
-      "title": "Dashboards",
+      "title": "Kafka Streams",
+      "type": "dashlist"
+    },
+    {
+      "datasource": null,
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {}
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 21,
+        "w": 12,
+        "x": 12,
+        "y": 0
+      },
+      "id": 19,
+      "options": {
+        "maxItems": 100,
+        "query": "",
+        "showHeadings": false,
+        "showRecentlyViewed": false,
+        "showSearch": true,
+        "showStarred": false,
+        "tags": [
+          "kafka_cluster"
+        ]
+      },
+      "pluginVersion": "7.4.3",
+      "targets": [
+        {
+          "queryType": "randomWalk",
+          "refId": "A"
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Kafka Cluster",
       "type": "dashlist"
     }
   ],

@@ -1932,7 +1932,7 @@
     ]
   },
   "timezone": "browser",
-  "title": "Kafka",
+  "title": "Kafka Cluster - Overview",
   "uid": "kafka_cluster",
   "version": 1
 }

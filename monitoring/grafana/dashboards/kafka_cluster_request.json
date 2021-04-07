@@ -625,7 +625,7 @@
     ]
   },
   "timezone": "",
-  "title": "Kafka - Request Metrics",
+  "title": "Kafka Cluster - Request Metrics",
   "uid": "kafka_cluster_request",
   "version": 1
 }
