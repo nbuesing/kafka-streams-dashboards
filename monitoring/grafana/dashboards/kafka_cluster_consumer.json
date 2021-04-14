@@ -16,67 +16,39 @@
   "editable": true,
   "gnetId": 721,
   "graphTooltip": 0,
-  "iteration": 1617790674141,
+  "iteration": 1618170012100,
   "links": [],
   "panels": [
     {
-      "aliasColors": {},
-      "breakPoint": "50%",
-      "cacheTimeout": null,
-      "combine": {
-        "label": "Others",
-        "threshold": 0
-      },
-      "datasource": "prometheus",
-      "decimals": 2,
+      "datasource": null,
       "fieldConfig": {
         "defaults": {
-          "color": {},
-          "custom": {},
-          "thresholds": {
-            "mode": "absolute",
-            "steps": []
-          }
+          "custom": {}
         },
         "overrides": []
       },
-      "fontSize": "80%",
-      "format": "ms",
       "gridPos": {
-        "h": 8,
+        "h": 5,
         "w": 12,
         "x": 0,
         "y": 0
       },
-      "id": 7,
-      "interval": null,
-      "legend": {
-        "percentage": true,
-        "show": true,
-        "values": true
+      "id": 15,
+      "options": {
+        "content": "![](http://127.0.0.1:8080/request_metrics.png)\n         ",
+        "mode": "markdown"
       },
-      "legendType": "Right side",
-      "links": [],
-      "nullPointMode": "connected",
-      "pieType": "donut",
       "pluginVersion": "7.4.3",
-      "strokeWidth": "2",
       "targets": [
         {
-          "expr": "avg (kafka_network_requestmetrics_${percentile}thpercentile{job=\"kafka\",instance=~\"$instance\",name=~\"RequestQueueTimeMs|LocalTimeMs|RemoteTimeMs|ResponseQueueTimeMs|ResponseSendTimeMs\",request=\"${consumer}\"}) by (name)",
-          "format": "time_series",
-          "instant": false,
-          "interval": "",
-          "legendFormat": "{{name}}",
           "queryType": "randomWalk",
           "refId": "A"
         }
       ],
       "timeFrom": null,
       "timeShift": null,
-      "title": "$percentile Percentile",
-      "type": "grafana-piechart-panel",
-      "valueName": "current"
+      "title": "",
+      "type": "text"
     },
     {
       "aliasColors": {},
@@ -184,23 +156,13 @@
       "fieldConfig": {
         "defaults": {
           "color": {
-            "mode": "thresholds"
+            "mode": "palette-classic"
           },
           "custom": {},
-          "decimals": 2,
           "mappings": [],
           "thresholds": {
             "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
+            "steps": []
           },
           "unit": "ms"
         },
@@ -210,43 +172,49 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 8
+        "y": 5
       },
-      "id": 8,
+      "id": 7,
       "interval": null,
       "links": [],
       "options": {
-        "colorMode": "value",
-        "graphMode": "area",
-        "justifyMode": "auto",
-        "orientation": "auto",
+        "displayMode": "gradient",
+        "orientation": "horizontal",
         "reduceOptions": {
           "calcs": [
-            "last"
+            "lastNotNull"
           ],
           "fields": "",
           "values": false
         },
-        "text": {},
-        "textMode": "value"
+        "showUnfilled": true,
+        "text": {}
       },
       "pluginVersion": "7.4.3",
       "targets": [
         {
-          "exemplar": false,
-          "expr": "avg(kafka_network_requestmetrics_${percentile}thpercentile{job=\"kafka\",instance=~\"$instance\",name=\"TotalTimeMs\",request=\"${consumer}\"})",
+          "expr": "avg (kafka_network_requestmetrics_${percentile}thpercentile{job=\"kafka\",instance=~\"$instance\",name=~\"RequestQueueTimeMs|LocalTimeMs|RemoteTimeMs|ResponseQueueTimeMs|ResponseSendTimeMs\",request=\"${consumer}\"}) by (name)",
           "format": "time_series",
           "instant": false,
           "interval": "",
-          "legendFormat": "",
+          "legendFormat": "{{name}}",
           "queryType": "randomWalk",
           "refId": "A"
         }
       ],
       "timeFrom": null,
       "timeShift": null,
-      "title": "Consumer - TotalTimeMs",
-      "type": "stat"
+      "title": "$percentile Percentile",
+      "transformations": [
+        {
+          "id": "renameByRegex",
+          "options": {
+            "regex": "(.*)",
+            "renamePattern": "$1"
+          }
+        }
+      ],
+      "type": "bargauge"
     },
     {
       "aliasColors": {},
@@ -367,106 +335,6 @@
       "gridPos": {
         "h": 8,
         "w": 12,
-        "x": 0,
-        "y": 16
-      },
-      "hiddenSeries": false,
-      "id": 13,
-      "legend": {
-        "avg": false,
-        "current": false,
-        "max": false,
-        "min": false,
-        "show": true,
-        "total": false,
-        "values": false
-      },
-      "lines": true,
-      "linewidth": 1,
-      "nullPointMode": "null",
-      "options": {
-        "alertThreshold": true
-      },
-      "percentage": false,
-      "pluginVersion": "7.4.3",
-      "pointradius": 2,
-      "points": false,
-      "renderer": "flot",
-      "seriesOverrides": [],
-      "spaceLength": 10,
-      "stack": false,
-      "steppedLine": false,
-      "targets": [
-        {
-          "expr": "kafka_network_requestmetrics_${percentile}thpercentile{job=\"kafka\",instance=~\"$instance\",name=\"RequestBytes\",request=\"${consumer}\"}",
-          "interval": "",
-          "legendFormat": "{{instance}}",
-          "queryType": "randomWalk",
-          "refId": "A"
-        }
-      ],
-      "thresholds": [],
-      "timeFrom": null,
-      "timeRegions": [],
-      "timeShift": null,
-      "title": "Consumer - RequestBytes",
-      "tooltip": {
-        "shared": true,
-        "sort": 2,
-        "value_type": "individual"
-      },
-      "type": "graph",
-      "xaxis": {
-        "buckets": null,
-        "mode": "time",
-        "name": null,
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "$$hashKey": "object:76",
-          "format": "bytes",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        },
-        {
-          "$$hashKey": "object:77",
-          "format": "short",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        }
-      ],
-      "yaxis": {
-        "align": false,
-        "alignLevel": null
-      }
-    },
-    {
-      "aliasColors": {},
-      "bars": false,
-      "dashLength": 10,
-      "dashes": false,
-      "datasource": "prometheus",
-      "description": "",
-      "fieldConfig": {
-        "defaults": {
-          "custom": {},
-          "links": []
-        },
-        "overrides": []
-      },
-      "fill": 1,
-      "fillGradient": 0,
-      "gridPos": {
-        "h": 8,
-        "w": 12,
         "x": 12,
         "y": 16
       },
@@ -527,6 +395,106 @@
         {
           "$$hashKey": "object:76",
           "format": "ms",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "$$hashKey": "object:77",
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "prometheus",
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {},
+          "links": []
+        },
+        "overrides": []
+      },
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 20
+      },
+      "hiddenSeries": false,
+      "id": 13,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "nullPointMode": "null",
+      "options": {
+        "alertThreshold": true
+      },
+      "percentage": false,
+      "pluginVersion": "7.4.3",
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "expr": "kafka_network_requestmetrics_${percentile}thpercentile{job=\"kafka\",instance=~\"$instance\",name=\"RequestBytes\",request=\"${consumer}\"}",
+          "interval": "",
+          "legendFormat": "{{instance}}",
+          "queryType": "randomWalk",
+          "refId": "A"
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Consumer - RequestBytes",
+      "tooltip": {
+        "shared": true,
+        "sort": 2,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "$$hashKey": "object:76",
+          "format": "bytes",
           "label": null,
           "logBase": 1,
           "max": null,
@@ -793,8 +761,8 @@
         "allValue": null,
         "current": {
           "selected": true,
-          "text": "95",
-          "value": "95"
+          "text": "999",
+          "value": "999"
         },
         "description": null,
         "error": null,
@@ -815,7 +783,7 @@
             "value": "75"
           },
           {
-            "selected": true,
+            "selected": false,
             "text": "95",
             "value": "95"
           },
@@ -825,7 +793,7 @@
             "value": "99"
           },
           {
-            "selected": false,
+            "selected": true,
             "text": "999",
             "value": "999"
           }
@@ -901,5 +869,5 @@
   "timezone": "browser",
   "title": "Kafka Cluster - Consumer Metrics",
   "uid": "kafka_cluster_consumer",
-  "version": 5
+  "version": 11
 }
