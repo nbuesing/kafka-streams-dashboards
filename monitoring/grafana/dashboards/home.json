@@ -35,6 +35,7 @@
       },
       "id": 18,
       "options": {
+        "folderId": null,
         "maxItems": 100,
         "query": "",
         "showHeadings": false,
@@ -67,13 +68,14 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 21,
+        "h": 11,
         "w": 12,
         "x": 12,
         "y": 0
       },
       "id": 19,
       "options": {
+        "folderId": null,
         "maxItems": 100,
         "query": "",
         "showHeadings": false,
@@ -94,6 +96,45 @@
       "timeFrom": null,
       "timeShift": null,
       "title": "Kafka Cluster",
+      "type": "dashlist"
+    },
+    {
+      "datasource": null,
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {}
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 10,
+        "w": 12,
+        "x": 12,
+        "y": 11
+      },
+      "id": 20,
+      "options": {
+        "maxItems": 100,
+        "query": "",
+        "showHeadings": false,
+        "showRecentlyViewed": false,
+        "showSearch": true,
+        "showStarred": false,
+        "tags": [
+          "jvm"
+        ]
+      },
+      "pluginVersion": "7.4.3",
+      "targets": [
+        {
+          "queryType": "randomWalk",
+          "refId": "A"
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "JVM",
       "type": "dashlist"
     }
   ],

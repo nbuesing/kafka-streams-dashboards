@@ -16,7 +16,7 @@
   "editable": true,
   "gnetId": 721,
   "graphTooltip": 0,
-  "iteration": 1618171139063,
+  "iteration": 1619301412518,
   "links": [],
   "panels": [
     {
@@ -28,14 +28,14 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 5,
+        "h": 6,
         "w": 12,
         "x": 0,
         "y": 0
       },
       "id": 17,
       "options": {
-        "content": "![](http://127.0.0.1:8080/request_metrics.png)\n         ",
+        "content": "![](https://raw.githubusercontent.com/nbuesing/kafka-streams-dashboards/main/doc/producer_request_metrics.png)\n         ",
         "mode": "markdown"
       },
       "pluginVersion": "7.4.3",
@@ -172,7 +172,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 5
+        "y": 6
       },
       "id": 7,
       "interval": null,
@@ -339,7 +339,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 13
+        "y": 14
       },
       "id": 8,
       "interval": null,
@@ -497,7 +497,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 21
+        "y": 22
       },
       "hiddenSeries": false,
       "id": 10,
@@ -899,5 +899,5 @@
   "timezone": "browser",
   "title": "Kafka Cluster - Producer Metrics",
   "uid": "kafka_cluster_producer",
-  "version": 12
+  "version": 13
 }

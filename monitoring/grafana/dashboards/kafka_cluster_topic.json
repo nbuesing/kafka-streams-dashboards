@@ -15,7 +15,7 @@
   "editable": true,
   "gnetId": null,
   "graphTooltip": 0,
-  "iteration": 1617792010650,
+  "iteration": 1619300926053,
   "links": [],
   "panels": [
     {
@@ -840,14 +840,16 @@
       },
       "yaxes": [
         {
+          "$$hashKey": "object:80",
           "format": "short",
-          "label": "Messages/s",
+          "label": "Bytes/s",
           "logBase": 1,
           "max": null,
           "min": null,
           "show": true
         },
         {
+          "$$hashKey": "object:81",
           "format": "short",
           "label": null,
           "logBase": 1,
@@ -943,14 +945,16 @@
       },
       "yaxes": [
         {
+          "$$hashKey": "object:161",
           "format": "short",
-          "label": "Messages/s",
+          "label": "Bytes/s",
           "logBase": 1,
           "max": null,
           "min": null,
           "show": true
         },
         {
+          "$$hashKey": "object:162",
           "format": "short",
           "label": null,
           "logBase": 1,
@@ -1364,14 +1368,16 @@
       },
       "yaxes": [
         {
+          "$$hashKey": "object:242",
           "format": "short",
-          "label": "Messages/s",
+          "label": "Bytes/s",
           "logBase": 1,
           "max": null,
           "min": null,
           "show": true
         },
         {
+          "$$hashKey": "object:243",
           "format": "short",
           "label": null,
           "logBase": 1,
@@ -1468,14 +1474,16 @@
       },
       "yaxes": [
         {
+          "$$hashKey": "object:323",
           "format": "short",
-          "label": "Messages/s",
+          "label": "Bytes/s",
           "logBase": 1,
           "max": null,
           "min": null,
           "show": true
         },
         {
+          "$$hashKey": "object:324",
           "format": "short",
           "label": null,
           "logBase": 1,
@@ -1502,9 +1510,10 @@
       {
         "allValue": null,
         "current": {
-          "selected": true,
-          "text": "orders-product",
-          "value": "orders-product"
+          "isNone": true,
+          "selected": false,
+          "text": "None",
+          "value": ""
         },
         "datasource": "prometheus",
         "definition": "",
