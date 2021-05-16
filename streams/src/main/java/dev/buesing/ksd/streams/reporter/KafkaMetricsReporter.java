@@ -85,7 +85,7 @@ public class KafkaMetricsReporter implements MetricsReporter {
         @Override
         public void run() {
 
-            log.debug("sending metrics");
+//            log.debug("sending metrics");
 
             if (topic == null) {
                 log.warn("metric topic not defined.");

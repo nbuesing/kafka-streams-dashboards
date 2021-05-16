@@ -21,5 +21,13 @@
     "labels": {
       "job": "streams"
     }
+  },
+  {
+    "targets": [  
+      "analytics:7071"
+    ],
+    "labels": {
+      "job": "analytics"
+    }
   }
 ]

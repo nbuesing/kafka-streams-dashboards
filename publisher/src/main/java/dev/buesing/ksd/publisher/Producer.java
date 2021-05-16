@@ -3,6 +3,7 @@ package dev.buesing.ksd.publisher;
 import dev.buesing.ksd.common.domain.PurchaseOrder;
 import dev.buesing.ksd.common.serde.JsonSerializer;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.kafka.clients.CommonClientConfigs;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
@@ -12,10 +13,7 @@ import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.serialization.StringSerializer;
 
 import java.time.Instant;
-import java.util.Map;
-import java.util.Properties;
-import java.util.Random;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -23,6 +21,8 @@ import java.util.stream.IntStream;
 public class Producer {
 
     private static final Random RANDOM = new Random();
+
+    private static final String ORDER_PREFIX = RandomStringUtils.randomAlphabetic(2).toUpperCase(Locale.ROOT);
 
     private final Options options;
 
@@ -58,11 +58,17 @@ public class Producer {
         return RANDOM.nextInt(options.getMaxQuantity()) + 1;
     }
 
+    private static int counter = 0;
+
+    private static String orderNumber() {
+        return ORDER_PREFIX + "-" + (counter++);
+    }
+
     private PurchaseOrder createPurchaseOrder() {
         PurchaseOrder purchaseOrder = new PurchaseOrder();
 
         purchaseOrder.setTimestamp(Instant.now());
-        purchaseOrder.setOrderId(UUID.randomUUID().toString());
+        purchaseOrder.setOrderId(orderNumber());
         purchaseOrder.setUserId(getRandomUser());
         purchaseOrder.setStoreId(getRandomStore());
         purchaseOrder.setItems(IntStream.range(0, getRandomItemCount())

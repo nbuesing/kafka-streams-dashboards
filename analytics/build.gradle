@@ -1,0 +1,30 @@
+apply plugin: 'com.palantir.docker'
+
+dependencies {
+
+    implementation project(':common')
+
+    implementation "org.apache.kafka:kafka-streams:${kafka_version}"
+
+    implementation group: 'org.quartz-scheduler', name: 'quartz', version: '2.3.2'
+
+    compile 'org.apache.commons:commons-csv:1.8'
+}
+
+docker {
+    name 'example:latest'
+}
+
+application {
+    mainClass = "dev.buesing.ksd.${project.name}.Main"
+//    applicationDefaultJvmArgs = ['-javaagent:./jmx_prometheus/jmx_prometheus_javaagent.jar=7071:./docker/streams-config.yml']
+}
+
+
+task buildDockerImage(type: Exec) {
+    inputs.files 'Dockerfile'
+    commandLine 'docker', 'rmi', "nbuesing/ksd_${project.name}:latest"
+    commandLine 'docker', 'build', '-t', "nbuesing/ksd_${project.name}:latest", '.'
+}
+
+build.dependsOn buildDockerImage

@@ -1,10 +1,3 @@
-/*
- * Copyright (c) 2020. 
- *
- * This code is provided as-is w/out warranty. 
- *  
- */
-
 package dev.buesing.ksd.common.config;
 
 import com.beust.jcommander.Parameter;
@@ -41,8 +34,10 @@ public abstract class BaseOptions {
 
 
     private int numberOfStores = 1000;
-    private int numberOfUsers = 10_000;
-    private int numberOfProducts = 10_000;
+//    private int numberOfUsers = 10_000;
+    private int numberOfUsers = 10;
+//    private int numberOfProducts = 10_000;
+    private int numberOfProducts = 20;
     private int maxQuantity = 10;
 
 }

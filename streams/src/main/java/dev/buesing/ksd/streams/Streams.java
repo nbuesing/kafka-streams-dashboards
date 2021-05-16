@@ -1,10 +1,3 @@
-/*
- * Copyright (c) 2020.
- *
- * This code is provided as-is w/out warranty.
- *
- */
-
 package dev.buesing.ksd.streams;
 
 import dev.buesing.ksd.common.config.CommonConfigs;
@@ -12,6 +5,7 @@ import dev.buesing.ksd.common.domain.Product;
 import dev.buesing.ksd.common.domain.PurchaseOrder;
 import dev.buesing.ksd.common.domain.Store;
 import dev.buesing.ksd.common.domain.User;
+import dev.buesing.ksd.common.metrics.StreamsMetrics;
 import dev.buesing.ksd.common.serde.JsonSerde;
 import dev.buesing.ksd.streams.reporter.KafkaMetricsReporter;
 import lombok.extern.slf4j.Slf4j;
@@ -28,13 +22,17 @@ import org.apache.kafka.streams.kstream.*;
 import org.apache.kafka.streams.processor.ProcessorContext;
 import org.apache.kafka.streams.processor.internals.metrics.StreamsMetricsImpl;
 import org.apache.kafka.streams.state.KeyValueStore;
+import org.apache.kafka.streams.state.SessionStore;
+import org.apache.kafka.streams.state.WindowStore;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Random;
 import java.util.stream.Collectors;
 
 import static org.apache.kafka.streams.processor.internals.metrics.StreamsMetricsImpl.PROCESSOR_NODE_LEVEL_GROUP;
@@ -42,6 +40,8 @@ import static org.apache.kafka.streams.processor.internals.metrics.StreamsMetric
 
 @Slf4j
 public class Streams {
+
+    private static final Random RANDOM = new Random();
 
     private Map<String, Object> properties(final Options options) {
 
@@ -110,6 +110,16 @@ public class Streams {
                     }
                 });
 
+
+        final StateObserver observer = new StateObserver(streams);
+
+        streams.setStateListener((newState, oldState) -> {
+            if (newState == KafkaStreams.State.RUNNING) {
+                log.info("starting observer");
+                observer.start();
+            }
+        });
+
         streams.start();
 
         Runtime.getRuntime().addShutdownHook(new Thread(streams::close));
@@ -135,9 +145,16 @@ public class Streams {
 
 
         final Materialized<String, PurchaseOrder, KeyValueStore<Bytes, byte[]>> materialized =
-                Materialized.<String, PurchaseOrder, KeyValueStore<Bytes, byte[]>>as("pickup-order-reduce-store")
-                        ;
-                        //.withCachingDisabled();
+                Materialized.<String, PurchaseOrder, KeyValueStore<Bytes, byte[]>>as("pickup-order-reduce-store");
+        //.withCachingDisabled();
+
+        final Materialized<String, PurchaseOrder, WindowStore<Bytes, byte[]>> materializedW =
+                Materialized.<String, PurchaseOrder, WindowStore<Bytes, byte[]>>as("pickup-order-reduce-store");
+        //.withCachingDisabled();
+
+        final Materialized<String, PurchaseOrder, SessionStore<Bytes, byte[]>> materializedSW =
+                Materialized.<String, PurchaseOrder, SessionStore<Bytes, byte[]>>as("pickup-order-reduce-store");
+        //.withCachingDisabled();
 
 
         builder.<String, PurchaseOrder>stream(options.getPurchaseTopic(), Consumed.as("purchase-order-source"))
@@ -180,34 +197,34 @@ public class Streams {
                     }
                 }, Named.as("purchase-order-lineitem-counter"))
                 .selectKey((k, v) -> {
-                    //           int c = counter.incrementAndGet();
-                    //         System.out.println("pausing for " + ((c / 10) * 100L));
-                    //       pause((c / 10) * 100L);
-//                    pause(300);
-                    //pause(1000L);
-                    //                 pause(100);
-                    System.out.println("X : " + System.currentTimeMillis());
                     return v.getUserId();
                 }, Named.as("purchase-order-keyByUserId"))
                 .join(users, (purchaseOrder, user) -> {
                     purchaseOrder.setUser(user);
-                    //               pause(100);
-                    //        System.out.println("Y : " + System.currentTimeMillis());
                     return purchaseOrder;
                 }, Joined.as("purchase-order-join-user"))
                 .join(stores, (k, v) -> v.getStoreId(), (purchaseOrder, store) -> {
                     purchaseOrder.setStore(store);
-                    //                  pause(100);
                     return purchaseOrder;
                 }, Named.as("purchase-order-join-store"))
                 .flatMap((k, v) -> v.getItems().stream().map(item -> KeyValue.pair(item.getSku(), v)).collect(Collectors.toList()),
                         Named.as("purchase-order-products-flatmap"))
                 .join(products, (purchaseOrder, product) -> {
                     purchaseOrder.getItems().stream().filter(item -> item.getSku().equals(product.getSku())).forEach(item -> item.setPrice(product.getPrice()));
-                    //                  pause(100);
+                    //pause(RANDOM.nextInt(1000));
                     return purchaseOrder;
                 }, Joined.as("purchase-order-join-product"))
                 .groupBy((k, v) -> v.getOrderId(), Grouped.as("pickup-order-groupBy-orderId"))
+
+//                .windowedBy(TimeWindows.of(Duration.ofSeconds(options.getWindowSize()))
+//                        .grace(Duration.ofSeconds(options.getGracePeriod())))
+
+                .windowedBy(SlidingWindows.withTimeDifferenceAndGrace(Duration.ofSeconds(options.getWindowSize()),
+                        Duration.ofSeconds(options.getGracePeriod())))
+
+
+//               .windowedBy(SessionWindows.with(Duration.ofSeconds(options.getWindowSize())))
+
                 .reduce((incoming, aggregate) -> {
                     if (aggregate == null) {
                         aggregate = incoming;
@@ -219,17 +236,17 @@ public class Streams {
                             }
                         });
                     }
-                    //                  pause(100);
                     return aggregate;
-                }, Named.as("pickup-order-reduce"), materialized)
+                }, Named.as("pickup-order-reduce"), materializedW)
                 .filter((k, v) -> {
-                    //   pause(2000);
-                    //                  pause(100);
                     return v.getItems().stream().allMatch(i -> i.getPrice() != null);
                 }, Named.as("pickup-order-filtered"))
                 .toStream(Named.as("pickup-order-reduce-tostream"))
-                //.to(options.getPickupTopic(), Produced.as("pickup-orders"));
+
+                .selectKey((k, v) -> k.key())
+
                 .to(options.getPickupTopic(), Produced.as("pickup-orders"));
+//                .to(options.getPickupTopic(), Produced.with(WindowedSerdes.timeWindowedSerdeFrom(String.class), null));
 
         // e2e
         if (true) {

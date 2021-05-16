@@ -1,3 +1,6 @@
 
 dependencies {
+
+    implementation "org.apache.kafka:kafka-streams:${kafka_version}"
+
 }

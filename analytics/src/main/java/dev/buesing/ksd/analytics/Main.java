@@ -1,8 +1,11 @@
-package dev.buesing.ksd.streams;
+package dev.buesing.ksd.analytics;
 
+import com.beust.jcommander.JCommander;
 import dev.buesing.ksd.common.config.OptionsUtil;
 
 public class Main {
+
+
 
 	public static void main(String[] args) throws Exception{
 
@@ -15,7 +18,6 @@ public class Main {
 		final Streams stream = new Streams();
 
 		stream.start(options);
-
 	}
 
 }

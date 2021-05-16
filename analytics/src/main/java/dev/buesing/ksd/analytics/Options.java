@@ -1,7 +1,8 @@
-package dev.buesing.ksd.streams;
+package dev.buesing.ksd.analytics;
 
 import com.beust.jcommander.Parameter;
 import dev.buesing.ksd.common.config.BaseOptions;
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -11,10 +12,10 @@ import java.util.UUID;
 @ToString
 @Getter
 @Setter
-public class Options extends BaseOptions  {
+public class Options extends BaseOptions {
 
     @Parameter(names = { "-g", "--application-id" }, description = "application id")
-    private String applicationId = "pickup-order-handler";
+    private String applicationId = "pickup-order-handler-foo";
 
     @Parameter(names = { "--client-id" }, description = "client id")
     private String clientId = "s-" + UUID.randomUUID();
@@ -22,12 +23,10 @@ public class Options extends BaseOptions  {
     @Parameter(names = { "--auto-offset-reset" }, description = "where to start consuming from if no offset is provided")
     private String autoOffsetReset = "earliest";
 
-    // Window scenarios
-
     @Parameter(names = { "--window-size" }, description = "")
-    private Integer windowSize = 10;
+    private Integer windowSize = 60;
 
     @Parameter(names = { "--grace-period" }, description = "")
-    private Integer gracePeriod = 2;
+    private Integer gracePeriod = 60;
 
 }

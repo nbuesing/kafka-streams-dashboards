@@ -237,7 +237,7 @@
         "description": null,
         "error": null,
         "hide": 0,
-        "includeAll": false,
+        "includeAll": true,
         "label": null,
         "multi": false,
         "name": "job",
@@ -274,7 +274,7 @@
         "name": "instance",
         "options": [],
         "query": {
-          "query": "kafka_streams_stream_record_cache_metrics",
+          "query": "kafka_streams_stream_thread_metrics_poll_rate{job=~\"$job\"}",
           "refId": "StandardVariableQuery"
         },
         "refresh": 1,

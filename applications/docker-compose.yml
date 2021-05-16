@@ -22,7 +22,7 @@ services:
       - ./scripts:/scripts
     environment:
       BOOTSTRAP_SERVERS: broker-1:9092,broker-2:9092,broker-3:9092
-      CLIENT_ID: '1'
+      CLIENT_ID: 'stream1'
 
   stream2:
     image: nbuesing/ksd_streams:latest
@@ -36,4 +36,23 @@ services:
       - ./scripts:/scripts
     environment:
       BOOTSTRAP_SERVERS: broker-1:9092,broker-2:9092,broker-3:9092
-      CLIENT_ID: '2'
+      CLIENT_ID: 'stream2'
+
+  analytics:
+    image: nbuesing/ksd_analytics:latest
+    hostname: analytics
+    container_name: analytics
+    depends_on:
+      - stream
+      - stream2
+    # provides network privileges to allow 'tc' to be used
+    cap_add:
+      - NET_ADMIN
+    ports:
+      - '7073:7071'
+    volumes:
+      - ./scripts:/scripts
+    environment:
+      BOOTSTRAP_SERVERS: broker-1:9092,broker-2:9092,broker-3:9092
+      CLIENT_ID: 'analytics1'
+

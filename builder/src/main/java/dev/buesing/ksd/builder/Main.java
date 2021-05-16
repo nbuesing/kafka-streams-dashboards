@@ -1,10 +1,3 @@
-/*
- * Copyright (c) 2020.
- *
- * This code is provided as-is w/out warranty.
- *
- */
-
 package dev.buesing.ksd.builder;
 
 import dev.buesing.ksd.common.config.OptionsUtil;
