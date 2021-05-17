@@ -8,9 +8,11 @@ buildscript {
 	}
 }
 
+include 'tools'
 include 'common'
 include 'builder'
 include 'publisher'
 include 'streams'
 include 'analytics'
+//include 'rocksdbviewer'
 //include 'slide'

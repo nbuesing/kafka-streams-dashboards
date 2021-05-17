@@ -1,8 +1,9 @@
 package dev.buesing.ksd.analytics;
 
+import dev.buesing.ksd.common.domain.ProductAnalytic;
 import dev.buesing.ksd.common.domain.PurchaseOrder;
 import dev.buesing.ksd.common.metrics.StreamsMetrics;
-import dev.buesing.ksd.common.serde.JsonSerde;
+import dev.buesing.ksd.tools.serde.JsonSerde;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.producer.ProducerConfig;
@@ -102,10 +103,10 @@ public class Streams {
 //        );
 
 
-        final Materialized<String, Long, WindowStore<Bytes, byte[]>> store =
-                Materialized.<String, Long, WindowStore<Bytes, byte[]>>as("aggregate-purchase-order")
-                        .withKeySerde(Serdes.String())
-                        .withValueSerde(Serdes.Long())
+        final Materialized<String, ProductAnalytic, WindowStore<Bytes, byte[]>> store =
+                Materialized.<String, ProductAnalytic, WindowStore<Bytes, byte[]>>as("aggregate-purchase-order")
+//                        .withKeySerde(Serdes.String())
+//                        .withValueSerde(Serdes.Long())
                         //.withLoggingDisabled()
                         .withCachingDisabled();
 
@@ -120,13 +121,15 @@ public class Streams {
                 .windowedBy(SlidingWindows.withTimeDifferenceAndGrace(
                         Duration.ofSeconds(options.getWindowSize()),
                         Duration.ofSeconds(options.getGracePeriod())))
-                .aggregate(() -> 0L,
+                .aggregate(ProductAnalytic::new,
                         (key, value, aggregate) -> {
-
+                            if (aggregate.getSku() == null) {
+                                aggregate.setSku(key);
+                            }
                             PurchaseOrder.LineItem item = value.getItems().stream().filter(i -> i.getSku().equals(key)).findFirst().get();
-
-                            log.info(">> " + item.getQuantity());
-                            return Long.sum(aggregate.longValue(), (long) item.getQuantity());
+                            aggregate.setQuantity(aggregate.getQuantity() + (long) item.getQuantity());
+                            aggregate.addOrderId(value.getOrderId());
+                            return aggregate;
                         },
                         Named.as("aggregate"),
                         store)

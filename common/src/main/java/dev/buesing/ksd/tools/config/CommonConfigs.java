@@ -1,4 +1,4 @@
-package dev.buesing.ksd.common.config;
+package dev.buesing.ksd.tools.config;
 
 public class CommonConfigs {
 

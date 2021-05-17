@@ -1,6 +1,6 @@
 package dev.buesing.ksd.publisher;
 
-import dev.buesing.ksd.common.config.OptionsUtil;
+import dev.buesing.ksd.tools.config.OptionsUtil;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;

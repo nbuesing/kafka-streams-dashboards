@@ -4,7 +4,7 @@ import dev.buesing.ksd.common.domain.Product;
 import dev.buesing.ksd.common.domain.Store;
 import dev.buesing.ksd.common.domain.User;
 import dev.buesing.ksd.common.domain.Zip;
-import dev.buesing.ksd.common.serde.JsonSerializer;
+import dev.buesing.ksd.tools.serde.JsonSerializer;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;

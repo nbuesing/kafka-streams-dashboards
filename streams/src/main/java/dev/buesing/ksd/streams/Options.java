@@ -1,7 +1,7 @@
 package dev.buesing.ksd.streams;
 
 import com.beust.jcommander.Parameter;
-import dev.buesing.ksd.common.config.BaseOptions;
+import dev.buesing.ksd.tools.config.BaseOptions;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;

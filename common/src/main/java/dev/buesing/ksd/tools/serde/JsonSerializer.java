@@ -1,4 +1,4 @@
-package dev.buesing.ksd.common.serde;
+package dev.buesing.ksd.tools.serde;
 
 
 import com.fasterxml.jackson.databind.DeserializationFeature;

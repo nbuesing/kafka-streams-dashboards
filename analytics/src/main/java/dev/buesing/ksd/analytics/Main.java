@@ -1,7 +1,6 @@
 package dev.buesing.ksd.analytics;
 
-import com.beust.jcommander.JCommander;
-import dev.buesing.ksd.common.config.OptionsUtil;
+import dev.buesing.ksd.tools.config.OptionsUtil;
 
 public class Main {
 

@@ -1,7 +1,7 @@
 package dev.buesing.ksd.publisher;
 
 import dev.buesing.ksd.common.domain.PurchaseOrder;
-import dev.buesing.ksd.common.serde.JsonSerializer;
+import dev.buesing.ksd.tools.serde.JsonSerializer;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;

@@ -1,8 +1,7 @@
 package dev.buesing.ksd.analytics;
 
 import com.beust.jcommander.Parameter;
-import dev.buesing.ksd.common.config.BaseOptions;
-import lombok.Data;
+import dev.buesing.ksd.tools.config.BaseOptions;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -24,9 +23,9 @@ public class Options extends BaseOptions {
     private String autoOffsetReset = "earliest";
 
     @Parameter(names = { "--window-size" }, description = "")
-    private Integer windowSize = 60;
+    private Integer windowSize = 300;
 
     @Parameter(names = { "--grace-period" }, description = "")
-    private Integer gracePeriod = 60;
+    private Integer gracePeriod = 10;
 
 }

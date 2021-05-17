@@ -1,6 +1,6 @@
 package dev.buesing.ksd.streams;
 
-import dev.buesing.ksd.common.config.OptionsUtil;
+import dev.buesing.ksd.tools.config.OptionsUtil;
 
 public class Main {
 

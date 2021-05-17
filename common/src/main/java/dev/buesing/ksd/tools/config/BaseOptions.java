@@ -1,4 +1,4 @@
-package dev.buesing.ksd.common.config;
+package dev.buesing.ksd.tools.config;
 
 import com.beust.jcommander.Parameter;
 import lombok.Getter;

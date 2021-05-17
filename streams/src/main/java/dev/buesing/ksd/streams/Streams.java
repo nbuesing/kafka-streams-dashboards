@@ -1,12 +1,12 @@
 package dev.buesing.ksd.streams;
 
-import dev.buesing.ksd.common.config.CommonConfigs;
+import dev.buesing.ksd.tools.config.CommonConfigs;
 import dev.buesing.ksd.common.domain.Product;
 import dev.buesing.ksd.common.domain.PurchaseOrder;
 import dev.buesing.ksd.common.domain.Store;
 import dev.buesing.ksd.common.domain.User;
 import dev.buesing.ksd.common.metrics.StreamsMetrics;
-import dev.buesing.ksd.common.serde.JsonSerde;
+import dev.buesing.ksd.tools.serde.JsonSerde;
 import dev.buesing.ksd.streams.reporter.KafkaMetricsReporter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
