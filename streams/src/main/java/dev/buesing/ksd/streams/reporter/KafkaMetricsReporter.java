@@ -4,6 +4,7 @@ package dev.buesing.ksd.streams.reporter;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.DoubleNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import dev.buesing.ksd.tools.config.CommonConfigs;
@@ -96,18 +97,33 @@ public class KafkaMetricsReporter implements MetricsReporter {
                 final KafkaMetric metric = v.getKey();
                 final ObjectNode node = v.getValue();
 
-                node.put("value", v.getKey().value()); // metricValue() causing deadlocks, TBD
-                node.put("timestamp", System.currentTimeMillis());
 
-                // TODO determine a better key to use
-                producer.send(
-                        new ProducerRecord<>(topic, null, null, metric.metricName().name(), serialize(node)),
-                        (metadata, e) -> {
-                            if (e != null) {
-                                log.warn("unable to publish to metrics topic e={}", e.getMessage());
+                String name = metric.metricName().name();
+
+                // only send process rate/total metrics
+//                if ("process-rate".equals(name) || "process-total".equals(name)) {
+
+                    double value = v.getKey().value(); // metricValue() causing deadlocks, TBD
+
+//                    DoubleNode valueNode = (DoubleNode) node.get("value");
+//                    if (valueNode != null) {
+//                        node.put("previous", valueNode.doubleValue());
+//                        node.put("delta", value - valueNode.doubleValue() );
+//                    }
+
+                    node.put("value", value);
+                    node.put("timestamp", System.currentTimeMillis());
+
+                    // TODO determine a better key to use
+                    producer.send(
+                            new ProducerRecord<>(topic, null, null, metric.metricName().name(), serialize(node)),
+                            (metadata, e) -> {
+                                if (e != null) {
+                                    log.warn("unable to publish to metrics topic e={}", e.getMessage());
+                                }
                             }
-                        }
-                );
+                    );
+//                }
             });
         }
     };

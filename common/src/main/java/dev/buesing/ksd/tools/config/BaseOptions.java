@@ -34,10 +34,10 @@ public abstract class BaseOptions {
 
 
     private int numberOfStores = 1000;
-//    private int numberOfUsers = 10_000;
-    private int numberOfUsers = 10;
-//    private int numberOfProducts = 10_000;
-    private int numberOfProducts = 20;
+    private int numberOfUsers = 10_000;
+//    private int numberOfUsers = 10;
+    private int numberOfProducts = 10_000;
+//    private int numberOfProducts = 20;
     private int maxQuantity = 10;
 
 }

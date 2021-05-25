@@ -1,7 +1,12 @@
 package dev.buesing.ksd.analytics;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import dev.buesing.ksd.common.domain.ProductAnalytic;
 import lombok.AllArgsConstructor;
+import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.StoreQueryParameters;
@@ -29,7 +34,6 @@ public class StateObserver {
         private Instant start;
         private Instant end;
 
-
         @Override
         public int compareTo(WindowedKey o) {
             int compareTo = key.compareTo(o.key);
@@ -46,6 +50,14 @@ public class StateObserver {
             return key + " [" + convert(start) + "," + convert(end) + "]";
         }
 
+        public String start() {
+            return convert(start);
+        }
+
+        public String end() {
+            return convert(end);
+        }
+
         private String convert(final Instant ts) {
             return LocalDateTime.ofInstant(ts, ZoneId.systemDefault()).format(TIME_FORMATTER);
         }
@@ -55,67 +67,54 @@ public class StateObserver {
         }
     }
 
-
-    private ExecutorService executor = Executors.newFixedThreadPool(1);
-
     private ReadOnlyWindowStore<String, ProductAnalytic> store;
     //private ReadOnlySessionStore<String, PurchaseOrder> store;
 
 
     private KafkaStreams streams;
 
-    private boolean isRunning = false;
 
     public StateObserver(final KafkaStreams streams) {
         this.streams = streams;
     }
 
-    public void start() {
+    public JsonNode getState() {
 
-        if (isRunning) {
-            return;
-        }
-
-        isRunning = true;
         this.store = streams.store(StoreQueryParameters.fromNameAndType("aggregate-purchase-order", QueryableStoreTypes.windowStore()));
-        //       this.store = streams.store(StoreQueryParameters.fromNameAndType("pickup-order-reduce-store", QueryableStoreTypes.sessionStore()));
+        //        this.store = streams.store(StoreQueryParameters.fromNameAndType("pickup-order-reduce-store", QueryableStoreTypes.sessionStore()));
 
-        System.out.println(store.getClass());
+        final Map<WindowedKey, ProductAnalytic> map = new TreeMap<>();
 
-        Thread t = new Thread(() -> {
+        store.all().forEachRemaining(i -> {
+            map.put(WindowedKey.create(i.key), i.value);
+        });
+
+        final ArrayNode elements = JsonNodeFactory.instance.arrayNode();
+
+        map.forEach((k, v) -> {
+            //log.info("{} - {}", k, v);
+            ObjectNode element = JsonNodeFactory.instance.objectNode();
+            ObjectNode key = JsonNodeFactory.instance.objectNode();
+            key.put("sku", k.key);
+            key.put("start", k.start());
+            key.put("end", k.end());
+            ObjectNode value = JsonNodeFactory.instance.objectNode();
+            value.put("quantity", v.getQuantity());
+            ArrayNode orderIds = JsonNodeFactory.instance.arrayNode();
+            v.getOrderIds().forEach(orderId -> orderIds.add(orderId));
+            value.set("order-ids", orderIds);
+            value.put("timestamp", v.orderTimestamp());
+            element.set("key", key);
+            element.set("value", value);
+
+            elements.add(element);
+        });
+
+        return elements;
+    }
 
 
-            while (true) {
-
-                log.info("\n\nStatestore");
-
-                log.info("XXXX");
-
-
-                final Map<WindowedKey, ProductAnalytic> map = new TreeMap<>();
-
-
-                store.all().forEachRemaining(i -> {
-
-
-                    map.put(WindowedKey.create(i.key), i.value);
-//                    LocalDateTime start = LocalDateTime.ofInstant(Instant.ofEpochMilli(i.key.window().start()), ZoneId.systemDefault());
-//                    LocalDateTime end = LocalDateTime.ofInstant(Instant.ofEpochMilli(i.key.window().end()), ZoneId.systemDefault());
-//                    String key = i.key.key();
-//               //     int itemCount = i.value.getItems().size();
-//                    log.info("[{},{}] : {} - {}", start.toLocalTime().format(TIME_FORMATTER), end.toLocalTime().format(TIME_FORMATTER), key, i.value);
-                });
-                try {
-                    Thread.sleep(5000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-
-                map.forEach((k, v) -> {
-                    log.info("{} - {}", k, v);
-                });
-
-//                store.fetch(Producer.prefix + "_001").forEachRemaining(i -> {
+    //                store.fetch(Producer.prefix + "_001").forEachRemaining(i -> {
 //                    LocalDateTime start = LocalDateTime.ofInstant(Instant.ofEpochMilli(i.key.window().start()), ZoneId.systemDefault());
 //                    LocalDateTime end = LocalDateTime.ofInstant(Instant.ofEpochMilli(i.key.window().end()), ZoneId.systemDefault());
 //                    String key = i.key.key();
@@ -128,10 +127,5 @@ public class StateObserver {
 //                    e.printStackTrace();
 //                }
 
-            }
-        });
-        t.start();
-
-    }
 
 }

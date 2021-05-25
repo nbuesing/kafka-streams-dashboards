@@ -1,10 +1,8 @@
 //apply plugin: 'com.palantir.docker'
 
 dependencies {
-
     implementation project(':common')
     implementation "org.apache.kafka:kafka-streams:${kafka_version}"
-    //implementation group: 'io.undertow', name: 'undertow-servlet', version: undertow_version
 }
 
 application {

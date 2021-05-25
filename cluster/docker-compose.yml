@@ -3,8 +3,8 @@ version: '3.7'
 
 networks:
   default:
-    external:
-      name: ksd
+    external: true
+    name: ksd
 
 # you will looks data data on docker-compose down, unless you use/enable volumes.
 # personally, I prefer ephemeral docker images for showcasing concepts as it is

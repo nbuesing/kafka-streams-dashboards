@@ -7,6 +7,7 @@ dependencies {
     implementation "org.apache.kafka:kafka-streams:${kafka_version}"
 
     implementation group: 'org.quartz-scheduler', name: 'quartz', version: '2.3.2'
+    implementation group: 'io.undertow', name: 'undertow-servlet', version: undertow_version
 
     compile 'org.apache.commons:commons-csv:1.8'
 }

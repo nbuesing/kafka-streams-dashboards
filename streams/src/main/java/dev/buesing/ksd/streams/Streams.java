@@ -18,6 +18,7 @@ import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.*;
 import org.apache.kafka.streams.errors.LogAndContinueExceptionHandler;
+import org.apache.kafka.streams.errors.StreamsUncaughtExceptionHandler;
 import org.apache.kafka.streams.kstream.*;
 import org.apache.kafka.streams.processor.ProcessorContext;
 import org.apache.kafka.streams.processor.internals.metrics.StreamsMetricsImpl;
@@ -100,24 +101,9 @@ public class Streams {
 
         final KafkaStreams streams = new KafkaStreams(topology, p);
 
-        // if a stream gets an exception that fails to be handled within the DSL, we want the springboot
-        // application to shutdown so it can be restarted by the application orchestrator (e.g. k8s).
-        streams.setUncaughtExceptionHandler(
-                (t, e) -> {
-                    log.error("unhandled streams exception, shutting down.", e);
-                    if (streams.state().isRunningOrRebalancing()) {
-                        streams.close();
-                    }
-                });
-
-
-        final StateObserver observer = new StateObserver(streams);
-
-        streams.setStateListener((newState, oldState) -> {
-            if (newState == KafkaStreams.State.RUNNING) {
-                log.info("starting observer");
-                observer.start();
-            }
+        streams.setUncaughtExceptionHandler(e -> {
+            log.error("unhandled streams exception, shutting down.", e);
+            return StreamsUncaughtExceptionHandler.StreamThreadExceptionResponse.SHUTDOWN_APPLICATION;
         });
 
         streams.start();
@@ -148,12 +134,12 @@ public class Streams {
                 Materialized.<String, PurchaseOrder, KeyValueStore<Bytes, byte[]>>as("pickup-order-reduce-store");
         //.withCachingDisabled();
 
-        final Materialized<String, PurchaseOrder, WindowStore<Bytes, byte[]>> materializedW =
-                Materialized.<String, PurchaseOrder, WindowStore<Bytes, byte[]>>as("pickup-order-reduce-store");
+//        final Materialized<String, PurchaseOrder, WindowStore<Bytes, byte[]>> materializedW =
+//                Materialized.<String, PurchaseOrder, WindowStore<Bytes, byte[]>>as("pickup-order-reduce-store");
         //.withCachingDisabled();
 
-        final Materialized<String, PurchaseOrder, SessionStore<Bytes, byte[]>> materializedSW =
-                Materialized.<String, PurchaseOrder, SessionStore<Bytes, byte[]>>as("pickup-order-reduce-store");
+//        final Materialized<String, PurchaseOrder, SessionStore<Bytes, byte[]>> materializedSW =
+//                Materialized.<String, PurchaseOrder, SessionStore<Bytes, byte[]>>as("pickup-order-reduce-store");
         //.withCachingDisabled();
 
 
@@ -219,8 +205,8 @@ public class Streams {
 //                .windowedBy(TimeWindows.of(Duration.ofSeconds(options.getWindowSize()))
 //                        .grace(Duration.ofSeconds(options.getGracePeriod())))
 
-                .windowedBy(SlidingWindows.withTimeDifferenceAndGrace(Duration.ofSeconds(options.getWindowSize()),
-                        Duration.ofSeconds(options.getGracePeriod())))
+//                .windowedBy(SlidingWindows.withTimeDifferenceAndGrace(Duration.ofSeconds(options.getWindowSize()),
+//                        Duration.ofSeconds(options.getGracePeriod())))
 
 
 //               .windowedBy(SessionWindows.with(Duration.ofSeconds(options.getWindowSize())))
@@ -237,13 +223,13 @@ public class Streams {
                         });
                     }
                     return aggregate;
-                }, Named.as("pickup-order-reduce"), materializedW)
+                }, Named.as("pickup-order-reduce"), materialized)
                 .filter((k, v) -> {
                     return v.getItems().stream().allMatch(i -> i.getPrice() != null);
                 }, Named.as("pickup-order-filtered"))
                 .toStream(Named.as("pickup-order-reduce-tostream"))
 
-                .selectKey((k, v) -> k.key())
+//                .selectKey((k, v) -> k.key())
 
                 .to(options.getPickupTopic(), Produced.as("pickup-orders"));
 //                .to(options.getPickupTopic(), Produced.with(WindowedSerdes.timeWindowedSerdeFrom(String.class), null));

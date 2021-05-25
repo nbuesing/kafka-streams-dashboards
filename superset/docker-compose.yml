@@ -1,0 +1,15 @@
+---
+version: '3.7'
+
+networks:
+  default:
+    external: true
+    name: ksd
+
+services:
+  superset:
+    build: .
+    container_name: superset
+    ports:
+      - 28088:8088
+

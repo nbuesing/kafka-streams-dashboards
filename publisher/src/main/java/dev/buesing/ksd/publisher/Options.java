@@ -5,6 +5,8 @@ import dev.buesing.ksd.tools.config.BaseOptions;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
+
 @Getter
 @Setter
 public class Options extends BaseOptions {
@@ -14,5 +16,8 @@ public class Options extends BaseOptions {
 
     @Parameter(names = { "--pause" }, description = "")
     private Long pause = 1000L;
+
+    @Parameter(names = { "--skus" }, description = "")
+    private List<Integer> skus;
 
 }

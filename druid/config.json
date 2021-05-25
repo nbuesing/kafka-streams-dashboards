@@ -49,6 +49,11 @@
           "type": "count"
         },
         {
+          "name": "delta",
+          "type": "doubleSum",
+          "fieldName": "delta"
+        },
+        {
           "name": "value",
           "type": "doubleLast",
           "fieldName": "value"

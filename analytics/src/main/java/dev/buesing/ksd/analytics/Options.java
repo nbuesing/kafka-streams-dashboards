@@ -23,9 +23,10 @@ public class Options extends BaseOptions {
     private String autoOffsetReset = "earliest";
 
     @Parameter(names = { "--window-size" }, description = "")
-    private Integer windowSize = 300;
+    private Integer windowSize = 30;
 
     @Parameter(names = { "--grace-period" }, description = "")
     private Integer gracePeriod = 10;
+
 
 }

@@ -30,8 +30,24 @@ public class Producer {
         this.options = options;
     }
 
-    private String getRandomSku() {
-        return StringUtils.leftPad(Integer.toString(RANDOM.nextInt(options.getNumberOfProducts())), 10, '0');
+    private String getRandomSku(int index) {
+        System.out.println("1>>>>>>");
+
+        if (options.getSkus() == null) {
+            System.out.println("2>>>>>>");
+            return StringUtils.leftPad(Integer.toString(RANDOM.nextInt(options.getNumberOfProducts())), 10, '0');
+        } else {
+            System.out.println("3>>>>>>");
+
+            final int productId = options.getSkus().get(index);
+
+            if (productId < 0 || productId >= options.getNumberOfProducts()) {
+                System.out.println("4>>>>>>");
+                throw new IllegalArgumentException("invalid product number");
+            }
+
+            return StringUtils.leftPad(Integer.toString(productId), 10, '0');
+        }
     }
 
     private String getRandomUser() {
@@ -75,7 +91,7 @@ public class Producer {
                 .boxed()
                 .map(i -> {
                     final PurchaseOrder.LineItem item = new PurchaseOrder.LineItem();
-                    item.setSku(getRandomSku());
+                    item.setSku(getRandomSku(i));
                     item.setQuantity(getRandomQuantity());
                     item.setQuotedPrice(null); // TODO remove from domain
                     return item;
@@ -87,6 +103,13 @@ public class Producer {
     }
 
     public void start() {
+
+//        if (options.getSkus() != null && options.getSkus().size() != options.getLineItemCount()) {
+//            System.out.println("XXXX");
+//            throw new IllegalArgumentException("!=");
+//        }
+
+        System.out.println(">>>");
 
         final KafkaProducer<String, PurchaseOrder> kafkaProducer = new KafkaProducer<>(properties(options));
 
