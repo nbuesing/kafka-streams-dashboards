@@ -35,7 +35,8 @@ services:
       - ZOO_MY_ID=1
 
   druid-coordinator:
-    image: apache/druid:0.20.1
+    image: apache/druid:neil
+    #image: apache/druid:0.20.1
     container_name: ksd_druid-coordinator
     hostname: druid-coordinator
     #volumes:
@@ -52,7 +53,8 @@ services:
       - environment
 
   druild_broker:
-    image: apache/druid:0.20.1
+    image: apache/druid:neil
+    #image: apache/druid:0.20.1
     container_name: ksd_druid-broker
     hostname: druid-broker
     #volumes:
@@ -69,7 +71,8 @@ services:
       - environment
 
   historical:
-    image: apache/druid:0.20.1
+    image: apache/druid:neil
+    #image: apache/druid:0.20.1
     container_name: ksd_druid-historical
     hostname: druid-historical
     #volumes:
@@ -87,7 +90,8 @@ services:
       - environment
 
   druid-middlemanager:
-    image: apache/druid:0.20.1
+    image: apache/druid:neil
+    #image: apache/druid:0.20.1
     container_name: ksd_druid-middlemanager
     hostname: druid-middlemanager
     #volumes:
@@ -105,7 +109,8 @@ services:
       - environment
 
   druid-router:
-    image: apache/druid:0.20.1
+    image: apache/druid:neil
+    #image: apache/druid:0.20.1
     container_name: ksd_druid-router
     hostname: druid-router
     #volumes:

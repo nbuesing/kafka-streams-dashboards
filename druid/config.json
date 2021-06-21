@@ -21,7 +21,7 @@
         "type": "uniform",
         "queryGranularity": "fifteen_minute",
         "segmentGranularity": "fifteen_minute",
-        "rollup": true
+        "rollup": false
       },
       "timestampSpec": {
         "column": "timestamp",

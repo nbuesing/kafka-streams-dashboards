@@ -2,12 +2,10 @@ package dev.buesing.ksd.common.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
-import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -25,7 +23,7 @@ public class ProductAnalytic {
     private String sku;
     private Long quantity = 0L;
     private List<String> orderIds = new ArrayList<>();
-    private Instant orderTimestamp;
+    private Instant timestamp;
 
     public void addOrderId(final String orderId) {
         orderIds.add(orderId);
@@ -33,8 +31,8 @@ public class ProductAnalytic {
 
 
     @JsonIgnore
-    public String orderTimestamp() {
-        return convert(orderTimestamp);
+    public String timestamp() {
+        return convert(timestamp);
     }
 
     private static String convert(final Instant ts) {

@@ -13,6 +13,13 @@ import java.util.UUID;
 @Setter
 public class Options extends BaseOptions {
 
+    public static enum WindowType {
+        TUMBLING,                           // [12:00; 12:05), [12:05, 12:10), ...
+        HOPPING,                            // [12:00; 12:05), [12:01; 12:06), ...
+        SLIDING,
+        SESSION
+    };
+
     @Parameter(names = { "-g", "--application-id" }, description = "application id")
     private String applicationId = "pickup-order-handler-foo";
 
@@ -26,7 +33,15 @@ public class Options extends BaseOptions {
     private Integer windowSize = 30;
 
     @Parameter(names = { "--grace-period" }, description = "")
-    private Integer gracePeriod = 10;
+    private Integer gracePeriod = 5;
 
+    @Parameter(names = { "--window-type" }, description = "")
+    private WindowType windowType = WindowType.TUMBLING;
+
+    @Parameter(names = { "--topic" }, description = "")
+    private String topic = "pickup-order-handler-purchase-order-join-product-repartition";
+
+    @Parameter(names = { "--output-topic" }, description = "")
+    private String outputTopic = "product-statistics";
 
 }

@@ -16,14 +16,22 @@ import org.apache.kafka.streams.Topology;
 import org.apache.kafka.streams.errors.LogAndContinueExceptionHandler;
 import org.apache.kafka.streams.errors.StreamsUncaughtExceptionHandler;
 import org.apache.kafka.streams.kstream.*;
+import org.apache.kafka.streams.state.SessionStore;
 import org.apache.kafka.streams.state.WindowStore;
 
 import java.time.Duration;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.Map;
 import java.util.Properties;
 
 @Slf4j
 public class Streams {
+
+    private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm:ss");
+    private static final DateTimeFormatter TIME_FORMATTER_SSS = DateTimeFormatter.ofPattern("HH:mm:ss.SSS");
 
     private Map<String, Object> properties(final Options options) {
         return Map.ofEntries(
@@ -43,13 +51,20 @@ public class Streams {
         );
     }
 
-    public void start(final Options options) {
+    private final Options options;
+
+    public Streams(Options options) {
+        this.options = options;
+    }
+
+
+    public void start() {
 
         Properties p = toProperties(properties(options));
 
         log.info("starting streams " + options);
 
-        final Topology topology = streamsBuilder(options).build(p);
+        final Topology topology = streamsBuilder().build(p);
 
         StreamsMetrics.register(topology.describe());
 
@@ -62,60 +77,197 @@ public class Streams {
             return StreamsUncaughtExceptionHandler.StreamThreadExceptionResponse.SHUTDOWN_APPLICATION;
         });
 
-        final StateObserver observer = new StateObserver(streams);
-
-
-//        streams.setStateListener((newState, oldState) -> {
-//            if (newState == KafkaStreams.State.RUNNING) {
-//                log.info("starting observer");
-//                observer.start();
-//            }
-//        });
-
         streams.start();
 
         Runtime.getRuntime().addShutdownHook(new Thread(streams::close));
 
+        final StateObserver observer = new StateObserver(streams);
         final ServletDeployment servletDeployment = new ServletDeployment(observer);
+
         servletDeployment.start();
     }
 
-    private StreamsBuilder streamsBuilder(final Options options) {
+    private StreamsBuilder streamsBuilder() {
+        switch (options.getWindowType()) {
+            case TUMBLING:
+                return streamsBuilderTumbling();
+            case HOPPING:
+                return streamsBuilderHopping();
+            case SLIDING:
+                return streamsBuilderSliding();
+            case SESSION:
+                return streamsBuilderSession();
+            default:
+                return null;
+        }
+    }
+
+    private StreamsBuilder streamsBuilderTumbling() {
 
         final StreamsBuilder builder = new StreamsBuilder();
 
-        final Materialized<String, ProductAnalytic, WindowStore<Bytes, byte[]>> store = Materialized.<String, ProductAnalytic, WindowStore<Bytes, byte[]>>as("aggregate-purchase-order")
-                        //.withLoggingDisabled()
-                        .withCachingDisabled();
+        final Materialized<String, ProductAnalytic, WindowStore<Bytes, byte[]>> store = Materialized.<String, ProductAnalytic, WindowStore<Bytes, byte[]>>as("TUMBLING-aggregate-purchase-order")
+                //.withLoggingDisabled()
+                .withCachingDisabled()
+                ;
 
-        builder.<String, PurchaseOrder>stream("pickup-order-handler-purchase-order-join-product-repartition", Consumed.as("line-item"))
-                .peek((k, v) -> log.debug("key={}", k), Named.as("peek-incoming"))
-                .groupByKey(Grouped.as("groupByKey"))
-                .windowedBy(SlidingWindows.withTimeDifferenceAndGrace(
-                        Duration.ofSeconds(options.getWindowSize()),
-                        Duration.ofSeconds(options.getGracePeriod())))
-                .aggregate(ProductAnalytic::new,
-                        (key, value, aggregate) -> {
-                            if (aggregate.getSku() == null) {
-                                aggregate.setSku(key);
-                            }
-                            PurchaseOrder.LineItem item = value.getItems().stream().filter(i -> i.getSku().equals(key)).findFirst().get();
-                            aggregate.setQuantity(aggregate.getQuantity() + (long) item.getQuantity());
-                            aggregate.addOrderId(value.getOrderId());
-                            aggregate.setOrderTimestamp(value.getTimestamp());
-                            return aggregate;
-                        },
-                        Named.as("aggregate"),
+        builder.<String, PurchaseOrder>stream(options.getTopic(), Consumed.as("TUMBLING-line-item"))
+                .peek((k, v) -> log.info("key={}", k), Named.as("TUMBLING-peek-incoming"))
+                .groupByKey(Grouped.as("TUMBLING-groupByKey"))
+                .windowedBy(TimeWindows.of(Duration.ofSeconds(options.getWindowSize()))
+                        .grace(Duration.ofSeconds(options.getGracePeriod())))
+                .aggregate(Streams::initialize,
+                        Streams::aggregator,
+                        Named.as("TUMBLING-aggregate"),
                         store)
-                .toStream(Named.as("toStream"))
-                .peek((k, v) -> log.info("key={}, value={}", k, v), Named.as("peek-outgoing"));
+                .toStream(Named.as("TUMBLING-toStream"))
+                .peek((k, v) -> log.info("key={}, value={}", k, v), Named.as("TUMBLING-peek-outgoing"))
+                .selectKey((k, v) -> k.key() + " [" + convert(k.window().startTime()) + "," + convert(k.window().endTime()) + ")")
+                .mapValues(Streams::minimize)
+                .to(options.getOutputTopic(), Produced.as("TUMBLING-to"));
+
 
         return builder;
     }
 
-    public static Properties toProperties(final Map<String, Object> map) {
+    private StreamsBuilder streamsBuilderHopping() {
+
+        final StreamsBuilder builder = new StreamsBuilder();
+
+        final Materialized<String, ProductAnalytic, WindowStore<Bytes, byte[]>> store = Materialized.<String, ProductAnalytic, WindowStore<Bytes, byte[]>>as("HOPPING-aggregate-purchase-order")
+                //.withLoggingDisabled()
+                .withCachingDisabled()
+                ;
+
+        builder.<String, PurchaseOrder>stream(options.getTopic(), Consumed.as("HOPPING-line-item"))
+                .peek((k, v) -> log.info("key={}", k), Named.as("HOPPING-peek-incoming"))
+                .groupByKey(Grouped.as("HOPPING-groupByKey"))
+                .windowedBy(TimeWindows.of(Duration.ofSeconds(options.getWindowSize()))
+                        .advanceBy(Duration.ofSeconds(options.getWindowSize() / 2))
+                        .grace(Duration.ofSeconds(options.getGracePeriod())))
+                .aggregate(Streams::initialize,
+                        Streams::aggregator,
+                        Named.as("HOPPING-aggregate"),
+                        store)
+                .toStream(Named.as("HOPPING-toStream"))
+                .peek((k, v) -> log.info("key={}, value={}", k, v), Named.as("HOPPING-peek-outgoing"))
+                .selectKey((k, v) -> k.key() + " [" + convert(k.window().startTime()) + "," + convert(k.window().endTime()) + ")")
+                .mapValues(Streams::minimize)
+                .to(options.getOutputTopic(), Produced.as("HOPPING-to"));
+
+
+        return builder;
+    }
+
+    private StreamsBuilder streamsBuilderSliding() {
+
+        final StreamsBuilder builder = new StreamsBuilder();
+
+        final Materialized<String, ProductAnalytic, WindowStore<Bytes, byte[]>> store = Materialized.<String, ProductAnalytic, WindowStore<Bytes, byte[]>>as("SLIDING-aggregate-purchase-order")
+                //.withLoggingDisabled()
+                .withCachingDisabled()
+                ;
+
+        builder.<String, PurchaseOrder>stream(options.getTopic(), Consumed.as("SLIDING-line-item"))
+                .peek((k, v) -> log.info("key={}", k), Named.as("SLIDING-peek-incoming"))
+                .groupByKey(Grouped.as("SLIDING-groupByKey"))
+                .windowedBy(SlidingWindows.withTimeDifferenceAndGrace(
+                        Duration.ofSeconds(options.getWindowSize()),
+                        Duration.ofSeconds(options.getGracePeriod())))
+                .aggregate(Streams::initialize,
+                        Streams::aggregator,
+                        Named.as("SLIDING-aggregate"),
+                        store)
+                .toStream(Named.as("SLIDING-toStream"))
+                .peek((k, v) -> log.info("key={}, value={}", k, v), Named.as("SLIDING-peek-outgoing"))
+                .selectKey((k, v) -> k.key() + " [" + convert(k.window().startTime()) + "," + convert(k.window().endTime()) + ")")
+                .mapValues(Streams::minimize)
+                .to(options.getOutputTopic(), Produced.as("SLIDING-to"));
+
+        return builder;
+    }
+
+    private StreamsBuilder streamsBuilderSession() {
+
+        final StreamsBuilder builder = new StreamsBuilder();
+
+        final Materialized<String, ProductAnalytic, SessionStore<Bytes, byte[]>> store = Materialized.<String, ProductAnalytic, SessionStore<Bytes, byte[]>>as("SESSION-aggregate-purchase-order")
+                //.withLoggingDisabled()
+                //.withCachingDisabled()
+                ;
+
+        builder.<String, PurchaseOrder>stream(options.getTopic(), Consumed.as("SESSION-line-item"))
+                .peek((k, v) -> log.info("key={}", k), Named.as("SESSION-peek-incoming"))
+                .groupByKey(Grouped.as("SESSION-groupByKey"))
+                .windowedBy(SessionWindows.with(Duration.ofSeconds(options.getWindowSize())))
+                .aggregate(Streams::initialize,
+                        Streams::aggregator,
+                        Streams::mergeSessions,
+                        Named.as("SESSION-aggregate"),
+                        store)
+                .toStream(Named.as("SESSION-toStream"))
+                .peek((k, v) -> log.info("key={}, value={}", k, v), Named.as("SESSION-peek-outgoing"))
+                .selectKey((k, v) -> k.key() + " [" + convert(k.window().startTime()) + "," + convert(k.window().endTime()) + ")")
+                .mapValues(Streams::minimize)
+                .to(options.getOutputTopic(), Produced.as("SESSION-to"));
+
+        return builder;
+    }
+
+    private static ProductAnalytic initialize() {
+        return new ProductAnalytic();
+    }
+
+    private static ProductAnalytic aggregator(final String key, final PurchaseOrder value, final ProductAnalytic aggregate) {
+        aggregate.setSku(key);
+        aggregate.setQuantity(aggregate.getQuantity() + quantity(value, key));
+        aggregate.addOrderId(value.getOrderId());
+        aggregate.setTimestamp(value.getTimestamp());
+        return aggregate;
+    }
+
+    // merge into left thinking this would keep the list of orderIds the same - but merge could go either way.
+    private static ProductAnalytic mergeSessions(final String key, final ProductAnalytic left, final ProductAnalytic right) {
+
+        log.debug("merging session windows for key={}", key);
+
+        left.setQuantity(left.getQuantity() + right.getQuantity());
+        left.getOrderIds().addAll(right.getOrderIds());
+
+        if (left.getTimestamp() == null || right.getTimestamp().isAfter(left.getTimestamp())) {
+            left.setTimestamp(right.getTimestamp());
+        }
+
+        return left;
+    }
+
+    private static long quantity(final PurchaseOrder value, final String sku) {
+        return value.getItems().stream().filter(i -> i.getSku().equals(sku)).findFirst().map(i -> (long) i.getQuantity()).orElse(0L);
+    }
+
+    private static Properties toProperties(final Map<String, Object> map) {
         final Properties properties = new Properties();
         properties.putAll(map);
         return properties;
+    }
+
+    private static String convert(final Instant ts) {
+        if (ts == null) {
+            return null;
+        }
+        return LocalDateTime.ofInstant(ts, ZoneId.systemDefault()).format(TIME_FORMATTER_SSS);
+    }
+
+
+    private static Map<String, Object> minimize(final ProductAnalytic productAnalytic) {
+
+        if (productAnalytic == null) {
+            return null;
+        }
+
+        return Map.ofEntries(
+                Map.entry("qty", productAnalytic.getQuantity()),
+                Map.entry("ts", convert(productAnalytic.getTimestamp()))
+        );
     }
 }

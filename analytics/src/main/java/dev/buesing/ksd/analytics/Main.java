@@ -14,9 +14,9 @@ public class Main {
 			return;
 		}
 
-		final Streams stream = new Streams();
+		final Streams stream = new Streams(options);
 
-		stream.start(options);
+		stream.start();
 	}
 
 }

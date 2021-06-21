@@ -6,11 +6,6 @@ networks:
     external: true
     name: ksd
 
-volumes:
-  stream_store:
-  stream2_store:
-  analytics_store:
-
 services:
 
   stream:
@@ -55,9 +50,11 @@ services:
       - NET_ADMIN
     ports:
       - '7073:7071'
+      - '9999:9999'
     volumes:
       - ./scripts:/scripts
-      - analytics_store:/tmp/kafka-streams
+      - ./stores/analytics:/tmp/kafka-streams
     environment:
       BOOTSTRAP_SERVERS: broker-1:9092,broker-2:9092,broker-3:9092
       CLIENT_ID: 'analytics1'
+#      WINDOW_TYPE: HOPPING

@@ -6,7 +6,6 @@ import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import dev.buesing.ksd.common.domain.ProductAnalytic;
 import lombok.AllArgsConstructor;
-import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.StoreQueryParameters;
@@ -20,8 +19,6 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Map;
 import java.util.TreeMap;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 @Slf4j
 public class StateObserver {
@@ -103,7 +100,7 @@ public class StateObserver {
             ArrayNode orderIds = JsonNodeFactory.instance.arrayNode();
             v.getOrderIds().forEach(orderId -> orderIds.add(orderId));
             value.set("order-ids", orderIds);
-            value.put("timestamp", v.orderTimestamp());
+            value.put("timestamp", v.timestamp());
             element.set("key", key);
             element.set("value", value);
 

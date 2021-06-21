@@ -49,7 +49,7 @@ sleep 1
 ./gradlew build
 (cd builder; ../gradlew run)
 (cd monitoring; dc up -d)
-(cd applications; dc up -d)
+(cd applications; dc up -d stream stream2)
 
 if [ $(uname) == "Darwin" ]; then
   open http://localhost:3000

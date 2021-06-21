@@ -52,6 +52,7 @@ public class OptionsUtil {
         }
     }
 
+
     private static <T> void populateByEnvironment(final T object, final Class<?> clazz) {
 
         Stream.of(clazz.getDeclaredFields()).forEach(f -> {
@@ -71,12 +72,19 @@ public class OptionsUtil {
                         f.set(object, Integer.parseInt(value));
                     } else if (Long.TYPE.equals(f.getType()) || Long.class.equals(f.getType())) {
                         f.set(object, Long.parseLong(value));
+                    } else if (Enum.class.isAssignableFrom(f.getType())) {
+                        f.set(object, create(f.getType(), value));
                     }
                 } catch (final IllegalAccessException e) {
                     throw new RuntimeException(e);
                 }
             }
         });
+    }
+
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    private static Enum<?> create(final Class<?> type, final String value) {
+        return Enum.valueOf((Class<Enum>) type, value);
     }
 
     private static String getEnvironmentVariable(final String string) {

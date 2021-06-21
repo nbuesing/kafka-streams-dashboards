@@ -73,4 +73,7 @@ configure(subprojects.findAll { project -> file("${project.name}/src/main/java")
         testAnnotationProcessor "org.projectlombok:lombok:${lombok_version}"
     }
 
+    test {
+        useJUnitPlatform()
+    }
 }
