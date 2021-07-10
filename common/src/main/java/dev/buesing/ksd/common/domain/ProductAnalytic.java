@@ -1,5 +1,6 @@
 package dev.buesing.ksd.common.domain;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import lombok.Getter;
@@ -23,6 +24,8 @@ public class ProductAnalytic {
     private String sku;
     private Long quantity = 0L;
     private List<String> orderIds = new ArrayList<>();
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss.SSS")
     private Instant timestamp;
 
     public void addOrderId(final String orderId) {

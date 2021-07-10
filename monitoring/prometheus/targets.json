@@ -24,7 +24,10 @@
   },
   {
     "targets": [  
-      "analytics:7071"
+      "analytics_tumbling:7071",
+      "analytics_hopping:7071",
+      "analytics_sliding:7071",
+      "analytics_session:7071"
     ],
     "labels": {
       "job": "analytics"

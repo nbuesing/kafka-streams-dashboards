@@ -49,3 +49,15 @@
   * Logback
 
   * Apache Commons
+
+
+
+
+kafka-console-consumer \
+--bootstrap-server localhost:19092 \
+--property print.timestamp=true \
+--property print.partition=true \
+--property print.key=true \
+--property key.separator=\| \
+--key-deserializer=dev.buesing.ksd.tools.serde.SessionDeserializer \
+--topic analytics_session-SESSION-aggregate-purchase-order-changelog

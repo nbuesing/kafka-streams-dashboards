@@ -35,14 +35,13 @@ fi
 # but have had issues with zookeeper and brokers at times.
 #
 (cd cluster; dc up -d zookeeper)
+sleep 1
 (cd cluster; dc up -d broker-1)
 (cd cluster; dc up -d broker-2)
 (cd cluster; dc up -d broker-3)
 (cd cluster; dc up -d broker-4)
-sleep 1
-#
+sleep 2
 # start up the cluster again, to catch a broker that may have errored out
-#
 (cd cluster; dc up -d)
 sleep 1
 #./gradlew clean build
@@ -50,9 +49,11 @@ sleep 1
 (cd builder; ../gradlew run)
 (cd monitoring; dc up -d)
 (cd applications; dc up -d stream stream2)
+sleep 1
+(cd applications; dc up -d)
 
-if [ $(uname) == "Darwin" ]; then
-  open http://localhost:3000
-fi
+#if [ $(uname) == "Darwin" ]; then
+#  open http://localhost:3000
+#fi
 
 #(cd publisher; ../gradlew run)

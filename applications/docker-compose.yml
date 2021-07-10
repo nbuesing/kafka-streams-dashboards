@@ -38,10 +38,10 @@ services:
       BOOTSTRAP_SERVERS: broker-1:9092,broker-2:9092,broker-3:9092
       CLIENT_ID: 'stream2'
 
-  analytics:
+  analytics_sliding:
     image: nbuesing/ksd_analytics:latest
-    hostname: analytics
-    container_name: analytics
+    hostname: analytics_sliding
+    container_name: analytics_sliding
     depends_on:
       - stream
       - stream2
@@ -53,8 +53,57 @@ services:
       - '9999:9999'
     volumes:
       - ./scripts:/scripts
-      - ./stores/analytics:/tmp/kafka-streams
+      - ./stores:/tmp/kafka-streams
     environment:
       BOOTSTRAP_SERVERS: broker-1:9092,broker-2:9092,broker-3:9092
-      CLIENT_ID: 'analytics1'
-#      WINDOW_TYPE: HOPPING
+      APPLICATION_ID: 'analytics_sliding'
+      CLIENT_ID: 'analytics_sliding'
+      WINDOW_TYPE: SLIDING
+
+  analytics_tumbling:
+    image: nbuesing/ksd_analytics:latest
+    hostname: analytics_tumbling
+    container_name: analytics_tumbling
+    depends_on:
+      - stream
+      - stream2
+    volumes:
+      - ./scripts:/scripts
+      - ./stores:/tmp/kafka-streams
+    environment:
+      BOOTSTRAP_SERVERS: broker-1:9092,broker-2:9092,broker-3:9092
+      APPLICATION_ID: 'analytics_tumbling'
+      CLIENT_ID: 'analytics_tumbling'
+      WINDOW_TYPE: TUMBLING
+
+  analytics_hopping:
+    image: nbuesing/ksd_analytics:latest
+    hostname: analytics_hopping
+    container_name: analytics_hopping
+    depends_on:
+      - stream
+      - stream2
+    volumes:
+      - ./scripts:/scripts
+      - ./stores:/tmp/kafka-streams
+    environment:
+      BOOTSTRAP_SERVERS: broker-1:9092,broker-2:9092,broker-3:9092
+      APPLICATION_ID: 'analytics_hopping'
+      CLIENT_ID: 'analytics_hopping'
+      WINDOW_TYPE: HOPPING
+
+  analytics_session:
+    image: nbuesing/ksd_analytics:latest
+    hostname: analytics_session
+    container_name: analytics_session
+    depends_on:
+      - stream
+      - stream2
+    volumes:
+      - ./scripts:/scripts
+      - ./stores:/tmp/kafka-streams
+    environment:
+      BOOTSTRAP_SERVERS: broker-1:9092,broker-2:9092,broker-3:9092
+      APPLICATION_ID: 'analytics_session'
+      CLIENT_ID: 'analytics_session'
+      WINDOW_TYPE: SESSION

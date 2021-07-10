@@ -8,4 +8,4 @@ build
 .classpath
 .project
 /druid/storage
-/applications/stores/analytics/*
+/applications/stores/*
