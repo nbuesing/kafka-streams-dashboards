@@ -4,6 +4,7 @@ package dev.buesing.ksd.tools.serde;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import java.util.TimeZone;
 import org.apache.kafka.common.errors.SerializationException;
 import org.apache.kafka.common.serialization.Serializer;
 
@@ -14,6 +15,7 @@ public class JsonSerializer<T> implements Serializer<T> {
     private static final ObjectMapper OBJECT_MAPPER =
             new ObjectMapper()
                     .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+                    .setTimeZone(TimeZone.getDefault())
                     .registerModule(new JavaTimeModule());
 
     // needed by kafka

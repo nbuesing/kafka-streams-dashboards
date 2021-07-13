@@ -25,7 +25,7 @@ public class ProductAnalytic {
     private Long quantity = 0L;
     private List<String> orderIds = new ArrayList<>();
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss.SSS")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss.SSS", timezone = "UTC")
     private Instant timestamp;
 
     public void addOrderId(final String orderId) {
