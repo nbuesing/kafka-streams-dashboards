@@ -5,6 +5,7 @@ KEY_DESERIALIZER=dev.buesing.ksd.tools.serde.SessionDeserializer
 
 kafka-console-consumer \
         --bootstrap-server ${BOOTSTRAP_SERVER} \
+        --property print.partition=true \
         --property print.key=true \
         --property key.separator=\| \
         --key-deserializer=${KEY_DESERIALIZER} \

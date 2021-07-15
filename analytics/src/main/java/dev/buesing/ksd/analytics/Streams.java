@@ -4,6 +4,7 @@ import dev.buesing.ksd.common.domain.ProductAnalytic;
 import dev.buesing.ksd.common.domain.PurchaseOrder;
 import dev.buesing.ksd.common.metrics.StreamsMetrics;
 import dev.buesing.ksd.tools.serde.JsonSerde;
+import java.util.LinkedHashMap;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.producer.ProducerConfig;
@@ -44,7 +45,9 @@ public class Streams {
                 Map.entry(StreamsConfig.CLIENT_ID_CONFIG, options.getClientId()),
                 Map.entry(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, options.getAutoOffsetReset()),
                 Map.entry(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, "true"),
-                Map.entry(StreamsConfig.COMMIT_INTERVAL_MS_CONFIG, 100),
+                Map.entry(StreamsConfig.REPLICATION_FACTOR_CONFIG, 3),
+                //Map.entry(StreamsConfig.WINDOW_STORE_CHANGE_LOG_ADDITIONAL_RETENTION_MS_CONFIG,),
+                Map.entry(StreamsConfig.COMMIT_INTERVAL_MS_CONFIG, options.getCommitInterval()),
                 Map.entry(StreamsConfig.TOPOLOGY_OPTIMIZATION_CONFIG, StreamsConfig.OPTIMIZE),
                 Map.entry(StreamsConfig.METRICS_RECORDING_LEVEL_CONFIG, "TRACE"),
                 Map.entry(StreamsConfig.DEFAULT_DESERIALIZATION_EXCEPTION_HANDLER_CLASS_CONFIG, LogAndContinueExceptionHandler.class.getName()),
@@ -108,7 +111,6 @@ public class Streams {
         final StreamsBuilder builder = new StreamsBuilder();
 
         final Materialized<String, ProductAnalytic, WindowStore<Bytes, byte[]>> store = Materialized.<String, ProductAnalytic, WindowStore<Bytes, byte[]>>as("TUMBLING-aggregate-purchase-order")
-                //.withLoggingDisabled()
                 .withCachingDisabled()
                 ;
 
@@ -125,8 +127,7 @@ public class Streams {
                 .peek((k, v) -> log.info("key={}, value={}", k, v), Named.as("TUMBLING-peek-outgoing"))
                 .selectKey((k, v) -> k.key() + " [" + convert(k.window().startTime()) + "," + convert(k.window().endTime()) + ")")
                 .mapValues(Streams::minimize)
-                .to(options.getOutputTopic(), Produced.as("TUMBLING-to"));
-
+                .to(options.getOutputTopic() + "-" + options.getWindowType(), Produced.as("TUMBLING-to"));
 
         return builder;
     }
@@ -154,7 +155,7 @@ public class Streams {
                 .peek((k, v) -> log.info("key={}, value={}", k, v), Named.as("HOPPING-peek-outgoing"))
                 .selectKey((k, v) -> k.key() + " [" + convert(k.window().startTime()) + "," + convert(k.window().endTime()) + ")")
                 .mapValues(Streams::minimize)
-                .to(options.getOutputTopic(), Produced.as("HOPPING-to"));
+                .to(options.getOutputTopic() + "-" + options.getWindowType(), Produced.as("HOPPING-to"));
 
 
         return builder;
@@ -167,6 +168,8 @@ public class Streams {
         final Materialized<String, ProductAnalytic, WindowStore<Bytes, byte[]>> store = Materialized.<String, ProductAnalytic, WindowStore<Bytes, byte[]>>as("SLIDING-aggregate-purchase-order")
                 //.withLoggingDisabled()
                 .withCachingDisabled()
+//                .withRetention(Duration.ofHours(1L))
+                .withRetention(Duration.ofDays(5L))
                 ;
 
         builder.<String, PurchaseOrder>stream(options.getTopic(), Consumed.as("SLIDING-line-item"))
@@ -183,7 +186,7 @@ public class Streams {
                 .peek((k, v) -> log.info("key={}, value={}", k, v), Named.as("SLIDING-peek-outgoing"))
                 .selectKey((k, v) -> k.key() + " [" + convert(k.window().startTime()) + "," + convert(k.window().endTime()) + ")")
                 .mapValues(Streams::minimize)
-                .to(options.getOutputTopic(), Produced.as("SLIDING-to"));
+                .to(options.getOutputTopic() + "-" + options.getWindowType(), Produced.as("SLIDING-to"));
 
         return builder;
     }
@@ -208,9 +211,10 @@ public class Streams {
                         store)
                 .toStream(Named.as("SESSION-toStream"))
                 .peek((k, v) -> log.info("key={}, value={}", k, v), Named.as("SESSION-peek-outgoing"))
+                .filter((k, v) -> v != null)
                 .selectKey((k, v) -> k.key() + " [" + convert(k.window().startTime()) + "," + convert(k.window().endTime()) + ")")
                 .mapValues(Streams::minimize)
-                .to(options.getOutputTopic(), Produced.as("SESSION-to"));
+                .to(options.getOutputTopic() + "-" + options.getWindowType(), Produced.as("SESSION-to"));
 
         return builder;
     }
@@ -258,7 +262,6 @@ public class Streams {
         }
         return LocalDateTime.ofInstant(ts, ZoneId.systemDefault()).format(TIME_FORMATTER_SSS);
     }
-
 
     private static Map<String, Object> minimize(final ProductAnalytic productAnalytic) {
 

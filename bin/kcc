@@ -1,12 +1,11 @@
 #!/bin/sh
 
 BOOTSTRAP_SERVER=localhost:19092
-KEY_DESERIALIZER=dev.buesing.ksd.tools.serde.WindowDeserializer 
 
 kafka-console-consumer \
         --bootstrap-server ${BOOTSTRAP_SERVER} \
         --property print.partition=true \
         --property print.key=true \
         --property key.separator=\| \
-        --key-deserializer=${KEY_DESERIALIZER} \
+	--key-deserializer=org.apache.kafka.common.serialization.BytesDeserializer  \
 	$@

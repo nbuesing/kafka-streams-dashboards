@@ -44,4 +44,7 @@ public class Options extends BaseOptions {
     @Parameter(names = { "--output-topic" }, description = "")
     private String outputTopic = "product-statistics";
 
+    @Parameter(names = { "--commit-interval" }, description = "")
+    private Long commitInterval = 100L;
+
 }

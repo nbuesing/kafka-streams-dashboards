@@ -23,6 +23,7 @@ public class RocksDBConfig implements RocksDBConfigSetter {
         System.out.println(">>> " + storeName);
 
         options.setWriteBufferSize(1);
+//        options.setMaxWriteBufferNumber(0);
 
 
 //        // BlockBasedTableConfig tableConfig = (BlockBasedTableConfig) options.tableFormatConfig();
