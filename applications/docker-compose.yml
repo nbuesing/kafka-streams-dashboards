@@ -59,6 +59,7 @@ services:
       APPLICATION_ID: 'analytics_sliding'
       CLIENT_ID: 'analytics_sliding'
       WINDOW_TYPE: SLIDING
+      COMMIT_INTERVAL: 100
 
   analytics_tumbling:
     image: nbuesing/ksd_analytics:latest
@@ -75,6 +76,7 @@ services:
       APPLICATION_ID: 'analytics_tumbling'
       CLIENT_ID: 'analytics_tumbling'
       WINDOW_TYPE: TUMBLING
+      COMMIT_INTERVAL: 100
 
   analytics_hopping:
     image: nbuesing/ksd_analytics:latest
@@ -91,6 +93,7 @@ services:
       APPLICATION_ID: 'analytics_hopping'
       CLIENT_ID: 'analytics_hopping'
       WINDOW_TYPE: HOPPING
+      COMMIT_INTERVAL: 100
 
   analytics_session:
     image: nbuesing/ksd_analytics:latest
@@ -107,3 +110,4 @@ services:
       APPLICATION_ID: 'analytics_session'
       CLIENT_ID: 'analytics_session'
       WINDOW_TYPE: SESSION
+      COMMIT_INTERVAL: 100

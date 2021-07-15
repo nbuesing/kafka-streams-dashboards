@@ -4,4 +4,4 @@ epoch=$(expr $1 / 1000)
 shift
 
 
-date -r $epoch
+date -u -r $epoch
