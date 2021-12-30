@@ -103,8 +103,8 @@ public class KafkaMetricsReporter implements MetricsReporter {
                 // only send process rate/total metrics
 //                if ("process-rate".equals(name) || "process-total".equals(name)) {
 
-                    double value = v.getKey().value(); // metricValue() causing deadlocks, TBD
-
+//                    double value = v.getKey().metricValue(); // metricValue() causing deadlocks, TBD
+                    double value = 0.0;
 //                    DoubleNode valueNode = (DoubleNode) node.get("value");
 //                    if (valueNode != null) {
 //                        node.put("previous", valueNode.doubleValue());

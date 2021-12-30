@@ -4,7 +4,6 @@ alias d='docker'
 alias dc='docker compose'
 alias dn='docker network'
 
-
 if ! [ -x "$(command -v docker)" ]; then
     echo "docker is not installed." >&2
     exit 1
@@ -30,19 +29,8 @@ if [ "$NETWORK" != "ksd" ]; then
   (docker network create ksd >/dev/null)
 fi
 
-#
-# start up brokers in a controled order, dependency issues usually only plague schema-registry, 
-# but have had issues with zookeeper and brokers at times.
-#
-(cd cluster; dc up -d zookeeper)
-sleep 1
-(cd cluster; dc up -d broker-1)
-(cd cluster; dc up -d broker-2)
-(cd cluster; dc up -d broker-3)
-(cd cluster; dc up -d broker-4)
-sleep 2
-# start up the cluster again, to catch a broker that may have errored out
 (cd cluster; dc up -d)
+
 sleep 1
 #./gradlew clean build
 ./gradlew build

@@ -9,7 +9,10 @@ dependencies {
 }
 
 
+//applicationDefaultJvmArgs = ["-javaagent:./InstrumentationAgent.jar"]
+
 application {
+
     mainClass = "dev.buesing.ksd.${project.name}.Main"
 }
 
