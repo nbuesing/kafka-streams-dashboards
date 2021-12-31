@@ -3,7 +3,7 @@ rules:
 - pattern: java.lang<type=(.*)>
 #- pattern: application(.*)
 #- pattern: application<type=(.*)>
-#- pattern: kafka.streams.*
+- pattern: kafka.streams<type=kafka-metrics-count><>(.+):.+
 - pattern: "application<type=streams><>(.+): (.+)__(.+)"
   name: application_streams
   value: 1

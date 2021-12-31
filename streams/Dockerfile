@@ -1,20 +1,20 @@
-FROM openjdk:11-jdk-slim AS build
+FROM openjdk:14-jdk-slim AS build
 
 WORKDIR /
 
 RUN \
     apt-get update && \
     apt-get install -y curl && \
-    curl -k -L -o jmx_prometheus_javaagent.jar https://repo1.maven.org/maven2/io/prometheus/jmx/jmx_prometheus_javaagent/0.15.0/jmx_prometheus_javaagent-0.15.0.jar && \
-    curl -k -L -o jolokia-agent.jar "https://search.maven.org/remotecontent?filepath=org/jolokia/jolokia-jvm/1.6.2/jolokia-jvm-1.6.2-agent.jar"
+    curl -k -L -o jmx_prometheus_javaagent.jar https://repo1.maven.org/maven2/io/prometheus/jmx/jmx_prometheus_javaagent/0.16.1/jmx_prometheus_javaagent-0.16.1.jar && \
+    curl -k -L -o jolokia-agent.jar "https://repo1.maven.org/maven2/org/jolokia/jolokia-jvm/1.7.1/jolokia-jvm-1.7.1.jar"
 
-FROM openjdk:11-jdk-slim
+FROM openjdk:14-jdk-slim
 
 WORKDIR /
 
 RUN \
     apt-get update && \
-    apt-get install -y curl iproute2 iputils-ping
+    apt-get install -y curl net-tools dnsutils iproute2 iputils-ping jq
 
 ENV \
     ENVIRONMENT="" \
@@ -23,6 +23,8 @@ ENV \
 COPY ./build/distributions/*.tar .
 COPY ./docker/streams-config.yml /
 COPY ./docker/all-config.yml /
+COPY ./docker/entrypoint.sh /
+COPY ./docker/healthcheck.sh /
 
 COPY --from=build /jmx_prometheus_javaagent.jar /
 COPY --from=build /jolokia-agent.jar /
@@ -32,8 +34,9 @@ RUN \
 
 EXPOSE 7071/tcp 7072/tcp
 
-CMD /streams-1.0/bin/streams
+ENTRYPOINT  ["/entrypoint.sh"]
 
+CMD         ["/streams-1.0/bin/streams"]
 
 
 #ENTRYPOINT ["java"]

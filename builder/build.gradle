@@ -1,7 +1,7 @@
 
 dependencies {
     implementation project(':common')
-    implementation 'org.apache.commons:commons-csv:1.8'
+    implementation group: 'org.apache.commons', name: 'commons-csv', version: apache_commons_csv_version
 }
 
 application {

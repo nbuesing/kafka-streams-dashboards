@@ -22,26 +22,25 @@ fi
 
 #
 # creates a network unique to this project that can be shared between docker compose instances
-# kafka-streams-monitoring -> ksm
+# kafka-streams-dashboard -> ksd
 #
 NETWORK=$(docker network inspect -f '{{.Name}}' ksd 2>/dev/null)
 if [ "$NETWORK" != "ksd" ]; then
   (docker network create ksd >/dev/null)
 fi
 
-(cd cluster; dc up -d)
+(cd cluster; dc up -d --wait)
 
-sleep 1
-#./gradlew clean build
 ./gradlew build
+
 (cd builder; ../gradlew run)
 (cd monitoring; dc up -d)
-(cd applications; dc up -d stream stream2)
+(cd applications; dc up -d stream)
 sleep 1
 (cd applications; dc up -d)
 
-#if [ $(uname) == "Darwin" ]; then
-#  open http://localhost:3000
-#fi
+if [ $(uname) == "Darwin" ]; then
+  open http://localhost:3000
+fi
 
-#(cd publisher; ../gradlew run)
+(cd publisher; ../gradlew run)

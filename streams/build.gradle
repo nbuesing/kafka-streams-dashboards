@@ -1,13 +1,12 @@
-//apply plugin: 'com.palantir.docker'
 
 dependencies {
     implementation project(':common')
-    implementation "org.apache.kafka:kafka-streams:${kafka_version}"
+    implementation group: 'org.apache.kafka', name: 'kafka-streams', version: kafka_version
 }
 
 application {
     mainClass = "dev.buesing.ksd.${project.name}.Main"
-//    applicationDefaultJvmArgs = ['-javaagent:./jmx_prometheus/jmx_prometheus_javaagent.jar=7071:./docker/streams-config.yml']
+    //applicationDefaultJvmArgs = ['-javaagent:./jmx_prometheus/jmx_prometheus_javaagent.jar=7071:./docker/streams-config.yml']
 }
 
 task buildDockerImage(type: Exec) {

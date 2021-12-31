@@ -41,11 +41,21 @@ scrape_configs:
         regex: '(.*):(.*)'
         target_label: instance
         replacement: '$1'
-  - job_name: targets
+  - job_name: streams
     scrape_interval: 1s
     file_sd_configs:
       - files:
-          - /etc/prometheus/targets.json
+          - /etc/prometheus/application_streams.json
+    relabel_configs:
+      - source_labels: [__address__]
+        regex: '(.*):(.*)'
+        target_label: instance
+        replacement: '$1'
+  - job_name: analytics
+    scrape_interval: 1s
+    file_sd_configs:
+      - files:
+          - /etc/prometheus/application_analytics.json
     relabel_configs:
       - source_labels: [__address__]
         regex: '(.*):(.*)'

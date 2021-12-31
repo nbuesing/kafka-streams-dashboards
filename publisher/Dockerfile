@@ -1,4 +1,4 @@
-FROM openjdk:11-jdk-slim AS build
+FROM openjdk:14-jdk-slim AS build
 
 WORKDIR /
 
@@ -8,7 +8,7 @@ RUN \
     curl -k -L -o jmx_prometheus_javaagent.jar https://repo1.maven.org/maven2/io/prometheus/jmx/jmx_prometheus_javaagent/0.14.0/jmx_prometheus_javaagent-0.14.0.jar && \
     curl -k -L -o jolokia-agent.jar "https://search.maven.org/remotecontent?filepath=org/jolokia/jolokia-jvm/1.6.2/jolokia-jvm-1.6.2-agent.jar"
 
-FROM openjdk:11-jdk-slim
+FROM openjdk:15-jdk-slim
 
 WORKDIR /
 

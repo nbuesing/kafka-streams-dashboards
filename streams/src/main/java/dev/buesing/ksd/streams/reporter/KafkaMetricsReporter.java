@@ -97,32 +97,42 @@ public class KafkaMetricsReporter implements MetricsReporter {
                 final KafkaMetric metric = v.getKey();
                 final ObjectNode node = v.getValue();
 
+                final String name = metric.metricName().name();
 
-                String name = metric.metricName().name();
+                final Object object = metric.metricValue();
+
+                if (object instanceof Double) {
+                    node.put("value", (Double) object);
+                } else if (object instanceof Number) {
+                    node.put("value", ((Number) object).doubleValue());
+                } else {
+                    //TODO -- something else?
+                    node.putNull("value");
+                }
+                Double value = (Double) metric.metricValue();
 
                 // only send process rate/total metrics
 //                if ("process-rate".equals(name) || "process-total".equals(name)) {
-
 //                    double value = v.getKey().metricValue(); // metricValue() causing deadlocks, TBD
-                    double value = 0.0;
+                // double value = (double) metric.metricValue();
+//                double value = 0;
 //                    DoubleNode valueNode = (DoubleNode) node.get("value");
 //                    if (valueNode != null) {
 //                        node.put("previous", valueNode.doubleValue());
 //                        node.put("delta", value - valueNode.doubleValue() );
 //                    }
 
-                    node.put("value", value);
-                    node.put("timestamp", System.currentTimeMillis());
+                node.put("timestamp", System.currentTimeMillis());
 
-                    // TODO determine a better key to use
-                    producer.send(
-                            new ProducerRecord<>(topic, null, null, metric.metricName().name(), serialize(node)),
-                            (metadata, e) -> {
-                                if (e != null) {
-                                    log.warn("unable to publish to metrics topic e={}", e.getMessage());
-                                }
+                // TODO determine a better key to use
+                producer.send(
+                        new ProducerRecord<>(topic, null, null, metric.metricName().name(), serialize(node)),
+                        (metadata, e) -> {
+                            if (e != null) {
+                                log.warn("unable to publish to metrics topic e={}", e.getMessage());
                             }
-                    );
+                        }
+                );
 //                }
             });
         }
@@ -175,7 +185,7 @@ public class KafkaMetricsReporter implements MetricsReporter {
         objectNode.put("name", metric.metricName().name());
         objectNode.put("group", metric.metricName().group());
 
-        metric.metricName().tags().forEach((k,v ) -> {
+        metric.metricName().tags().forEach((k, v) -> {
             objectNode.put(k, v);
             if ("task-id".equals(k) && v.indexOf('_') > 0) {
                 objectNode.put("subtopology", v.split("_")[0]);
