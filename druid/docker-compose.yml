@@ -3,121 +3,171 @@ networks:
     external: true
     name: ksd
 
-#volumes:
-#  metadata_data: {}
-#  middle_var: {}
-#  historical_var: {}
-#  broker_var: {}
-#  coordinator_var: {}
-#  router_var: {}
+volumes:
+  postgres: {}
+  zk: {}
+  zk_datalog: {}
+  zk_logs: {}
+  coordinator_var: {}
+  broker_var: {}
+  historical_var: {}
+  middlemanager_var: {}
+  router_var: {}
+  shared: {}
 
 services:
   druid-postgres:
-    container_name: ksd_druid-postgres
-    hostname: druid-postgres
     image: postgres:latest
-    #volumes:
-    #  - metadata_data:/var/lib/postgresql/data
+    container_name: ksd-druid-postgres
+    hostname: druid-postgres
+    healthcheck:
+      test: pg_isready -U druid
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - postgres:/var/lib/postgresql/data
     environment:
-      - POSTGRES_PASSWORD=FoolishPassword
-      - POSTGRES_USER=druid
-      - POSTGRES_DB=druid
+      POSTGRES_PASSWORD: FoolishPassword
+      POSTGRES_USER: druid
+      POSTGRES_DB: druid
 
   # Need 3.5 or later for container nodes
   druid-zookeeper:
-    container_name: ksd_druid-zookeeper
-    hostname: druid-zookeeper
     image: zookeeper:3.5
+    container_name: ksd-druid-zookeeper
+    hostname: druid-zookeeper
+    healthcheck:
+      test: echo ruok | nc -w 2 localhost 2181 | grep imok
+      start_period: 5s
+      interval: 5s
+      timeout: 5s
+      retries: 3
+    volumes:
+      - zk:/data
+      - zk_datalog:/datalog
+      - zk_logs:/logs
     environment:
-      - ZOO_MY_ID=1
+      ZOO_MY_ID: 1
+      ZOO_4LW_COMMANDS_WHITELIST: "ruok,stat"
+  #    deploy:
+  #      resources:
+  #        limits:
+  #          cpus: '0.50'
+  #          memory: 50M
+  #        reservations:
+  #          memory: 20M
 
   druid-coordinator:
-    image: apache/druid:neil
-    #image: apache/druid:0.20.1
-    container_name: ksd_druid-coordinator
+    image: apache/druid:0.22.1
+    container_name: ksd-druid-coordinator
     hostname: druid-coordinator
-    #volumes:
-    #  - ./storage:/opt/data
-    #  - coordinator_var:/opt/druid/var
-    depends_on: 
+    healthcheck:
+      test: wget --spider http://localhost:8081/status/health || exit 1
+      interval: 5s
+      timeout: 5s
+      retries: 5
+      start_period: 60s
+    volumes:
+      - coordinator_var:/opt/druid/var
+      - shared:/opt/shared
+    depends_on:
       - druid-zookeeper
       - druid-postgres
-    ports:
-      - "18081:8081"
     command:
       - coordinator
     env_file:
       - environment
 
-  druild_broker:
-    image: apache/druid:neil
-    #image: apache/druid:0.20.1
-    container_name: ksd_druid-broker
+  druid-broker:
+    image: apache/druid:0.22.1
+    container_name: ksd-druid-broker
     hostname: druid-broker
-    #volumes:
-    #  - broker_var:/opt/druid/var
-    depends_on: 
+    healthcheck:
+      test: wget --spider http://localhost:8082/status/health || exit 1
+      interval: 5s
+      timeout: 5s
+      retries: 5
+      start_period: 60s
+    volumes:
+      - broker_var:/opt/druid/var
+    depends_on:
       - druid-zookeeper
       - druid-postgres
       - druid-coordinator
-    ports:
-      - "18082:8082"
     command:
       - broker
     env_file:
       - environment
+  #    deploy:
+  #      resources:
+  #        limits:
+  #          memory: 1.25G
 
-  historical:
-    image: apache/druid:neil
-    #image: apache/druid:0.20.1
-    container_name: ksd_druid-historical
+  druid-historical:
+    image: apache/druid:0.22.1
+    container_name: ksd-druid-historical
     hostname: druid-historical
-    #volumes:
-    #  - ./storage:/opt/data
-    #  - historical_var:/opt/druid/var
-    depends_on: 
+    healthcheck:
+      test: wget --spider http://localhost:8083/druid/historical/v1/readiness || exit 1
+      interval: 5s
+      timeout: 5s
+      retries: 5
+      start_period: 60s
+    volumes:
+      - historical_var:/opt/druid/var
+      - shared:/opt/shared
+    depends_on:
       - druid-zookeeper
       - druid-postgres
       - druid-coordinator
-    ports:
-      - "18083:8083"
     command:
       - historical
     env_file:
       - environment
 
   druid-middlemanager:
-    image: apache/druid:neil
-    #image: apache/druid:0.20.1
-    container_name: ksd_druid-middlemanager
+    image: apache/druid:0.22.1
+    container_name: ksd-druid-middlemanager
     hostname: druid-middlemanager
-    #volumes:
-    #  - ./storage:/opt/data
-    #  - middle_var:/opt/druid/var
-    depends_on: 
+    #    deploy:
+    #      replicas: 2
+    healthcheck:
+      test: wget --spider http://localhost:8091/status/health || exit 1
+      interval: 5s
+      timeout: 5s
+      retries: 5
+      start_period: 60s
+    volumes:
+      - middlemanager_var:/opt/druid/var
+      - shared:/opt/shared
+    depends_on:
       - druid-zookeeper
       - druid-postgres
       - druid-coordinator
-    ports:
-      - "18091:8091"
     command:
       - middleManager
     env_file:
       - environment
 
   druid-router:
-    image: apache/druid:neil
-    #image: apache/druid:0.20.1
-    container_name: ksd_druid-router
+    image: apache/druid:0.22.1
+    container_name: ksd-druid-router
     hostname: druid-router
-    #volumes:
-    #  - router_var:/opt/druid/var
+    healthcheck:
+      test: wget --spider http://localhost:8888/status/health || exit 1
+      interval: 5s
+      timeout: 5s
+      retries: 5
+      start_period: 60s
+    volumes:
+      - router_var:/opt/druid/var
     depends_on:
       - druid-zookeeper
       - druid-postgres
       - druid-coordinator
     ports:
-      - "18888:8888"
+      - "48888:8888"
     command:
       - router
     env_file:

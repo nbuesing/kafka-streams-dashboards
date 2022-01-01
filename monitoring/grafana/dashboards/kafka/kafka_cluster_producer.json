@@ -16,7 +16,7 @@
   "editable": true,
   "gnetId": 721,
   "graphTooltip": 0,
-  "iteration": 1619301501463,
+  "iteration": 1619301412518,
   "links": [],
   "panels": [
     {
@@ -33,9 +33,9 @@
         "x": 0,
         "y": 0
       },
-      "id": 15,
+      "id": 17,
       "options": {
-        "content": "![](https://raw.githubusercontent.com/nbuesing/kafka-streams-dashboards/main/doc/consumer_request_metrics.png)\n         ",
+        "content": "![](https://raw.githubusercontent.com/nbuesing/kafka-local/main/monitoring/static/producer_request_metrics.png)",
         "mode": "markdown"
       },
       "pluginVersion": "7.4.3",
@@ -100,7 +100,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "kafka_network_requestmetrics_${percentile}thpercentile{job=\"kafka\",instance=~\"$instance\",name=\"RequestQueueTimeMs\",request=\"${consumer}\"}",
+          "expr": "kafka_network_requestmetrics_${percentile}thpercentile{cluster_id=~\"$cluster\",instance=~\"$instance\",name=\"RequestQueueTimeMs\",request=\"Produce\"}",
           "interval": "",
           "legendFormat": "{{instance}}",
           "queryType": "randomWalk",
@@ -111,7 +111,7 @@
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "Consumer - RequestQueueTimeMs",
+      "title": "Producer - RequestQueueTimeMs",
       "tooltip": {
         "shared": true,
         "sort": 2,
@@ -193,7 +193,7 @@
       "pluginVersion": "7.4.3",
       "targets": [
         {
-          "expr": "avg (kafka_network_requestmetrics_${percentile}thpercentile{job=\"kafka\",instance=~\"$instance\",name=~\"RequestQueueTimeMs|LocalTimeMs|RemoteTimeMs|ResponseQueueTimeMs|ResponseSendTimeMs\",request=\"${consumer}\"}) by (name)",
+          "expr": "avg (kafka_network_requestmetrics_${percentile}thpercentile{cluster_id=~\"$cluster\",instance=~\"$instance\",name=~\"RequestQueueTimeMs|LocalTimeMs|RemoteTimeMs|ResponseQueueTimeMs|ResponseSendTimeMs\",request=\"Produce\"}) by (name)",
           "format": "time_series",
           "instant": false,
           "interval": "",
@@ -205,15 +205,6 @@
       "timeFrom": null,
       "timeShift": null,
       "title": "$percentile Percentile",
-      "transformations": [
-        {
-          "id": "renameByRegex",
-          "options": {
-            "regex": "(.*)",
-            "renamePattern": "$1"
-          }
-        }
-      ],
       "type": "bargauge"
     },
     {
@@ -266,7 +257,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "kafka_network_requestmetrics_${percentile}thpercentile{job=\"kafka\",instance=~\"$instance\",name=\"LocalTimeMs\",request=\"${consumer}\"}",
+          "expr": "kafka_network_requestmetrics_${percentile}thpercentile{cluster_id=~\"$cluster\",instance=~\"$instance\",name=\"LocalTimeMs\",request=\"Produce\"}",
           "interval": "",
           "legendFormat": "{{instance}}",
           "queryType": "randomWalk",
@@ -277,7 +268,177 @@
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "Consumer - LocalTimeMs",
+      "title": "Producer - LocalTimeMs",
+      "tooltip": {
+        "shared": true,
+        "sort": 2,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "$$hashKey": "object:76",
+          "format": "ms",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "$$hashKey": "object:77",
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "cacheTimeout": null,
+      "datasource": "prometheus",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {},
+          "decimals": 2,
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "ms"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 14
+      },
+      "id": 8,
+      "interval": null,
+      "links": [],
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "last"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "text": {},
+        "textMode": "value"
+      },
+      "pluginVersion": "7.4.3",
+      "targets": [
+        {
+          "exemplar": false,
+          "expr": "avg(kafka_network_requestmetrics_${percentile}thpercentile{cluster_id=~\"$cluster\",instance=~\"$instance\",name=\"TotalTimeMs\",request=\"Produce\"})",
+          "format": "time_series",
+          "instant": false,
+          "interval": "",
+          "legendFormat": "",
+          "queryType": "randomWalk",
+          "refId": "A"
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Producer - TotalTimeMs",
+      "type": "stat"
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "prometheus",
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {},
+          "links": []
+        },
+        "overrides": []
+      },
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 16
+      },
+      "hiddenSeries": false,
+      "id": 13,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "nullPointMode": "null",
+      "options": {
+        "alertThreshold": true
+      },
+      "percentage": false,
+      "pluginVersion": "7.4.3",
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "expr": "kafka_network_requestmetrics_${percentile}thpercentile{cluster_id=~\"$cluster\",instance=~\"$instance\",name=\"RemoteTimeMs\",request=\"Produce\"}",
+          "interval": "",
+          "legendFormat": "{{instance}}",
+          "queryType": "randomWalk",
+          "refId": "A"
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Producer - RemoteTimeMs",
       "tooltip": {
         "shared": true,
         "sort": 2,
@@ -336,107 +497,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 14
-      },
-      "hiddenSeries": false,
-      "id": 13,
-      "legend": {
-        "avg": false,
-        "current": false,
-        "max": false,
-        "min": false,
-        "show": true,
-        "total": false,
-        "values": false
-      },
-      "lines": true,
-      "linewidth": 1,
-      "nullPointMode": "null",
-      "options": {
-        "alertThreshold": true
-      },
-      "percentage": false,
-      "pluginVersion": "7.4.3",
-      "pointradius": 2,
-      "points": false,
-      "renderer": "flot",
-      "seriesOverrides": [],
-      "spaceLength": 10,
-      "stack": false,
-      "steppedLine": false,
-      "targets": [
-        {
-          "expr": "kafka_network_requestmetrics_${percentile}thpercentile{job=\"kafka\",instance=~\"$instance\",name=\"RequestBytes\",request=\"${consumer}\"}",
-          "interval": "",
-          "legendFormat": "{{instance}}",
-          "queryType": "randomWalk",
-          "refId": "A"
-        }
-      ],
-      "thresholds": [],
-      "timeFrom": null,
-      "timeRegions": [],
-      "timeShift": null,
-      "title": "Consumer - RequestBytes",
-      "tooltip": {
-        "shared": true,
-        "sort": 2,
-        "value_type": "individual"
-      },
-      "type": "graph",
-      "xaxis": {
-        "buckets": null,
-        "mode": "time",
-        "name": null,
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "$$hashKey": "object:76",
-          "format": "bytes",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        },
-        {
-          "$$hashKey": "object:77",
-          "format": "short",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        }
-      ],
-      "yaxis": {
-        "align": false,
-        "alignLevel": null
-      }
-    },
-    {
-      "aliasColors": {},
-      "bars": false,
-      "dashLength": 10,
-      "dashes": false,
-      "datasource": "prometheus",
-      "description": "",
-      "fieldConfig": {
-        "defaults": {
-          "custom": {},
-          "links": []
-        },
-        "overrides": []
-      },
-      "fill": 1,
-      "fillGradient": 0,
-      "gridPos": {
-        "h": 8,
-        "w": 12,
-        "x": 12,
-        "y": 16
+        "y": 22
       },
       "hiddenSeries": false,
       "id": 10,
@@ -466,7 +527,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "kafka_network_requestmetrics_${percentile}thpercentile{job=\"kafka\",instance=~\"$instance\",name=\"RemoteTimeMs\",request=\"${consumer}\"}",
+          "expr": "kafka_network_requestmetrics_${percentile}thpercentile{cluster_id=~\"$cluster\",instance=~\"$instance\",name=\"RequestBytes\",request=\"Produce\"}",
           "interval": "",
           "legendFormat": "{{instance}}",
           "queryType": "randomWalk",
@@ -477,7 +538,7 @@
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "Consumer - RemoteTimeMs",
+      "title": "Producer - RequestBytes",
       "tooltip": {
         "shared": true,
         "sort": 2,
@@ -494,7 +555,7 @@
       "yaxes": [
         {
           "$$hashKey": "object:76",
-          "format": "ms",
+          "format": "bytes",
           "label": null,
           "logBase": 1,
           "max": null,
@@ -566,7 +627,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "kafka_network_requestmetrics_${percentile}thpercentile{job=\"kafka\",instance=~\"$instance\",name=\"ResponseQueueTimeMs\",request=\"${consumer}\"}",
+          "expr": "kafka_network_requestmetrics_${percentile}thpercentile{cluster_id=~\"$cluster\",instance=~\"$instance\",name=\"ResponseQueueTimeMs\",request=\"Produce\"}",
           "interval": "",
           "legendFormat": "{{instance}}",
           "queryType": "randomWalk",
@@ -577,7 +638,7 @@
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "Consumer - ResponseQueueTimeMs",
+      "title": "Producer - ResponseQueueTimeMs",
       "tooltip": {
         "shared": true,
         "sort": 2,
@@ -666,7 +727,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "kafka_network_requestmetrics_${percentile}thpercentile{job=\"kafka\",instance=~\"$instance\",name=\"ResponseSendTimeMs\",request=\"${consumer}\"}",
+          "expr": "kafka_network_requestmetrics_${percentile}thpercentile{cluster_id=~\"$cluster\",instance=~\"$instance\",name=\"ResponseSendTimeMs\",request=\"Produce\"}",
           "interval": "",
           "legendFormat": "{{instance}}",
           "queryType": "randomWalk",
@@ -677,7 +738,7 @@
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "Consumer - ResponseSendsTimeMs",
+      "title": "Producer - ResponseSendsTimeMs",
       "tooltip": {
         "shared": true,
         "sort": 2,
@@ -727,14 +788,44 @@
   "templating": {
     "list": [
       {
-        "allValue": null,
+        "allValue": ".+",
         "current": {
-          "selected": false,
+          "selected": true,
+          "text": "kafka-core",
+          "value": "kafka-core"
+        },
+        "datasource": "prometheus",
+        "definition": "label_values(jvm_info{cluster_type=\"kafka\"}, cluster_id)",
+        "description": null,
+        "error": null,
+        "hide": 0,
+        "includeAll": false,
+        "label": "cluster",
+        "multi": false,
+        "name": "cluster",
+        "options": [],
+        "query": {
+          "query": "label_values(jvm_info{cluster_type=\"kafka\"}, cluster_id)",
+          "refId": "StandardVariableQuery"
+        },
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "tagValuesQuery": "",
+        "tagsQuery": "",
+        "type": "query",
+        "useTags": false
+      },
+      {
+        "allValue": ".*",
+        "current": {
+          "selected": true,
           "text": "All",
           "value": "$__all"
         },
         "datasource": "prometheus",
-        "definition": "kafka_server_app_info_commitid",
+        "definition": "label_values(jvm_info{cluster_type=\"kafka\", cluster_id=\"$cluster\"}, instance)",
         "description": null,
         "error": null,
         "hide": 0,
@@ -744,15 +835,14 @@
         "name": "instance",
         "options": [],
         "query": {
-          "query": "kafka_server_app_info_commitid",
+          "query": "label_values(jvm_info{cluster_type=\"kafka\", cluster_id=\"$cluster\"}, instance)",
           "refId": "StandardVariableQuery"
         },
         "refresh": 1,
-        "regex": "/.*instance=\"(.*)\",job.*$/",
+        "regex": "",
         "skipUrlSync": false,
         "sort": 0,
         "tagValuesQuery": "",
-        "tags": [],
         "tagsQuery": "",
         "type": "query",
         "useTags": false
@@ -761,8 +851,8 @@
         "allValue": null,
         "current": {
           "selected": true,
-          "text": "999",
-          "value": "999"
+          "text": "99",
+          "value": "99"
         },
         "description": null,
         "error": null,
@@ -788,48 +878,17 @@
             "value": "95"
           },
           {
-            "selected": false,
+            "selected": true,
             "text": "99",
             "value": "99"
           },
           {
-            "selected": true,
+            "selected": false,
             "text": "999",
             "value": "999"
           }
         ],
         "query": "50,75,95,99,999",
-        "queryValue": "",
-        "skipUrlSync": false,
-        "type": "custom"
-      },
-      {
-        "allValue": null,
-        "current": {
-          "selected": true,
-          "text": "consumer",
-          "value": "FetchConsumer"
-        },
-        "description": null,
-        "error": null,
-        "hide": 0,
-        "includeAll": false,
-        "label": null,
-        "multi": false,
-        "name": "consumer",
-        "options": [
-          {
-            "selected": false,
-            "text": "consumer",
-            "value": "FetchConsumer"
-          },
-          {
-            "selected": false,
-            "text": "follower",
-            "value": "FetchFollower"
-          }
-        ],
-        "query": "consumer,follower",
         "queryValue": "",
         "skipUrlSync": false,
         "type": "custom"
@@ -867,7 +926,7 @@
     ]
   },
   "timezone": "browser",
-  "title": "Kafka Cluster - Consumer Metrics",
-  "uid": "kafka_cluster_consumer",
-  "version": 1
+  "title": "Kafka Cluster - Producer Metrics",
+  "uid": "kafka_cluster_producer",
+  "version": 13
 }

@@ -33,7 +33,9 @@ TEMPLATE=$(cat <<EOF
   {
     "targets": \$v,
     "labels": { 
-      "job": "streams" 
+      "job": "streams"
+      "cluster_type": "streams",
+      "cluster_id": "streams"
     }
   }
 ]

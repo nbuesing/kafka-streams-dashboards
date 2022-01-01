@@ -30,7 +30,6 @@ services:
   analytics_sliding:
     image: nbuesing/ksd_analytics:latest
     hostname: analytics_sliding
-    container_name: analytics_sliding
     healthcheck:
       test: /healthcheck.sh || exit 1
       start_period: 10s
@@ -50,7 +49,6 @@ services:
   analytics_tumbling:
     image: nbuesing/ksd_analytics:latest
     hostname: analytics_tumbling
-    container_name: analytics_tumbling
     healthcheck:
       test: /healthcheck.sh || exit 1
       start_period: 10s
@@ -70,7 +68,6 @@ services:
   analytics_hopping:
     image: nbuesing/ksd_analytics:latest
     hostname: analytics_hopping
-    container_name: analytics_hopping
     healthcheck:
       test: /healthcheck.sh || exit 1
       start_period: 10s
@@ -90,7 +87,6 @@ services:
   analytics_session:
     image: nbuesing/ksd_analytics:latest
     hostname: analytics_session
-    container_name: analytics_session
     healthcheck:
       test: /healthcheck.sh || exit 1
       start_period: 10s

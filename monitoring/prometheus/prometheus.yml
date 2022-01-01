@@ -18,6 +18,9 @@ scrape_configs:
         - broker-2:7071
         - broker-3:7071
         - broker-4:7071
+        labels:
+          cluster_type: "kafka"
+          cluster_id: "kafka-core"
     relabel_configs:
       - source_labels: [__address__]
         regex: '(.*):(.*)'

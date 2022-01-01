@@ -77,7 +77,7 @@
       "pluginVersion": "7.4.3",
       "targets": [
         {
-          "expr": "sum(max(kafka_log_log_value{name=\"Size\", topic=~ '$topic'}) by (partition))",
+          "expr": "sum(max(kafka_log_log_value{cluster_id=~\"$cluster\", name=\"Size\", topic=~ '$topic'}) by (partition))",
           "format": "time_series",
           "instant": true,
           "interval": "1m",
@@ -147,7 +147,7 @@
       "pluginVersion": "7.4.3",
       "targets": [
         {
-          "expr": "count(count(kafka_log_log_value{name=\"Size\", topic='$topic'}) by (partition))",
+          "expr": "count(count(kafka_log_log_value{cluster_id=~\"$cluster\", name=\"Size\", topic='$topic'}) by (partition))",
           "format": "time_series",
           "instant": true,
           "interval": "1m",
@@ -161,7 +161,7 @@
     {
       "cacheTimeout": null,
       "datasource": "prometheus",
-      "description": "Only pertains to non-compacted topics",
+      "description": "",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -218,7 +218,7 @@
       "pluginVersion": "7.4.3",
       "targets": [
         {
-          "expr": "sum(max(kafka_log_log_value{name=\"LogEndOffset\", topic =~ \"$topic\"}) by (partition)) - sum(max(kafka_log_log_value{name=\"LogStartOffset\", topic =~ \"$topic\"}) by (partition))",
+          "expr": "sum(max(kafka_log_log_value{cluster_id=~\"$cluster\", name=\"LogEndOffset\", topic =~ \"$topic\"}) by (partition)) - sum(max(kafka_log_log_value{name=\"LogStartOffset\", topic =~ \"$topic\"}) by (partition))",
           "format": "time_series",
           "instant": true,
           "intervalFactor": 1,
@@ -231,7 +231,7 @@
     {
       "cacheTimeout": null,
       "datasource": "prometheus",
-      "description": "Only pertains to non-compacted topics",
+      "description": "",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -288,7 +288,7 @@
       "pluginVersion": "7.4.3",
       "targets": [
         {
-          "expr": "sum (max by(partition) (kafka_log_log_value{name=\"LogEndOffset\", topic =~ \"$topic\"}))",
+          "expr": "sum (max by(partition) (kafka_log_log_value{cluster_id=~\"$cluster\", name=\"LogEndOffset\", topic =~ \"$topic\"}))",
           "format": "time_series",
           "instant": true,
           "interval": "",
@@ -360,7 +360,7 @@
       "pluginVersion": "7.4.3",
       "targets": [
         {
-          "expr": "sum(kafka_log_log_value{name=\"NumLogSegments\", topic=\"$topic\"})",
+          "expr": "sum(kafka_log_log_value{cluster_id=~\"$cluster\", name=\"NumLogSegments\", topic=\"$topic\"})",
           "format": "time_series",
           "instant": true,
           "intervalFactor": 1,
@@ -373,7 +373,7 @@
     {
       "cacheTimeout": null,
       "datasource": "prometheus",
-      "description": "Only pertains to non-compacted topics",
+      "description": "",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -430,7 +430,7 @@
       "pluginVersion": "7.4.3",
       "targets": [
         {
-          "expr": "sum (kafka_log_log_value{name=\"LogEndOffset\", topic =~ \"$topic\"}) - sum (kafka_log_log_value{name=\"LogStartOffset\", topic =~ \"$topic\"})",
+          "expr": "sum (kafka_log_log_value{cluster_id=~\"$cluster\", name=\"LogEndOffset\", topic =~ \"$topic\"}) - sum (kafka_log_log_value{cluster_id=~\"$cluster\", name=\"LogStartOffset\", topic =~ \"$topic\"})",
           "format": "time_series",
           "instant": true,
           "interval": "",
@@ -445,7 +445,7 @@
     {
       "cacheTimeout": null,
       "datasource": "prometheus",
-      "description": "Based on the 1-minute rate from Kafka",
+      "description": "",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -503,7 +503,7 @@
       "pluginVersion": "7.4.3",
       "targets": [
         {
-          "expr": "sum (kafka_server_brokertopicmetrics_oneminuterate{name=\"MessagesInPerSec\",topic = \"${topic}\"})",
+          "expr": "sum (kafka_server_brokertopicmetrics_oneminuterate{cluster_id=~\"$cluster\", name=\"MessagesInPerSec\", topic = \"${topic}\"})",
           "format": "time_series",
           "instant": true,
           "intervalFactor": 2,
@@ -516,7 +516,7 @@
     {
       "cacheTimeout": null,
       "datasource": "prometheus",
-      "description": "Based on the 1-minute rate from Kafka",
+      "description": "",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -574,7 +574,7 @@
       "pluginVersion": "7.4.3",
       "targets": [
         {
-          "expr": "sum (kafka_server_brokertopicmetrics_oneminuterate{name=\"BytesInPerSec\",topic = \"${topic}\"})",
+          "expr": "sum (kafka_server_brokertopicmetrics_oneminuterate{cluster_id=~\"$cluster\", name=\"BytesInPerSec\", topic = \"${topic}\"})",
           "format": "time_series",
           "instant": true,
           "intervalFactor": 2,
@@ -587,7 +587,7 @@
     {
       "cacheTimeout": null,
       "datasource": "prometheus",
-      "description": "Based on the 1-minute rate from Kafka",
+      "description": "",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -645,7 +645,7 @@
       "pluginVersion": "7.4.3",
       "targets": [
         {
-          "expr": "sum (kafka_server_brokertopicmetrics_oneminuterate{name=\"BytesOutPerSec\",topic = \"${topic}\"})",
+          "expr": "sum (kafka_server_brokertopicmetrics_oneminuterate{cluster_id=~\"$cluster\", name=\"BytesOutPerSec\", topic=\"${topic}\"})",
           "format": "time_series",
           "instant": true,
           "intervalFactor": 2,
@@ -661,7 +661,7 @@
       "dashLength": 10,
       "dashes": false,
       "datasource": "prometheus",
-      "description": "This is based on the One Minute Rate value from the Kafka Broker.",
+      "description": "",
       "editable": true,
       "error": false,
       "fieldConfig": {
@@ -709,7 +709,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum (kafka_server_brokertopicmetrics_oneminuterate{name=\"MessagesInPerSec\",topic = \"${topic}\"})",
+          "expr": "sum (kafka_server_brokertopicmetrics_oneminuterate{cluster_id=~\"$cluster\", name=\"MessagesInPerSec\",topic = \"${topic}\"})",
           "format": "time_series",
           "intervalFactor": 2,
           "legendFormat": "{{topic}}",
@@ -764,7 +764,7 @@
       "dashLength": 10,
       "dashes": false,
       "datasource": "prometheus",
-      "description": "This is based on the One Minute Rate value from the Kafka Broker.",
+      "description": "",
       "editable": true,
       "error": false,
       "fieldConfig": {
@@ -812,7 +812,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum without(instance,job)(kafka_server_brokertopicmetrics_oneminuterate{name=\"BytesInPerSec\",topic = \"${topic}\"})",
+          "expr": "sum without(instance,job)(kafka_server_brokertopicmetrics_oneminuterate{cluster_id=~\"$cluster\", name=\"BytesInPerSec\",topic = \"${topic}\"})",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "{{topic}}",
@@ -869,7 +869,7 @@
       "dashLength": 10,
       "dashes": false,
       "datasource": "prometheus",
-      "description": "This is based on the One Minute Rate value from the Kafka Broker.",
+      "description": "",
       "editable": true,
       "error": false,
       "fieldConfig": {
@@ -917,7 +917,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum without(instance,job)(kafka_server_brokertopicmetrics_oneminuterate{name=\"BytesOutPerSec\",topic = \"${topic}\"})",
+          "expr": "sum without(instance,job)(kafka_server_brokertopicmetrics_oneminuterate{cluster_id=~\"$cluster\", name=\"BytesOutPerSec\",topic = \"${topic}\"})",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "{{topic}}",
@@ -1029,7 +1029,7 @@
       "pluginVersion": "7.4.3",
       "targets": [
         {
-          "expr": "sum(rate(kafka_server_brokertopicmetrics_count{name=\"MessagesInPerSec\",topic = \"${topic}\"}[1m]))",
+          "expr": "sum(rate(kafka_server_brokertopicmetrics_count{cluster_id=~\"$cluster\", name=\"MessagesInPerSec\", topic=\"${topic}\"}[1m]))",
           "format": "time_series",
           "instant": true,
           "intervalFactor": 10,
@@ -1100,7 +1100,7 @@
       "pluginVersion": "7.4.3",
       "targets": [
         {
-          "expr": "sum(rate(kafka_server_brokertopicmetrics_count{name=\"BytesInPerSec\",topic = \"${topic}\"}[1m]))",
+          "expr": "sum(rate(kafka_server_brokertopicmetrics_count{cluster_id=~\"$cluster\", name=\"BytesInPerSec\",topic = \"${topic}\"}[1m]))",
           "format": "time_series",
           "instant": true,
           "intervalFactor": 10,
@@ -1171,7 +1171,7 @@
       "pluginVersion": "7.4.3",
       "targets": [
         {
-          "expr": "sum(rate(kafka_server_brokertopicmetrics_count{name=\"BytesOutPerSec\",topic = \"${topic}\"}[1m]))",
+          "expr": "sum(rate(kafka_server_brokertopicmetrics_count{cluster_id=~\"$cluster\", name=\"BytesOutPerSec\",topic = \"${topic}\"}[1m]))",
           "format": "time_series",
           "instant": true,
           "intervalFactor": 10,
@@ -1187,7 +1187,7 @@
       "dashLength": 10,
       "dashes": false,
       "datasource": "prometheus",
-      "description": "This is based on the Count from the broker and Grafana doing the time series calculation with a 1-minute interval.",
+      "description": "",
       "editable": true,
       "error": false,
       "fieldConfig": {
@@ -1235,7 +1235,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum (rate(kafka_server_brokertopicmetrics_count{name=\"MessagesInPerSec\", topic = \"${topic}\"}[1m]))",
+          "expr": "sum (rate(kafka_server_brokertopicmetrics_count{cluster_id=~\"$cluster\", name=\"MessagesInPerSec\", topic = \"${topic}\"}[1m]))",
           "format": "time_series",
           "instant": false,
           "intervalFactor": 2,
@@ -1291,7 +1291,7 @@
       "dashLength": 10,
       "dashes": false,
       "datasource": "prometheus",
-      "description": "This is based on the Count from the broker and Grafana doing the time series calculation with a 1-minute interval.",
+      "description": "",
       "editable": true,
       "error": false,
       "fieldConfig": {
@@ -1339,7 +1339,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum (rate(kafka_server_brokertopicmetrics_count{name=\"BytesInPerSec\", topic = \"${topic}\"}[1m]))",
+          "expr": "sum (rate(kafka_server_brokertopicmetrics_count{cluster_id=~\"$cluster\", name=\"BytesInPerSec\", topic = \"${topic}\"}[1m]))",
           "format": "time_series",
           "instant": false,
           "intervalFactor": 2,
@@ -1397,7 +1397,7 @@
       "dashLength": 10,
       "dashes": false,
       "datasource": "prometheus",
-      "description": "This is based on the Count from the broker and Grafana doing the time series calculation with a 1-minute interval.",
+      "description": "",
       "editable": true,
       "error": false,
       "fieldConfig": {
@@ -1445,7 +1445,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum (rate(kafka_server_brokertopicmetrics_count{name=\"BytesOutPerSec\", topic = \"${topic}\"}[1m]))",
+          "expr": "sum (rate(kafka_server_brokertopicmetrics_count{cluster_id=~\"$cluster\", name=\"BytesOutPerSec\", topic = \"${topic}\"}[1m]))",
           "format": "time_series",
           "instant": false,
           "intervalFactor": 2,
@@ -1508,13 +1508,37 @@
   "templating": {
     "list": [
       {
-        "allValue": null,
+        "allValue": ".+",
         "current": {
-          "isNone": true,
-          "selected": false,
-          "text": "None",
-          "value": ""
+          "selected": true,
+          "text": "kafka-core",
+          "value": "kafka-core"
         },
+        "datasource": "prometheus",
+        "definition": "label_values(jvm_info{cluster_type=\"kafka\"}, cluster_id)",
+        "description": null,
+        "error": null,
+        "hide": 0,
+        "includeAll": false,
+        "label": "cluster",
+        "multi": false,
+        "name": "cluster",
+        "options": [],
+        "query": {
+          "query": "label_values(jvm_info{cluster_type=\"kafka\"}, cluster_id)",
+          "refId": "StandardVariableQuery"
+        },
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "tagValuesQuery": "",
+        "tagsQuery": "",
+        "type": "query",
+        "useTags": false
+      },
+      {
+        "allValue": null,
         "datasource": "prometheus",
         "definition": "",
         "description": null,
@@ -1526,7 +1550,7 @@
         "name": "topic",
         "options": [],
         "query": {
-          "query": "kafka_server_brokertopicmetrics_oneminuterate{name=\"BytesInPerSec\",topic!~\"__confluent.+\"}",
+          "query": "kafka_server_brokertopicmetrics_oneminuterate{cluster_id=~\"$cluster\",instance=~\".*\",name=\"BytesInPerSec\",topic!~\"__confluent.+\"}",
           "refId": "prometheus-topic-Variable-Query"
         },
         "refresh": 1,

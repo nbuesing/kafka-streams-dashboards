@@ -186,7 +186,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "avg without(task, partition_id) (kafka_streams_stream_task_metrics_process_latency_avg{partition_id=~\"${partition}\",task_id=~\"${task}\",thread_id=~\"${thread}\",instance=~\"${instance}\",job=~\"${job}\"})/1000000",
+          "expr": "avg without(task, partition_id) (kafka_streams_stream_task_metrics_process_latency_avg{partition_id=~\"${partition}\",task_id=~\"${task}\",thread_id=~\"${thread}\",instance=~\"${instance}\",cluster_id=~\"${cluster}\"})/1000000",
           "format": "time_series",
           "hide": false,
           "instant": false,
@@ -284,7 +284,7 @@
       "repeat": null,
       "targets": [
         {
-          "expr": "avg without(partition_id, task_id, thread_id, instance) (kafka_streams_stream_task_metrics_process_latency_avg{partition_id=~\"${partition}\", task_id=~\"${task}\", thread_id=~\"${thread}\",instance=~\"${instance}\", job=~\"${job}\"})/1000000",
+          "expr": "avg without(partition_id, task_id, thread_id, instance) (kafka_streams_stream_task_metrics_process_latency_avg{partition_id=~\"${partition}\", task_id=~\"${task}\", thread_id=~\"${thread}\",instance=~\"${instance}\", cluster_id=~\"${cluster}\"})/1000000",
           "format": "time_series",
           "hide": false,
           "instant": true,
@@ -352,7 +352,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum without(task, partition) (kafka_streams_stream_task_metrics_process_rate{partition_id=~\"${partition}\",task_id=~\"${task}\",thread_id=~\"${thread}\",instance=~\"${instance}\",job=~\"${job}\"})",
+          "expr": "sum without(task, partition) (kafka_streams_stream_task_metrics_process_rate{partition_id=~\"${partition}\",task_id=~\"${task}\",thread_id=~\"${thread}\",instance=~\"${instance}\",cluster_id=~\"${cluster}\"})",
           "format": "time_series",
           "hide": false,
           "instant": false,
@@ -449,7 +449,7 @@
       "pluginVersion": "7.4.2",
       "targets": [
         {
-          "expr": "sum without(partition_id, task_id, thread_id, instance) (kafka_streams_stream_task_metrics_process_rate{partition_id=~\"${partition}\", task_id=~\"${task}\", thread_id=~\"${thread}\",instance=~\"${instance}\", job=~\"${job}\"})",
+          "expr": "sum without(partition_id, task_id, thread_id, instance) (kafka_streams_stream_task_metrics_process_rate{partition_id=~\"${partition}\", task_id=~\"${task}\", thread_id=~\"${thread}\",instance=~\"${instance}\", cluster_id=~\"${cluster}\"})",
           "format": "time_series",
           "hide": false,
           "instant": true,
@@ -524,7 +524,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum without(task,partition) (kafka_streams_stream_task_metrics_process_total{partition_id=~\"${partition}\",task_id=~\"${task}\",thread_id=~\"${thread}\",instance=~\"${instance}\",job=~\"${job}\"})",
+          "expr": "sum without(task,partition) (kafka_streams_stream_task_metrics_process_total{partition_id=~\"${partition}\",task_id=~\"${task}\",thread_id=~\"${thread}\",instance=~\"${instance}\",cluster_id=~\"${cluster}\"})",
           "format": "time_series",
           "hide": false,
           "instant": false,
@@ -621,7 +621,7 @@
       "pluginVersion": "7.4.2",
       "targets": [
         {
-          "expr": "sum without(partition_id, task_id, thread_id, instance) (kafka_streams_stream_task_metrics_process_total{partition_id=~\"${partition}\", task_id=~\"${task}\", thread_id=~\"${thread}\",instance=~\"${instance}\", job=~\"${job}\"})",
+          "expr": "sum without(partition_id, task_id, thread_id, instance) (kafka_streams_stream_task_metrics_process_total{partition_id=~\"${partition}\", task_id=~\"${task}\", thread_id=~\"${thread}\",instance=~\"${instance}\", cluster_id=~\"${cluster}\"})",
           "format": "time_series",
           "hide": false,
           "instant": true,
@@ -690,7 +690,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "avg without(task, partition) (kafka_streams_stream_task_metrics_record_lateness_avg{partition_id=~\"${partition}\",task_id=~\"${task}\",thread_id=~\"${thread}\",instance=~\"${instance}\",job=~\"${job}\"})",
+          "expr": "avg without(task, partition) (kafka_streams_stream_task_metrics_record_lateness_avg{partition_id=~\"${partition}\",task_id=~\"${task}\",thread_id=~\"${thread}\",instance=~\"${instance}\",cluster_id=~\"${cluster}\"})",
           "format": "time_series",
           "hide": false,
           "instant": false,
@@ -787,7 +787,7 @@
       "pluginVersion": "7.4.2",
       "targets": [
         {
-          "expr": "avg without(partition_id, task_id, thread_id, instance) (kafka_streams_stream_task_metrics_record_lateness_avg{partition_id=~\"${partition}\", task_id=~\"${task}\", thread_id=~\"${thread}\",instance=~\"${instance}\", job=~\"${job}\"})",
+          "expr": "avg without(partition_id, task_id, thread_id, instance) (kafka_streams_stream_task_metrics_record_lateness_avg{partition_id=~\"${partition}\", task_id=~\"${task}\", thread_id=~\"${thread}\",instance=~\"${instance}\", cluster_id=~\"${cluster}\"})",
           "format": "time_series",
           "hide": false,
           "instant": true,
@@ -861,7 +861,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum without(task,partition) (kafka_streams_stream_task_metrics_dropped_records_total{partition_id=~\"${partition}\",task_id=~\"${task}\",thread_id=~\"${thread}\",instance=~\"${instance}\",job=~\"${job}\"})",
+          "expr": "sum without(task,partition) (kafka_streams_stream_task_metrics_dropped_records_total{partition_id=~\"${partition}\",task_id=~\"${task}\",thread_id=~\"${thread}\",instance=~\"${instance}\",cluster_id=~\"${cluster}\"})",
           "format": "time_series",
           "hide": false,
           "instant": false,
@@ -958,7 +958,7 @@
       "pluginVersion": "7.4.2",
       "targets": [
         {
-          "expr": "sum without(partition_id, task_id, thread_id, instance) (kafka_streams_stream_task_metrics_dropped_records_total{partition_id=~\"${partition}\", task_id=~\"${task}\", thread_id=~\"${thread}\",instance=~\"${instance}\", job=~\"${job}\"})",
+          "expr": "sum without(partition_id, task_id, thread_id, instance) (kafka_streams_stream_task_metrics_dropped_records_total{partition_id=~\"${partition}\", task_id=~\"${task}\", thread_id=~\"${thread}\",instance=~\"${instance}\", cluster_id=~\"${cluster}\"})",
           "format": "time_series",
           "hide": false,
           "instant": true,
@@ -983,45 +983,44 @@
   "templating": {
     "list": [
       {
-        "allValue": null,
+        "allValue": ".+",
         "current": {
           "selected": false,
-          "text": "streams",
-          "value": "streams"
+          "text": "ksql-cluster",
+          "value": "ksql-cluster"
         },
         "datasource": "prometheus",
-        "definition": "kafka_streams_stream_thread_metrics_task_created_total",
+        "definition": "label_values(jvm_info{cluster_type=\"streams\"}, cluster_id)",
         "description": null,
         "error": null,
         "hide": 0,
-        "includeAll": true,
-        "label": null,
+        "includeAll": false,
+        "label": "cluster",
         "multi": false,
-        "name": "job",
+        "name": "cluster",
         "options": [],
         "query": {
-          "query": "kafka_streams_stream_thread_metrics_task_created_total",
-          "refId": "prometheus-job-Variable-Query"
+          "query": "label_values(jvm_info{cluster_type=\"streams\"}, cluster_id)",
+          "refId": "StandardVariableQuery"
         },
         "refresh": 1,
-        "regex": "/job=\\\"(.*)\\\",/",
+        "regex": "",
         "skipUrlSync": false,
         "sort": 0,
         "tagValuesQuery": "",
-        "tags": [],
         "tagsQuery": "",
         "type": "query",
         "useTags": false
       },
       {
-        "allValue": null,
+        "allValue": ".*",
         "current": {
           "selected": false,
-          "text": "All",
-          "value": "$__all"
+          "text": "ksql-server",
+          "value": "ksql-server"
         },
         "datasource": "prometheus",
-        "definition": "kafka_streams_stream_thread_metrics_process_rate",
+        "definition": "label_values(jvm_info{cluster_type=\"streams\", cluster_id=\"$cluster\"}, instance)",
         "description": null,
         "error": null,
         "hide": 0,
@@ -1031,15 +1030,14 @@
         "name": "instance",
         "options": [],
         "query": {
-          "query": "kafka_streams_stream_thread_metrics_poll_rate{job=~\"$job\"}",
+          "query": "label_values(jvm_info{cluster_type=\"streams\", cluster_id=\"$cluster\"}, instance)",
           "refId": "StandardVariableQuery"
         },
         "refresh": 1,
-        "regex": "/.*instance=\"(.*)\",job.*$/",
+        "regex": "",
         "skipUrlSync": false,
         "sort": 0,
         "tagValuesQuery": "",
-        "tags": [],
         "tagsQuery": "",
         "type": "query",
         "useTags": false
@@ -1052,7 +1050,7 @@
           "value": "$__all"
         },
         "datasource": "prometheus",
-        "definition": "kafka_streams_stream_thread_metrics_task_created_total{instance=~\"${instance}\"}",
+        "definition": "label_values(kafka_streams_stream_thread_metrics_task_created_total{cluster_id=~\"$cluster\", instance=~\"$instance\"}, thread_id)",
         "description": null,
         "error": null,
         "hide": 0,
@@ -1062,15 +1060,14 @@
         "name": "thread",
         "options": [],
         "query": {
-          "query": "kafka_streams_stream_thread_metrics_task_created_total{instance=~\"${instance}\"}",
+          "query": "label_values(kafka_streams_stream_thread_metrics_task_created_total{cluster_id=~\"$cluster\", instance=~\"$instance\"}, thread_id)",
           "refId": "StandardVariableQuery"
         },
         "refresh": 1,
-        "regex": "/.*thread_id=\"(.*)\"}$/",
+        "regex": "",
         "skipUrlSync": false,
         "sort": 0,
         "tagValuesQuery": "",
-        "tags": [],
         "tagsQuery": "",
         "type": "query",
         "useTags": false
@@ -1083,7 +1080,7 @@
           "value": "$__all"
         },
         "datasource": "prometheus",
-        "definition": "kafka_streams_stream_task_metrics_process_rate{instance=~\"${instance}\",thread_id=~\"${thread}\"}",
+        "definition": "label_values(kafka_streams_stream_task_metrics_process_rate{cluster_id=~\"$cluster\", instance=~\"${instance}\",thread_id=~\"${thread}\"}, task_id)",
         "description": null,
         "error": null,
         "hide": 0,
@@ -1119,11 +1116,11 @@
           }
         ],
         "query": {
-          "query": "kafka_streams_stream_task_metrics_process_rate{instance=~\"${instance}\",thread_id=~\"${thread}\"}",
+          "query": "label_values(kafka_streams_stream_task_metrics_process_rate{cluster_id=~\"$cluster\", instance=~\"${instance}\",thread_id=~\"${thread}\"}, task_id)",
           "refId": "StandardVariableQuery"
         },
         "refresh": 0,
-        "regex": "/.*task_id=\"([0-9]+)\",.*$/",
+        "regex": null,
         "skipUrlSync": false,
         "sort": 3,
         "tagValuesQuery": "",
@@ -1140,7 +1137,7 @@
           "value": "$__all"
         },
         "datasource": "prometheus",
-        "definition": "kafka_streams_stream_task_metrics_process_rate{instance=~\"${instance}\",thread_id=~\"${thread}\"}",
+        "definition": "label_values(kafka_streams_stream_task_metrics_process_rate{cluster_id=~\"${cluster}\", instance=~\"${instance}\",thread_id=~\"${thread}\"}, partition_id)",
         "description": null,
         "error": null,
         "hide": 0,
@@ -1150,11 +1147,11 @@
         "name": "partition",
         "options": [],
         "query": {
-          "query": "kafka_streams_stream_task_metrics_process_rate{instance=~\"${instance}\",thread_id=~\"${thread}\"}",
+          "query": "label_values(kafka_streams_stream_task_metrics_process_rate{instance=~\"${instance}\",thread_id=~\"${thread}\"}, partition_id)",
           "refId": "StandardVariableQuery"
         },
         "refresh": 1,
-        "regex": "/.*partition_id=\"([0-9]+)\",tas.*$/",
+        "regex": null,
         "skipUrlSync": false,
         "sort": 3,
         "tagValuesQuery": "",

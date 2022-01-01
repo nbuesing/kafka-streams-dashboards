@@ -11,7 +11,7 @@ services:
 
   prometheus:
     hostname: prometheus
-    container_name: ksd_prometheus
+    container_name: ksd-prometheus
     healthcheck:
       test: wget --spider http://localhost:9090/ || exit 1
       start_period: 5s
@@ -39,8 +39,8 @@ services:
 
   grafana:
     hostname: grafana
-    image: grafana/grafana:7.4.3
-    container_name: ksd_grafana
+    image: grafana/grafana:8.3.3
+    container_name: ksd-grafana
     healthcheck:
       test: wget --spider http://localhost:3000/ || exit 1
       start_period: 5s
@@ -64,12 +64,12 @@ services:
       - ./grafana/dashboards.yml:/etc/grafana/provisioning/dashboards/dashboards.yml
       - ./grafana/dashboards:/var/lib/grafana/dashboards
 
-#  kowl:
-#    image: quay.io/cloudhut/kowl:v1.4.0
-#    hostname: kowl
-#    container_name: ksd_kowl
-#    volumes:
-#      - ./kowl/config.yaml:/etc/kowl/config.yaml
-#    ports:
-#      - "8080:8080"
-#    entrypoint: ./kowl --config.filepath=/etc/kowl/config.yaml
+  kowl:
+    image: quay.io/cloudhut/kowl:v1.5.0
+    hostname: kowl
+    container_name: ksd-kowl
+    volumes:
+      - ./kowl/config.yaml:/etc/kowl/config.yaml
+    ports:
+      - "8080:8080"
+    entrypoint: ./kowl --config.filepath=/etc/kowl/config.yaml

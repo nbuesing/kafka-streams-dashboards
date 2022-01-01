@@ -9,7 +9,9 @@
       "ksda-stream-6:7071"
     ],
     "labels": {
-      "job": "streams"
+      "job": "streams",
+      "cluster_type": "streams",
+      "cluster_id": "streams"
     }
   }
 ]
