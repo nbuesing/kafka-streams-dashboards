@@ -39,7 +39,8 @@ services:
 
   grafana:
     hostname: grafana
-    image: grafana/grafana:8.3.3
+    image: grafana/grafana:main
+#    image: grafana/grafana:8.3.3
     container_name: ksd-grafana
     healthcheck:
       test: wget --spider http://localhost:3000/ || exit 1

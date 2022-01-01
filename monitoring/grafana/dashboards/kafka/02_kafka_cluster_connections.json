@@ -353,7 +353,7 @@
     ]
   },
   "timezone": "browser",
-  "title": "Kafka Cluster - Connections",
-  "uid": "kafka_cluster_connections",
+  "title": "02 - Kafka Cluster - Connections",
+  "uid": "02_kafka_cluster_connections",
   "version": 1
 }

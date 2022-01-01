@@ -26,45 +26,44 @@
   "templating": {
     "list": [
       {
-        "allValue": null,
+        "allValue": ".+",
         "current": {
           "selected": false,
-          "text": "streams",
-          "value": "streams"
+          "text": "ksql-cluster",
+          "value": "ksql-cluster"
         },
         "datasource": "prometheus",
-        "definition": "kafka_streams_stream_thread_metrics_task_created_total",
+        "definition": "label_values(jvm_info{cluster_type=\"streams\"}, cluster_id)",
         "description": null,
         "error": null,
         "hide": 0,
         "includeAll": true,
-        "label": null,
+        "label": "cluster",
         "multi": false,
-        "name": "job",
+        "name": "cluster",
         "options": [],
         "query": {
-          "query": "kafka_streams_stream_thread_metrics_task_created_total",
-          "refId": "prometheus-job-Variable-Query"
+          "query": "label_values(jvm_info{cluster_type=\"streams\"}, cluster_id)",
+          "refId": "StandardVariableQuery"
         },
         "refresh": 1,
-        "regex": "/job=\\\"(.*)\\\",/",
+        "regex": "",
         "skipUrlSync": false,
         "sort": 0,
         "tagValuesQuery": "",
-        "tags": [],
         "tagsQuery": "",
         "type": "query",
         "useTags": false
       },
       {
-        "allValue": null,
+        "allValue": ".*",
         "current": {
           "selected": false,
-          "text": "All",
-          "value": "$__all"
+          "text": "ksql-server",
+          "value": "ksql-server"
         },
         "datasource": "prometheus",
-        "definition": "kafka_streams_stream_thread_metrics_process_rate",
+        "definition": "label_values(jvm_info{cluster_type=\"streams\", cluster_id=~\"$cluster\"}, instance)",
         "description": null,
         "error": null,
         "hide": 0,
@@ -74,15 +73,14 @@
         "name": "instance",
         "options": [],
         "query": {
-          "query": "kafka_streams_stream_thread_metrics_poll_rate{job=~\"$job\"}",
+          "query": "label_values(jvm_info{cluster_type=\"streams\", cluster_id=~\"$cluster\"}, instance)",
           "refId": "StandardVariableQuery"
         },
         "refresh": 1,
-        "regex": "/.*instance=\"(.*)\",job.*$/",
+        "regex": "",
         "skipUrlSync": false,
         "sort": 0,
         "tagValuesQuery": "",
-        "tags": [],
         "tagsQuery": "",
         "type": "query",
         "useTags": false
@@ -95,7 +93,7 @@
           "value": "$__all"
         },
         "datasource": "prometheus",
-        "definition": "kafka_streams_stream_thread_metrics_task_created_total{instance=~\"${instance}\"}",
+        "definition": "label_values(kafka_streams_stream_thread_metrics_task_created_total{cluster_id=~\"$cluster\", instance=~\"$instance\"}, thread_id)",
         "description": null,
         "error": null,
         "hide": 0,
@@ -105,15 +103,14 @@
         "name": "thread",
         "options": [],
         "query": {
-          "query": "kafka_streams_stream_thread_metrics_task_created_total{instance=~\"${instance}\"}",
+          "query": "label_values(kafka_streams_stream_thread_metrics_task_created_total{cluster_id=~\"$cluster\", instance=~\"$instance\"}, thread_id)",
           "refId": "StandardVariableQuery"
         },
         "refresh": 1,
-        "regex": "/.*thread_id=\"(.*)\"}$/",
+        "regex": "",
         "skipUrlSync": false,
         "sort": 0,
         "tagValuesQuery": "",
-        "tags": [],
         "tagsQuery": "",
         "type": "query",
         "useTags": false
@@ -126,7 +123,7 @@
           "value": "$__all"
         },
         "datasource": "prometheus",
-        "definition": "kafka_streams_stream_processor_node_metrics_process_total{instance=~\"${instance}\",thread_id=~\"${thread}\"}",
+        "definition": "label_values(kafka_streams_stream_task_metrics_process_rate{cluster_id=~\"$cluster\", instance=~\"${instance}\",thread_id=~\"${thread}\"}, task_id)",
         "description": null,
         "error": null,
         "hide": 0,
@@ -159,19 +156,14 @@
             "selected": false,
             "text": "4",
             "value": "4"
-          },
-          {
-            "selected": false,
-            "text": "5",
-            "value": "5"
           }
         ],
         "query": {
-          "query": "kafka_streams_stream_processor_node_metrics_process_total{instance=~\"${instance}\",thread_id=~\"${thread}\"}",
+          "query": "label_values(kafka_streams_stream_task_metrics_process_rate{cluster_id=~\"$cluster\", instance=~\"${instance}\",thread_id=~\"${thread}\"}, task_id)",
           "refId": "StandardVariableQuery"
         },
         "refresh": 0,
-        "regex": "/.*task_id=\"([0-9]+)\",.*$/",
+        "regex": null,
         "skipUrlSync": false,
         "sort": 3,
         "tagValuesQuery": "",
@@ -180,6 +172,38 @@
         "type": "query",
         "useTags": false
       },
+      {
+        "allValue": "",
+        "current": {
+          "selected": false,
+          "text": "All",
+          "value": "$__all"
+        },
+        "datasource": "prometheus",
+        "definition": "label_values(kafka_streams_stream_task_metrics_process_rate{cluster_id=~\"${cluster}\", instance=~\"${instance}\",thread_id=~\"${thread}\"}, partition_id)",
+        "description": null,
+        "error": null,
+        "hide": 0,
+        "includeAll": true,
+        "label": "partition",
+        "multi": false,
+        "name": "partition",
+        "options": [],
+        "query": {
+          "query": "label_values(kafka_streams_stream_task_metrics_process_rate{instance=~\"${instance}\",thread_id=~\"${thread}\"}, partition_id)",
+          "refId": "StandardVariableQuery"
+        },
+        "refresh": 1,
+        "regex": null,
+        "skipUrlSync": false,
+        "sort": 3,
+        "tagValuesQuery": "",
+        "tags": [],
+        "tagsQuery": "",
+        "type": "query",
+        "useTags": true
+      },
+
       {
         "allValue": ".*",
         "current": {
@@ -203,37 +227,6 @@
         },
         "refresh": 1,
         "regex": "/.*processor_node_id=\"(.*)\",task_id=.*$/",
-        "skipUrlSync": false,
-        "sort": 3,
-        "tagValuesQuery": "",
-        "tags": [],
-        "tagsQuery": "",
-        "type": "query",
-        "useTags": true
-      },
-      {
-        "allValue": "",
-        "current": {
-          "selected": false,
-          "text": "All",
-          "value": "$__all"
-        },
-        "datasource": "prometheus",
-        "definition": "kafka_streams_stream_task_metrics_process_rate{instance=~\"${instance}\",thread_id=~\"${thread}\"}",
-        "description": null,
-        "error": null,
-        "hide": 0,
-        "includeAll": true,
-        "label": "partition",
-        "multi": false,
-        "name": "partition",
-        "options": [],
-        "query": {
-          "query": "kafka_streams_stream_task_metrics_process_rate{instance=~\"${instance}\",thread_id=~\"${thread}\"}",
-          "refId": "StandardVariableQuery"
-        },
-        "refresh": 1,
-        "regex": "/.*partition_id=\"([0-9]+)\",tas.*$/",
         "skipUrlSync": false,
         "sort": 3,
         "tagValuesQuery": "",
