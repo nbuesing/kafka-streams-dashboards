@@ -4,6 +4,13 @@ rules:
 #- pattern: application(.*)
 #- pattern: application<type=(.*)>
 #- pattern: kafka.streams.*
+#- pattern: kafka.streams<type=stream-metrics, version=(.+), commit_id=(.+), topology_description=.+, application_id=(.+),state=(.+), alive-stream-threads=(.+), failed-stream-threads=(.+)><>(.+):.+
+- pattern: "kafka.streams<type=stream-metrics, client-id=(.+)><>(.*): (.+)"
+  name: kafka_streams_info
+  value: 1
+  labels:
+    client_id: $1
+    "$2": "$3"
 - pattern: "application<type=streams><>(.+): (.+)__(.+)"
   name: application_streams
   value: 1

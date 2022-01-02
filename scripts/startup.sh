@@ -35,12 +35,12 @@ fi
 
 (cd builder; ../gradlew run)
 (cd monitoring; dc up -d)
-(cd applications; dc up -d stream)
-sleep 1
 (cd applications; dc up -d)
+#sleep 1
+#(cd applications; dc up -d)
 
-if [ $(uname) == "Darwin" ]; then
-  open http://localhost:3000
-fi
+#if [ $(uname) == "Darwin" ]; then
+#  open http://localhost:3000
+#fi
 
 (cd publisher; ../gradlew run)

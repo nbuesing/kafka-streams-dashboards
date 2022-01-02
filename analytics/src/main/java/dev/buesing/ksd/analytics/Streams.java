@@ -1,6 +1,7 @@
 package dev.buesing.ksd.analytics;
 
 import dev.buesing.ksd.common.domain.ProductAnalytic;
+import dev.buesing.ksd.common.domain.ProductAnalyticSummary;
 import dev.buesing.ksd.common.domain.PurchaseOrder;
 import dev.buesing.ksd.common.metrics.StreamsMetrics;
 import dev.buesing.ksd.tools.serde.JsonSerde;
@@ -129,6 +130,12 @@ public class Streams {
                 .mapValues(Streams::minimize)
                 .to(options.getOutputTopic() + "-" + options.getWindowType(), Produced.as("TUMBLING-to"));
 
+        // e2e
+        if (true) {
+            builder.<String, ProductAnalyticSummary>stream(options.getOutputTopic() + "-" + options.getWindowType(), Consumed.as("TUMBLING-to-consumer"))
+                    .peek((k, v) -> log.debug("key={}", k), Named.as("TUMBLING-to-consumer-peek"));
+        }
+
         return builder;
     }
 
@@ -157,6 +164,11 @@ public class Streams {
                 .mapValues(Streams::minimize)
                 .to(options.getOutputTopic() + "-" + options.getWindowType(), Produced.as("HOPPING-to"));
 
+        // e2e
+        if (true) {
+            builder.<String, ProductAnalyticSummary>stream(options.getOutputTopic() + "-" + options.getWindowType(), Consumed.as("HOPPING-to-consumer"))
+                    .peek((k, v) -> log.debug("key={}", k), Named.as("HOPPING-to-consumer-peek"));
+        }
 
         return builder;
     }
@@ -188,6 +200,12 @@ public class Streams {
                 .mapValues(Streams::minimize)
                 .to(options.getOutputTopic() + "-" + options.getWindowType(), Produced.as("SLIDING-to"));
 
+        // e2e
+        if (true) {
+            builder.<String, ProductAnalyticSummary>stream(options.getOutputTopic() + "-" + options.getWindowType(), Consumed.as("SLIDING-to-consumer"))
+                    .peek((k, v) -> log.debug("key={}", k), Named.as("SLIDING-to-consumer-peek"));
+        }
+
         return builder;
     }
 
@@ -215,6 +233,12 @@ public class Streams {
                 .selectKey((k, v) -> k.key() + " [" + convert(k.window().startTime()) + "," + convert(k.window().endTime()) + ")")
                 .mapValues(Streams::minimize)
                 .to(options.getOutputTopic() + "-" + options.getWindowType(), Produced.as("SESSION-to"));
+
+        // e2e
+        if (true) {
+            builder.<String, ProductAnalyticSummary>stream(options.getOutputTopic() + "-" + options.getWindowType(), Consumed.as("SESSION-to-consumer"))
+                    .peek((k, v) -> log.debug("key={}", k), Named.as("SESSION-to-consumer-peek"));
+        }
 
         return builder;
     }
@@ -263,15 +287,10 @@ public class Streams {
         return LocalDateTime.ofInstant(ts, ZoneId.systemDefault()).format(TIME_FORMATTER_SSS);
     }
 
-    private static Map<String, Object> minimize(final ProductAnalytic productAnalytic) {
-
+    private static ProductAnalyticSummary minimize(final ProductAnalytic productAnalytic) {
         if (productAnalytic == null) {
             return null;
         }
-
-        return Map.ofEntries(
-                Map.entry("qty", productAnalytic.getQuantity()),
-                Map.entry("ts", convert(productAnalytic.getTimestamp()))
-        );
+        return ProductAnalyticSummary.create(productAnalytic);
     }
 }

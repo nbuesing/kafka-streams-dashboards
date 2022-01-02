@@ -236,8 +236,8 @@ public class Streams {
 
         // e2e
         if (true) {
-            builder.<String, PurchaseOrder>stream(options.getPickupTopic(), Consumed.as("pickup-orders-consumed"))
-                    .peek((k, v) -> log.debug("key={}", k));
+            builder.<String, PurchaseOrder>stream(options.getPickupTopic(), Consumed.as("pickup-orders-consumed-e2e"))
+                    .peek((k, v) -> log.debug("key={}", k), Named.as("pickup-orders-consumed-e2e-peek"));
         }
 
         return builder;

@@ -86,10 +86,38 @@ public class BuildSystem {
         NewTopic pickupOrders = new NewTopic(options.getPickupTopic(), PARTITIONS, REPLICATION_FACTOR);
         pickupOrders.configs(CONFIGS);
 
+        NewTopic repartition = new NewTopic(options.getRepartitionTopic(), PARTITIONS, REPLICATION_FACTOR);
+        repartition.configs(CONFIGS);
+
+        NewTopic outputTopicTumbling = new NewTopic(options.getOutputTopicPrefix() + "-TUMBLING", PARTITIONS, REPLICATION_FACTOR);
+        outputTopicTumbling.configs(CONFIGS);
+
+        NewTopic outputTopicHopping = new NewTopic(options.getOutputTopicPrefix() + "-HOPPING", PARTITIONS, REPLICATION_FACTOR);
+        outputTopicHopping.configs(CONFIGS);
+
+        NewTopic outputTopicSliding = new NewTopic(options.getOutputTopicPrefix() + "-SLIDING", PARTITIONS, REPLICATION_FACTOR);
+        outputTopicSliding.configs(CONFIGS);
+
+        NewTopic outputTopicSession = new NewTopic(options.getOutputTopicPrefix() + "-SESSION", PARTITIONS, REPLICATION_FACTOR);
+        outputTopicSession.configs(CONFIGS);
+
+
         NewTopic customMetricsTopic = new NewTopic(options.getCustomMetricsTopic(), METRICS_PARTITIONS, METRICS_REPLICATION_FACTOR);
         customMetricsTopic.configs(METRICS_CONFIGS);
 
-        final List<NewTopic> topics = Arrays.asList(store, user, product, purchaseOrders, pickupOrders, customMetricsTopic);
+        final List<NewTopic> topics = Arrays.asList(
+                store,
+                user,
+                product,
+                purchaseOrders,
+                pickupOrders,
+                repartition,
+                outputTopicTumbling,
+                outputTopicHopping,
+                outputTopicSliding,
+                outputTopicSession,
+                customMetricsTopic
+        );
 
         if (options.isDeleteTopics()) {
             admin.deleteTopics(topics.stream().map(NewTopic::name).collect(Collectors.toList())).values().forEach((k, v) -> {

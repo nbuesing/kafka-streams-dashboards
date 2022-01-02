@@ -33,6 +33,13 @@ public abstract class BaseOptions {
     private String customMetricsTopic = "_metrics-kafka-streams";
 
 
+    @Parameter(names = { "--repartition-topic" })
+    private String repartitionTopic = "pickup-order-handler-purchase-order-join-product-repartition";
+
+    @Parameter(names = { "--output-topic-prefix" }, description = "")
+    private String outputTopicPrefix = "product-statistics";
+
+
     private int numberOfStores = 1000;
     private int numberOfUsers = 10_000;
 //    private int numberOfUsers = 10;

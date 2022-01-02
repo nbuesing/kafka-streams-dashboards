@@ -69,6 +69,12 @@ services:
     image: quay.io/cloudhut/kowl:v1.5.0
     hostname: kowl
     container_name: ksd-kowl
+    healthcheck:
+      test: wget --spider http://localhost:8080/ || exit 1
+      start_period: 5s
+      interval: 5s
+      timeout: 5s
+      retries: 3
     volumes:
       - ./kowl/config.yaml:/etc/kowl/config.yaml
     ports:
