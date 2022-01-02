@@ -21,97 +21,105 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "iteration": 1641051720352,
+  "iteration": 1641161495914,
   "links": [],
   "liveNow": false,
   "panels": [
     {
-      "aliasColors": {},
-      "bars": false,
-      "dashLength": 10,
-      "dashes": false,
       "datasource": {
         "type": "prometheus",
         "uid": "P1809F7CD0C75ACF3"
       },
-      "fill": 1,
-      "fillGradient": 0,
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": true,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
       "gridPos": {
         "h": 8,
         "w": 16,
         "x": 0,
         "y": 0
       },
-      "hiddenSeries": false,
       "id": 37,
-      "legend": {
-        "avg": false,
-        "current": false,
-        "max": false,
-        "min": false,
-        "show": true,
-        "total": false,
-        "values": false
-      },
-      "lines": true,
-      "linewidth": 1,
+      "interval": "1s",
       "links": [],
-      "nullPointMode": "null",
       "options": {
-        "alertThreshold": true
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "single"
+        }
       },
-      "percentage": false,
-      "pluginVersion": "8.3.3",
-      "pointradius": 2,
-      "points": false,
-      "renderer": "flot",
-      "seriesOverrides": [],
-      "spaceLength": 10,
-      "stack": false,
-      "steppedLine": false,
+      "pluginVersion": "8.4.0-46516pre",
       "targets": [
         {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "P1809F7CD0C75ACF3"
+          },
+          "exemplar": true,
           "expr": "sum without(partition_id) ((kafka_streams_stream_processor_node_metrics_record_e2e_latency_avg{partition_id=~\"${partition}\", processor_node_id=~\"${process}\", task_id=~\"${task}\", thread_id=~\"${thread}\", cluster_id=~\"${cluster}\"}) >=0)",
           "format": "time_series",
           "hide": false,
           "instant": false,
           "interval": "",
           "intervalFactor": 1,
-          "legendFormat": "{{task_id}}/{{processor_node_id}}",
+          "legendFormat": "{{processor_node_id}} ({{task_id}})",
           "refId": "A"
         }
       ],
-      "thresholds": [],
-      "timeRegions": [],
       "title": "e2e latency (avg)",
-      "tooltip": {
-        "shared": true,
-        "sort": 0,
-        "value_type": "individual"
-      },
-      "type": "graph",
-      "xaxis": {
-        "mode": "time",
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "$$hashKey": "object:649",
-          "format": "short",
-          "logBase": 1,
-          "show": true
-        },
-        {
-          "$$hashKey": "object:650",
-          "format": "short",
-          "logBase": 1,
-          "show": true
-        }
-      ],
-      "yaxis": {
-        "align": false
-      }
+      "type": "timeseries"
     },
     {
       "datasource": {
@@ -140,6 +148,7 @@
         "y": 0
       },
       "id": 43,
+      "interval": "1s",
       "links": [],
       "options": {
         "colorMode": "value",
@@ -156,7 +165,7 @@
         "text": {},
         "textMode": "auto"
       },
-      "pluginVersion": "8.3.3",
+      "pluginVersion": "8.4.0-46516pre",
       "targets": [
         {
           "expr": "avg  ((kafka_streams_stream_processor_node_metrics_record_e2e_latency_avg{partition_id=~\"${partition}\", processor_node_id=~\"${process}\", task_id=~\"${task}\", thread_id=~\"${thread}\", instance=~\"${instance}\", cluster_id=~\"${cluster}\"}) >=0)",
@@ -174,49 +183,81 @@
       "type": "stat"
     },
     {
-      "aliasColors": {},
-      "bars": false,
-      "dashLength": 10,
-      "dashes": false,
       "datasource": {
         "type": "prometheus",
         "uid": "P1809F7CD0C75ACF3"
       },
-      "fill": 1,
-      "fillGradient": 0,
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": true,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
       "gridPos": {
         "h": 8,
         "w": 16,
         "x": 0,
         "y": 8
       },
-      "hiddenSeries": false,
       "id": 38,
-      "legend": {
-        "avg": false,
-        "current": false,
-        "max": false,
-        "min": false,
-        "show": true,
-        "total": false,
-        "values": false
-      },
-      "lines": true,
-      "linewidth": 1,
+      "interval": "1s",
       "links": [],
-      "nullPointMode": "null",
       "options": {
-        "alertThreshold": true
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "single"
+        }
       },
-      "percentage": false,
-      "pluginVersion": "8.3.3",
-      "pointradius": 2,
-      "points": false,
-      "renderer": "flot",
-      "seriesOverrides": [],
-      "spaceLength": 10,
-      "stack": false,
-      "steppedLine": false,
+      "pluginVersion": "8.4.0-46516pre",
       "targets": [
         {
           "datasource": {
@@ -230,41 +271,12 @@
           "instant": false,
           "interval": "",
           "intervalFactor": 1,
-          "legendFormat": "{{task_id}}/{{processor_node_id}}",
+          "legendFormat": "{{processor_node_id}} ({{task_id}})",
           "refId": "A"
         }
       ],
-      "thresholds": [],
-      "timeRegions": [],
       "title": "e2e latency (min)",
-      "tooltip": {
-        "shared": true,
-        "sort": 0,
-        "value_type": "individual"
-      },
-      "type": "graph",
-      "xaxis": {
-        "mode": "time",
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "$$hashKey": "object:34",
-          "format": "short",
-          "logBase": 1,
-          "show": true
-        },
-        {
-          "$$hashKey": "object:35",
-          "format": "short",
-          "logBase": 1,
-          "show": true
-        }
-      ],
-      "yaxis": {
-        "align": false
-      }
+      "type": "timeseries"
     },
     {
       "datasource": {
@@ -293,6 +305,7 @@
         "y": 8
       },
       "id": 44,
+      "interval": "1s",
       "links": [],
       "options": {
         "colorMode": "value",
@@ -309,7 +322,7 @@
         "text": {},
         "textMode": "auto"
       },
-      "pluginVersion": "8.3.3",
+      "pluginVersion": "8.4.0-46516pre",
       "targets": [
         {
           "expr": "avg  ((kafka_streams_stream_processor_node_metrics_record_e2e_latency_min{partition_id=~\"${partition}\", processor_node_id=~\"${process}\", task_id=~\"${task}\", thread_id=~\"${thread}\", instance=~\"${instance}\", cluster_id=~\"${cluster}\"}) >=0)",
@@ -344,6 +357,7 @@
       },
       "hiddenSeries": false,
       "id": 35,
+      "interval": "1s",
       "legend": {
         "avg": false,
         "current": false,
@@ -361,7 +375,7 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "8.3.3",
+      "pluginVersion": "8.4.0-46516pre",
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
@@ -382,7 +396,7 @@
           "instant": false,
           "interval": "",
           "intervalFactor": 1,
-          "legendFormat": "{{task_id}}/{{processor_node_id}}",
+          "legendFormat": "{{processor_node_id}} ({{task_id}})",
           "refId": "A"
         }
       ],
@@ -445,6 +459,7 @@
         "y": 16
       },
       "id": 45,
+      "interval": "1s",
       "links": [],
       "options": {
         "colorMode": "value",
@@ -461,7 +476,7 @@
         "text": {},
         "textMode": "auto"
       },
-      "pluginVersion": "8.3.3",
+      "pluginVersion": "8.4.0-46516pre",
       "targets": [
         {
           "expr": "avg  ((kafka_streams_stream_processor_node_metrics_record_e2e_latency_max{partition_id=~\"${partition}\", processor_node_id=~\"${process}\", task_id=~\"${task}\", thread_id=~\"${thread}\", instance=~\"${instance}\", cluster_id=~\"${cluster}\"}) >=0)",
@@ -478,7 +493,8 @@
       "type": "stat"
     }
   ],
-  "refresh": "2s",  "schemaVersion": 34,
+  "refresh": "2s",
+  "schemaVersion": 34,
   "style": "dark",
   "tags": [
     "streams"
@@ -599,6 +615,7 @@
           "refId": "StandardVariableQuery"
         },
         "refresh": 1,
+        "regex": "",
         "skipUrlSync": false,
         "sort": 3,
         "tagValuesQuery": "",
@@ -629,6 +646,7 @@
           "refId": "StandardVariableQuery"
         },
         "refresh": 1,
+        "regex": "",
         "skipUrlSync": false,
         "sort": 3,
         "tagValuesQuery": "",
@@ -701,6 +719,6 @@
   "timezone": "",
   "title": "05 - Streams - Processes 2E2",
   "uid": "05_streams_process_e2e",
-  "version": 1,
+  "version": 3,
   "weekStart": ""
 }

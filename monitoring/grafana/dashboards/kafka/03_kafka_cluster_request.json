@@ -88,7 +88,8 @@
         "y": 0
       },
       "id": 2,
-      "links": [],
+    "interval" : "5s",
+    "links": [],
       "options": {
         "legend": {
           "calcs": [],
@@ -175,7 +176,8 @@
         "y": 0
       },
       "id": 6,
-      "links": [],
+    "interval" : "5s",
+    "links": [],
       "options": {
         "legend": {
           "calcs": [],
@@ -262,7 +264,8 @@
         "y": 8
       },
       "id": 4,
-      "links": [],
+    "interval" : "5s",
+    "links": [],
       "options": {
         "legend": {
           "calcs": [],
@@ -349,7 +352,8 @@
         "y": 8
       },
       "id": 8,
-      "links": [],
+    "interval" : "5s",
+    "links": [],
       "options": {
         "legend": {
           "calcs": [],
@@ -437,7 +441,8 @@
         "y": 16
       },
       "id": 10,
-      "links": [],
+    "interval" : "5s",
+    "links": [],
       "options": {
         "legend": {
           "calcs": [],
@@ -524,7 +529,8 @@
         "y": 16
       },
       "id": 12,
-      "links": [],
+    "interval" : "5s",
+    "links": [],
       "options": {
         "legend": {
           "calcs": [],
@@ -550,7 +556,7 @@
       "type": "timeseries"
     }
   ],
-  "refresh": "1s",
+  "refresh": "5s",
   "schemaVersion": 34,
   "style": "dark",
   "tags": [
@@ -629,7 +635,6 @@
   },
   "timepicker": {
     "refresh_intervals": [
-      "1s",
       "5s",
       "10s",
       "30s",

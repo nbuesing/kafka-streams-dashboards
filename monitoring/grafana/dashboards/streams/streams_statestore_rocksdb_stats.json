@@ -57,7 +57,8 @@
       },
       "lines": true,
       "linewidth": 1,
-      "links": [],
+    "interval" : "2s",
+    "links": [],
       "nullPointMode": "null",
       "options": {
         "alertThreshold": true
@@ -152,7 +153,8 @@
         "y": 0
       },
       "id": 41,
-      "links": [],
+    "interval" : "2s",
+    "links": [],
       "options": {
         "colorMode": "value",
         "graphMode": "area",

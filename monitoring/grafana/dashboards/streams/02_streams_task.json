@@ -21,7 +21,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "iteration": 1641136424707,
+  "iteration": 1641160626003,
   "links": [],
   "liveNow": false,
   "panels": [
@@ -232,7 +232,9 @@
         "y": 6
       },
       "id": 30,
-      "links": [],
+      "interval": "1s",
+    "interval" : "2s",
+    "links": [],
       "options": {
         "legend": {
           "calcs": [],
@@ -291,7 +293,8 @@
         "y": 6
       },
       "id": 32,
-      "links": [],
+    "interval" : "2s",
+    "links": [],
       "options": {
         "colorMode": "value",
         "graphMode": "area",
@@ -391,7 +394,8 @@
         "y": 13
       },
       "id": 36,
-      "links": [],
+    "interval" : "2s",
+    "links": [],
       "options": {
         "legend": {
           "calcs": [],
@@ -450,7 +454,8 @@
         "y": 13
       },
       "id": 37,
-      "links": [],
+    "interval" : "2s",
+    "links": [],
       "options": {
         "colorMode": "value",
         "graphMode": "area",
@@ -550,7 +555,8 @@
         "y": 20
       },
       "id": 8,
-      "links": [],
+    "interval" : "2s",
+    "links": [],
       "options": {
         "legend": {
           "calcs": [],
@@ -609,7 +615,8 @@
         "y": 20
       },
       "id": 35,
-      "links": [],
+    "interval" : "2s",
+    "links": [],
       "options": {
         "colorMode": "value",
         "graphMode": "area",
@@ -709,7 +716,8 @@
         "y": 27
       },
       "id": 39,
-      "links": [],
+    "interval" : "2s",
+    "links": [],
       "options": {
         "legend": {
           "calcs": [],
@@ -768,7 +776,8 @@
         "y": 27
       },
       "id": 40,
-      "links": [],
+    "interval" : "2s",
+    "links": [],
       "options": {
         "colorMode": "value",
         "graphMode": "area",
@@ -868,7 +877,8 @@
         "y": 34
       },
       "id": 41,
-      "links": [],
+    "interval" : "2s",
+    "links": [],
       "options": {
         "legend": {
           "calcs": [],
@@ -927,7 +937,8 @@
         "y": 34
       },
       "id": 42,
-      "links": [],
+    "interval" : "2s",
+    "links": [],
       "options": {
         "colorMode": "value",
         "graphMode": "area",
@@ -965,7 +976,8 @@
       "type": "stat"
     }
   ],
-  "refresh": "2s",  "schemaVersion": 34,
+  "refresh": "2s",
+  "schemaVersion": 34,
   "style": "dark",
   "tags": [
     "streams"
@@ -975,7 +987,7 @@
       {
         "allValue": ".+",
         "current": {
-          "selected": true,
+          "selected": false,
           "text": "All",
           "value": "$__all"
         },
@@ -1127,7 +1139,7 @@
     ]
   },
   "time": {
-    "from": "now-5m",
+    "from": "now-1m",
     "to": "now"
   },
   "timepicker": {

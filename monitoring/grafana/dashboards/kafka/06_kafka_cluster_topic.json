@@ -66,7 +66,8 @@
         "y": 0
       },
       "id": 4,
-      "links": [],
+    "interval" : "5s",
+    "links": [],
       "maxDataPoints": 100,
       "options": {
         "colorMode": "value",
@@ -138,7 +139,8 @@
         "y": 0
       },
       "id": 32,
-      "links": [],
+    "interval" : "5s",
+    "links": [],
       "maxDataPoints": 100,
       "options": {
         "colorMode": "value",
@@ -211,7 +213,8 @@
         "y": 0
       },
       "id": 2,
-      "links": [],
+    "interval" : "5s",
+    "links": [],
       "maxDataPoints": 100,
       "options": {
         "colorMode": "value",
@@ -283,7 +286,8 @@
         "y": 0
       },
       "id": 6,
-      "links": [],
+    "interval" : "5s",
+    "links": [],
       "maxDataPoints": 100,
       "options": {
         "colorMode": "value",
@@ -362,7 +366,8 @@
         "y": 0
       },
       "id": 34,
-      "links": [],
+    "interval" : "5s",
+    "links": [],
       "maxDataPoints": 100,
       "options": {
         "colorMode": "value",
@@ -434,7 +439,8 @@
         "y": 0
       },
       "id": 35,
-      "links": [],
+    "interval" : "5s",
+    "links": [],
       "maxDataPoints": 100,
       "options": {
         "colorMode": "value",
@@ -509,7 +515,8 @@
         "y": 3
       },
       "id": 14,
-      "links": [],
+    "interval" : "5s",
+    "links": [],
       "maxDataPoints": 100,
       "options": {
         "colorMode": "value",
@@ -582,7 +589,8 @@
         "y": 3
       },
       "id": 22,
-      "links": [],
+    "interval" : "5s",
+    "links": [],
       "maxDataPoints": 100,
       "options": {
         "colorMode": "value",
@@ -655,7 +663,8 @@
         "y": 3
       },
       "id": 24,
-      "links": [],
+    "interval" : "5s",
+    "links": [],
       "maxDataPoints": 100,
       "options": {
         "colorMode": "value",
@@ -749,7 +758,8 @@
         "y": 5
       },
       "id": 8,
-      "links": [],
+    "interval" : "5s",
+    "links": [],
       "options": {
         "legend": {
           "calcs": [],
@@ -837,7 +847,8 @@
         "y": 5
       },
       "id": 10,
-      "links": [],
+    "interval" : "5s",
+    "links": [],
       "options": {
         "legend": {
           "calcs": [],
@@ -925,7 +936,8 @@
         "y": 5
       },
       "id": 12,
-      "links": [],
+    "interval" : "5s",
+    "links": [],
       "options": {
         "legend": {
           "calcs": [],
@@ -992,7 +1004,8 @@
         "y": 12
       },
       "id": 26,
-      "links": [],
+    "interval" : "5s",
+    "links": [],
       "maxDataPoints": 100,
       "options": {
         "colorMode": "value",
@@ -1065,7 +1078,8 @@
         "y": 12
       },
       "id": 28,
-      "links": [],
+    "interval" : "5s",
+    "links": [],
       "maxDataPoints": 100,
       "options": {
         "colorMode": "value",
@@ -1138,7 +1152,8 @@
         "y": 12
       },
       "id": 30,
-      "links": [],
+    "interval" : "5s",
+    "links": [],
       "maxDataPoints": 100,
       "options": {
         "colorMode": "value",
@@ -1232,7 +1247,8 @@
         "y": 14
       },
       "id": 16,
-      "links": [],
+    "interval" : "5s",
+    "links": [],
       "options": {
         "legend": {
           "calcs": [],
@@ -1321,7 +1337,8 @@
         "y": 14
       },
       "id": 18,
-      "links": [],
+    "interval" : "5s",
+    "links": [],
       "options": {
         "legend": {
           "calcs": [],
@@ -1410,7 +1427,8 @@
         "y": 14
       },
       "id": 20,
-      "links": [],
+    "interval" : "5s",
+    "links": [],
       "options": {
         "legend": {
           "calcs": [],
@@ -1436,7 +1454,7 @@
       "type": "timeseries"
     }
   ],
-  "refresh": "1s",
+  "refresh": "5s",
   "schemaVersion": 34,
   "style": "dark",
   "tags": [
@@ -1513,7 +1531,6 @@
   },
   "timepicker": {
     "refresh_intervals": [
-      "1s",
       "5s",
       "10s",
       "30s",
