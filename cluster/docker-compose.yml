@@ -28,10 +28,11 @@ services:
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
       ZOOKEEPER_TICK_TIME: 2000
-      KAFKA_OPTS: "-Dzookeeper.4lw.commands.whitelist=ruok,stat"
+      KAFKA_OPTS: "-Dzookeeper.4lw.commands.whitelist=ruok,stat -javaagent:/opt/jmx_prometheus/jmx_prometheus_javaagent.jar=7071:/opt/jmx_prometheus/zookeeper-config.yml"
     volumes:
       - zk:/var/lib/zookeeper/data
       - zk_log:/var/lib/zookeeper/log
+      - ./jmx_prometheus:/opt/jmx_prometheus
       - ./secrets:/etc/zookeeper/secrets
 
   broker-1:

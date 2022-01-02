@@ -10,6 +10,7 @@ volumes:
 services:
 
   prometheus:
+    image: prom/prometheus:v2.32.1
     hostname: prometheus
     container_name: ksd-prometheus
     healthcheck:
@@ -18,7 +19,6 @@ services:
       interval: 5s
       timeout: 5s
       retries: 3
-    image: prom/prometheus
     privileged: true
     # web: enable-admin-api and enable-lifecycle
     # other command options are the default (but need to be supplied in full to add the others)
@@ -38,9 +38,9 @@ services:
       - ./prometheus/application_analytics.json:/etc/prometheus/application_analytics.json
 
   grafana:
-    hostname: grafana
     image: grafana/grafana:main
-#    image: grafana/grafana:8.3.3
+    #image: grafana/grafana:8.3.3
+    hostname: grafana
     container_name: ksd-grafana
     healthcheck:
       test: wget --spider http://localhost:3000/ || exit 1

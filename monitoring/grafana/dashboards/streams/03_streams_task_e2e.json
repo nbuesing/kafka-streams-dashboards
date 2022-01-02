@@ -21,7 +21,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "iteration": 1641083198974,
+  "iteration": 1641155652383,
   "links": [],
   "liveNow": false,
   "panels": [
@@ -190,37 +190,6 @@
       },
       "fieldConfig": {
         "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "drawStyle": "line",
-            "fillOpacity": 10,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "lineInterpolation": "linear",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "never",
-            "spanNulls": true,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
           "mappings": [],
           "thresholds": {
             "mode": "absolute",
@@ -228,14 +197,9 @@
               {
                 "color": "green",
                 "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
               }
             ]
-          },
-          "unit": "short"
+          }
         },
         "overrides": []
       },
@@ -248,41 +212,44 @@
       "id": 44,
       "links": [],
       "options": {
-        "legend": {
-          "calcs": [],
-          "displayMode": "list",
-          "placement": "bottom"
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "vertical",
+        "reduceOptions": {
+          "calcs": [
+            "mean"
+          ],
+          "fields": "",
+          "values": false
         },
-        "tooltip": {
-          "mode": "single"
-        }
+        "text": {},
+        "textMode": "value_and_name"
       },
-      "pluginVersion": "8.2.5",
-      "repeat": "instance",
-      "repeatDirection": "v",
+      "pluginVersion": "8.4.0-46516pre",
       "targets": [
         {
           "datasource": {
             "type": "prometheus",
             "uid": "P1809F7CD0C75ACF3"
           },
-          "exemplar": true,
-          "expr": "avg without(partition_id, processor_node_id, thread_id, instance) ((kafka_streams_stream_processor_node_metrics_record_e2e_latency_avg{partition_id=~\"${partition}\", task_id=~\"${task}\", thread_id=~\"${thread}\", cluster_id=~\"${cluster}\"}) >=0)",
+          "exemplar": false,
+          "expr": "sort (avg without(partition_id, processor_node_id, thread_id, instance) ((kafka_streams_stream_processor_node_metrics_record_e2e_latency_avg{partition_id=~\"${partition}\", task_id=~\"${task}\", thread_id=~\"${thread}\", instance=~\"${instance}\", cluster_id=~\"${cluster}\"}) >=0))",
           "format": "time_series",
           "hide": false,
-          "instant": false,
+          "instant": true,
           "interval": "",
           "intervalFactor": 1,
-          "legendFormat": "{{task_id}}",
+          "legendFormat": "{{cluster_id}}-{{task_id}}",
           "refId": "A"
         }
       ],
-      "title": "e2e latency - ${instance}",
-      "type": "timeseries"
+      "title": "e2e latency",
+      "transformations": [],
+      "type": "stat"
     }
   ],
-  "refresh": "1s",
-  "schemaVersion": 34,
+  "refresh": "2s",  "schemaVersion": 34,
   "style": "dark",
   "tags": [
     "streams"
@@ -292,7 +259,7 @@
       {
         "allValue": ".+",
         "current": {
-          "selected": true,
+          "selected": false,
           "text": "All",
           "value": "$__all"
         },
@@ -434,6 +401,7 @@
           "refId": "StandardVariableQuery"
         },
         "refresh": 0,
+        "regex": "",
         "skipUrlSync": false,
         "sort": 3,
         "tagValuesQuery": "",
@@ -445,7 +413,7 @@
       {
         "allValue": "",
         "current": {
-          "selected": true,
+          "selected": false,
           "text": "All",
           "value": "$__all"
         },
@@ -465,6 +433,7 @@
           "refId": "StandardVariableQuery"
         },
         "refresh": 1,
+        "regex": "",
         "skipUrlSync": false,
         "sort": 3,
         "tagValuesQuery": "",
@@ -481,7 +450,7 @@
   },
   "timepicker": {
     "refresh_intervals": [
-      "1s",
+      "2s",
       "5s",
       "10s",
       "30s",

@@ -21,7 +21,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "iteration": 1641077739277,
+  "iteration": 1641154316184,
   "links": [],
   "liveNow": false,
   "panels": [
@@ -181,8 +181,7 @@
       "type": "stat"
     }
   ],
-  "refresh": "1s",
-  "schemaVersion": 34,
+  "refresh": "2s",  "schemaVersion": 34,
   "style": "dark",
   "tags": [
     "streams"
@@ -192,7 +191,7 @@
       {
         "allValue": ".+",
         "current": {
-          "selected": false,
+          "selected": true,
           "text": "All",
           "value": "$__all"
         },
@@ -343,9 +342,9 @@
       },
       {
         "current": {
-          "selected": false,
-          "text": "rocksdb-state",
-          "value": "rocksdb-state"
+          "selected": true,
+          "text": "All",
+          "value": "$__all"
         },
         "datasource": {
           "type": "prometheus",
@@ -353,7 +352,7 @@
         },
         "definition": "kafka_streams_stream_state_metrics",
         "hide": 0,
-        "includeAll": false,
+        "includeAll": true,
         "multi": false,
         "name": "store_type",
         "options": [],
@@ -372,9 +371,9 @@
       },
       {
         "current": {
-          "selected": false,
-          "text": "get-rate",
-          "value": "get-rate"
+          "selected": true,
+          "text": "put-rate",
+          "value": "put-rate"
         },
         "datasource": {
           "type": "prometheus",
@@ -402,7 +401,7 @@
       {
         "allValue": ".*",
         "current": {
-          "selected": true,
+          "selected": false,
           "text": "All",
           "value": "$__all"
         },
@@ -437,7 +436,7 @@
   },
   "timepicker": {
     "refresh_intervals": [
-      "1s",
+      "2s",
       "5s",
       "10s",
       "30s",
@@ -450,6 +449,7 @@
       "1d"
     ],
     "time_options": [
+      "1m",
       "5m",
       "15m",
       "1h",
@@ -464,6 +464,6 @@
   "timezone": "",
   "title": "07 - Streams - StateStore",
   "uid": "07_streams_statestore",
-  "version": 6,
+  "version": 1,
   "weekStart": ""
 }

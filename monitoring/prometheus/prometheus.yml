@@ -6,6 +6,9 @@ scrape_configs:
     static_configs:
       - targets:
           - zookeeper:7071
+        labels:
+          cluster_type: "zookeeper"
+          cluster_id: "kafka-zookeeper"
     relabel_configs:
       - source_labels: [__address__]
         regex: '(.*):(.*)'
@@ -45,7 +48,7 @@ scrape_configs:
         target_label: instance
         replacement: '$1'
   - job_name: kafka-streams
-    scrape_interval: 1s
+    scrape_interval: 2s
     file_sd_configs:
       - files:
           - /etc/prometheus/*.json
