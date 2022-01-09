@@ -25,6 +25,9 @@ public class Main {
             return;
         }
 
+        // TODO read user,store,product to get set of values....
+
+
         final ExecutorService executor = Executors.newSingleThreadExecutor(r -> {
             final Thread t = Executors.defaultThreadFactory().newThread(r);
             //t.setDaemon(true);

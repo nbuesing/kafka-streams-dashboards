@@ -9,3 +9,5 @@ build
 .project
 /druid/storage
 /applications/stores/*
+
+/statestore-ui/node_modules

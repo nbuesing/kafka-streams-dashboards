@@ -31,7 +31,7 @@ COPY --from=build /jolokia-agent.jar /
 RUN \
 	tar xfvp /analytics-1.0.tar
 
-EXPOSE 7071/tcp 7072/tcp
+EXPOSE 7071/tcp 7072/tcp 8080/tcp
 
 #ENTRYPOINT ["java"]
 #ENTRYPOINT  ["/entrypoint.sh"]

@@ -47,4 +47,7 @@ public class Options extends BaseOptions {
     @Parameter(names = { "--commit-interval" }, description = "")
     private Long commitInterval = 100L;
 
+    @Parameter(names = { "--port" }, description = "the port use for introspection of window state")
+    private Integer port = 8080;
+
 }

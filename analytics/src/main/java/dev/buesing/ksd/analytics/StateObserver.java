@@ -4,14 +4,16 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import dev.buesing.ksd.analytics.domain.By;
+import dev.buesing.ksd.analytics.domain.BySku;
+import dev.buesing.ksd.analytics.domain.ByWindow;
 import dev.buesing.ksd.common.domain.ProductAnalytic;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.StoreQueryParameters;
 import org.apache.kafka.streams.kstream.Windowed;
-import org.apache.kafka.streams.state.QueryableStoreTypes;
-import org.apache.kafka.streams.state.ReadOnlyWindowStore;
+import org.apache.kafka.streams.state.*;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -23,106 +25,49 @@ import java.util.TreeMap;
 @Slf4j
 public class StateObserver {
 
-    private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm:ss");
 
-    @AllArgsConstructor
-    public static class WindowedKey implements Comparable<WindowedKey> {
-        private String key;
-        private Instant start;
-        private Instant end;
+    private final KafkaStreams streams;
 
-        @Override
-        public int compareTo(WindowedKey o) {
-            int compareTo = key.compareTo(o.key);
-            if (compareTo == 0) {
-                compareTo = start.compareTo(o.start);
-            }
-            if (compareTo == 0) {
-                compareTo = end.compareTo(o.end);
-            }
-            return compareTo;
-        }
+    private final Options.WindowType windowType;
 
-        public String toString() {
-            return key + " [" + convert(start) + "," + convert(end) + "]";
-        }
+    private final String storeName;
 
-        public String start() {
-            return convert(start);
-        }
-
-        public String end() {
-            return convert(end);
-        }
-
-        private String convert(final Instant ts) {
-            return LocalDateTime.ofInstant(ts, ZoneId.systemDefault()).format(TIME_FORMATTER);
-        }
-
-        public static WindowedKey create(Windowed<String> window) {
-            return new WindowedKey(window.key(), window.window().startTime(), window.window().endTime());
-        }
-    }
-
-    private ReadOnlyWindowStore<String, ProductAnalytic> store;
-    //private ReadOnlySessionStore<String, PurchaseOrder> store;
-
-
-    private KafkaStreams streams;
-
-
-    public StateObserver(final KafkaStreams streams) {
+    public StateObserver(final KafkaStreams streams, final Options.WindowType windowType) {
         this.streams = streams;
+        this.windowType = windowType;
+        this.storeName = windowType.name() + "-aggregate-purchase-order";
     }
 
-    public JsonNode getState() {
+    public By getState(String type) {
+        if ("windowing".equals(type)) {
+            if (windowType == Options.WindowType.SESSION) {
+                return populateSession(new ByWindow());
+            } else {
+                return populateWindow(new ByWindow());
+            }
+        } else {
+            if (windowType == Options.WindowType.SESSION) {
+                return populateSession(new BySku());
+            } else {
+                return populateWindow(new BySku());
+            }
+        }
+    }
 
-        this.store = streams.store(StoreQueryParameters.fromNameAndType("aggregate-purchase-order", QueryableStoreTypes.windowStore()));
-        //        this.store = streams.store(StoreQueryParameters.fromNameAndType("pickup-order-reduce-store", QueryableStoreTypes.sessionStore()));
-
-        final Map<WindowedKey, ProductAnalytic> map = new TreeMap<>();
-
+    private By populateWindow(By by) {
+        ReadOnlyWindowStore<String, ProductAnalytic>  store = streams.store(StoreQueryParameters.fromNameAndType(storeName, QueryableStoreTypes.windowStore()));
         store.all().forEachRemaining(i -> {
-            map.put(WindowedKey.create(i.key), i.value);
+            by.add(i.key.window(), i.value);
         });
-
-        final ArrayNode elements = JsonNodeFactory.instance.arrayNode();
-
-        map.forEach((k, v) -> {
-            //log.info("{} - {}", k, v);
-            ObjectNode element = JsonNodeFactory.instance.objectNode();
-            ObjectNode key = JsonNodeFactory.instance.objectNode();
-            key.put("sku", k.key);
-            key.put("start", k.start());
-            key.put("end", k.end());
-            ObjectNode value = JsonNodeFactory.instance.objectNode();
-            value.put("quantity", v.getQuantity());
-            ArrayNode orderIds = JsonNodeFactory.instance.arrayNode();
-            v.getOrderIds().forEach(orderId -> orderIds.add(orderId));
-            value.set("order-ids", orderIds);
-            value.put("timestamp", v.timestamp());
-            element.set("key", key);
-            element.set("value", value);
-
-            elements.add(element);
-        });
-
-        return elements;
+        return by;
     }
 
-
-    //                store.fetch(Producer.prefix + "_001").forEachRemaining(i -> {
-//                    LocalDateTime start = LocalDateTime.ofInstant(Instant.ofEpochMilli(i.key.window().start()), ZoneId.systemDefault());
-//                    LocalDateTime end = LocalDateTime.ofInstant(Instant.ofEpochMilli(i.key.window().end()), ZoneId.systemDefault());
-//                    String key = i.key.key();
-//                    int itemCount = i.value.getItems().size();
-//                    log.info(">>> [{},{}] : {} - {}", start.toLocalTime().format(TIME_FORMATTER), end.toLocalTime().format(TIME_FORMATTER), key, itemCount);
-//                });
-//                try {
-//                    Thread.sleep(1000);
-//                } catch (InterruptedException e) {
-//                    e.printStackTrace();
-//                }
-
+    private By populateSession(By by) {
+        ReadOnlySessionStore<String, ProductAnalytic> session = streams.store(StoreQueryParameters.fromNameAndType(storeName, QueryableStoreTypes.sessionStore()));
+        session.fetch("0000000000", "9999999999").forEachRemaining(i -> {
+            by.add(i.key.window(), i.value);
+        });
+        return by;
+    }
 
 }

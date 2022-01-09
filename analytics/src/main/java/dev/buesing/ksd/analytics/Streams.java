@@ -1,11 +1,10 @@
 package dev.buesing.ksd.analytics;
 
 import dev.buesing.ksd.common.domain.ProductAnalytic;
-import dev.buesing.ksd.common.domain.ProductAnalyticSummary;
+import dev.buesing.ksd.common.domain.ProductAnalyticOut;
 import dev.buesing.ksd.common.domain.PurchaseOrder;
 import dev.buesing.ksd.common.metrics.StreamsMetrics;
 import dev.buesing.ksd.tools.serde.JsonSerde;
-import java.util.LinkedHashMap;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.producer.ProducerConfig;
@@ -32,6 +31,8 @@ import java.util.Properties;
 @Slf4j
 public class Streams {
 
+    private static final Duration SHUTDOWN = Duration.ofSeconds(30);
+
     private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm:ss");
     private static final DateTimeFormatter TIME_FORMATTER_SSS = DateTimeFormatter.ofPattern("HH:mm:ss.SSS");
 
@@ -45,9 +46,7 @@ public class Streams {
                 Map.entry(StreamsConfig.APPLICATION_ID_CONFIG, options.getApplicationId()),
                 Map.entry(StreamsConfig.CLIENT_ID_CONFIG, options.getClientId()),
                 Map.entry(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, options.getAutoOffsetReset()),
-                Map.entry(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, "true"),
                 Map.entry(StreamsConfig.REPLICATION_FACTOR_CONFIG, 3),
-                //Map.entry(StreamsConfig.WINDOW_STORE_CHANGE_LOG_ADDITIONAL_RETENTION_MS_CONFIG,),
                 Map.entry(StreamsConfig.COMMIT_INTERVAL_MS_CONFIG, options.getCommitInterval()),
                 Map.entry(StreamsConfig.TOPOLOGY_OPTIMIZATION_CONFIG, StreamsConfig.OPTIMIZE),
                 Map.entry(StreamsConfig.METRICS_RECORDING_LEVEL_CONFIG, "TRACE"),
@@ -84,10 +83,15 @@ public class Streams {
 
         streams.start();
 
-        Runtime.getRuntime().addShutdownHook(new Thread(streams::close));
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            log.info("Runtime shutdown hook, state={}", streams.state());
+            if (streams.state().isRunningOrRebalancing()) {
+                streams.close(SHUTDOWN);
+            }
+        }));
 
-        final StateObserver observer = new StateObserver(streams);
-        final ServletDeployment servletDeployment = new ServletDeployment(observer);
+        final StateObserver observer = new StateObserver(streams, options.getWindowType());
+        final ServletDeployment servletDeployment = new ServletDeployment(observer, options.getPort());
 
         servletDeployment.start();
     }
@@ -112,6 +116,7 @@ public class Streams {
         final StreamsBuilder builder = new StreamsBuilder();
 
         final Materialized<String, ProductAnalytic, WindowStore<Bytes, byte[]>> store = Materialized.<String, ProductAnalytic, WindowStore<Bytes, byte[]>>as("TUMBLING-aggregate-purchase-order")
+//                .withRetention(Duration.ofMinutes(23L))
                 .withCachingDisabled()
                 ;
 
@@ -132,7 +137,7 @@ public class Streams {
 
         // e2e
         if (true) {
-            builder.<String, ProductAnalyticSummary>stream(options.getOutputTopic() + "-" + options.getWindowType(), Consumed.as("TUMBLING-to-consumer"))
+            builder.<String, ProductAnalyticOut>stream(options.getOutputTopic() + "-" + options.getWindowType(), Consumed.as("TUMBLING-to-consumer"))
                     .peek((k, v) -> log.debug("key={}", k), Named.as("TUMBLING-to-consumer-peek"));
         }
 
@@ -166,7 +171,7 @@ public class Streams {
 
         // e2e
         if (true) {
-            builder.<String, ProductAnalyticSummary>stream(options.getOutputTopic() + "-" + options.getWindowType(), Consumed.as("HOPPING-to-consumer"))
+            builder.<String, ProductAnalyticOut>stream(options.getOutputTopic() + "-" + options.getWindowType(), Consumed.as("HOPPING-to-consumer"))
                     .peek((k, v) -> log.debug("key={}", k), Named.as("HOPPING-to-consumer-peek"));
         }
 
@@ -202,7 +207,7 @@ public class Streams {
 
         // e2e
         if (true) {
-            builder.<String, ProductAnalyticSummary>stream(options.getOutputTopic() + "-" + options.getWindowType(), Consumed.as("SLIDING-to-consumer"))
+            builder.<String, ProductAnalyticOut>stream(options.getOutputTopic() + "-" + options.getWindowType(), Consumed.as("SLIDING-to-consumer"))
                     .peek((k, v) -> log.debug("key={}", k), Named.as("SLIDING-to-consumer-peek"));
         }
 
@@ -236,7 +241,7 @@ public class Streams {
 
         // e2e
         if (true) {
-            builder.<String, ProductAnalyticSummary>stream(options.getOutputTopic() + "-" + options.getWindowType(), Consumed.as("SESSION-to-consumer"))
+            builder.<String, ProductAnalyticOut>stream(options.getOutputTopic() + "-" + options.getWindowType(), Consumed.as("SESSION-to-consumer"))
                     .peek((k, v) -> log.debug("key={}", k), Named.as("SESSION-to-consumer-peek"));
         }
 
@@ -287,10 +292,10 @@ public class Streams {
         return LocalDateTime.ofInstant(ts, ZoneId.systemDefault()).format(TIME_FORMATTER_SSS);
     }
 
-    private static ProductAnalyticSummary minimize(final ProductAnalytic productAnalytic) {
+    private static ProductAnalyticOut minimize(final ProductAnalytic productAnalytic) {
         if (productAnalytic == null) {
             return null;
         }
-        return ProductAnalyticSummary.create(productAnalytic);
+        return ProductAnalyticOut.create(productAnalytic);
     }
 }

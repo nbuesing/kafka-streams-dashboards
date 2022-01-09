@@ -32,19 +32,18 @@ public abstract class BaseOptions {
     @Parameter(names = { "--custom-metrics-topic" }, description = "custom metrics topic")
     private String customMetricsTopic = "_metrics-kafka-streams";
 
-
     @Parameter(names = { "--repartition-topic" })
     private String repartitionTopic = "pickup-order-handler-purchase-order-join-product-repartition";
 
     @Parameter(names = { "--output-topic-prefix" }, description = "")
     private String outputTopicPrefix = "product-statistics";
 
-
+    // shared by builder and by producer, producer needs to honor whatever builder creates
     private int numberOfStores = 1000;
     private int numberOfUsers = 10_000;
-//    private int numberOfUsers = 10;
+    //private int numberOfUsers = 10;
     private int numberOfProducts = 10_000;
-//    private int numberOfProducts = 20;
+    //private int numberOfProducts = 20;
     private int maxQuantity = 10;
 
 }

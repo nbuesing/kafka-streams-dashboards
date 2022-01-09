@@ -1,9 +1,17 @@
 package dev.buesing.ksd.analytics;
 
 import ch.qos.logback.classic.ViewStatusMessagesServlet;
+import com.fasterxml.jackson.core.Version;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import dev.buesing.ksd.analytics.domain.BySku;
+import dev.buesing.ksd.analytics.domain.Window;
+import dev.buesing.ksd.analytics.jackson.BySkuSerializer;
+import dev.buesing.ksd.analytics.domain.ByWindow;
+import dev.buesing.ksd.analytics.jackson.ByWindowSerializer;
+import dev.buesing.ksd.analytics.jackson.WindowSerializer;
 import io.undertow.Handlers;
 import io.undertow.Undertow;
 import io.undertow.server.HttpHandler;
@@ -14,6 +22,11 @@ import io.undertow.servlet.api.DeploymentInfo;
 import io.undertow.servlet.api.DeploymentManager;
 import io.undertow.util.Headers;
 
+import io.undertow.util.HttpString;
+
+
+import java.util.Deque;
+import java.util.Optional;
 import javax.servlet.ServletException;
 
 public class ServletDeployment {
@@ -21,12 +34,18 @@ public class ServletDeployment {
     private static final ObjectMapper OBJECT_MAPPER =
             new ObjectMapper()
                     .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
-                    .registerModule(new JavaTimeModule());
+                    .registerModule(new SimpleModule("uuid-module", new Version(1, 0, 0, null, "", ""))
+                            .addSerializer(ByWindow.class, new ByWindowSerializer())
+                            .addSerializer(BySku.class, new BySkuSerializer())
+                            .addSerializer(Window.class, new WindowSerializer())
+                    ).registerModule(new JavaTimeModule());
 
     final StateObserver stateObserver;
+    final int port;
 
-    public ServletDeployment(StateObserver stateObserver) {
+    public ServletDeployment(StateObserver stateObserver, int port) {
         this.stateObserver = stateObserver;
+        this.port = port;
     }
 
 
@@ -58,14 +77,25 @@ public class ServletDeployment {
         PathHandler path = Handlers.path(Handlers.redirect("/myapp"))
                 .addPrefixPath("/myapp", manager.start());
 
+        // TODO make 9999 port default to 8080 and be configurable...
         Undertow server = Undertow.builder()
-                .addHttpListener(9999, "0.0.0.0")
-              //  .setHandler(path)
+                .addHttpListener(port, "0.0.0.0")
+                //  .setHandler(path)
                 .setHandler(new HttpHandler() {
                     @Override
                     public void handleRequest(final HttpServerExchange exchange) throws Exception {
+
+                        String groupType = "windowing";
+
+                        Deque<String> deque = exchange.getQueryParameters().get("group-type");
+                        if (deque != null && deque.size() > 0) {
+                            groupType = deque.getFirst();
+                        }
+
                         exchange.getResponseHeaders().put(Headers.CONTENT_TYPE, "application/json");
-                        exchange.getResponseSender().send(OBJECT_MAPPER.writerWithDefaultPrettyPrinter().writeValueAsString(stateObserver.getState()));
+                        // need to make this more restrictive
+                        exchange.getResponseHeaders().put(new HttpString("Access-Control-Allow-Origin"), "*");
+                        exchange.getResponseSender().send(OBJECT_MAPPER.writerWithDefaultPrettyPrinter().writeValueAsString(stateObserver.getState(groupType)));
                     }
                 })
                 .build();

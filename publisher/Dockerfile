@@ -5,16 +5,16 @@ WORKDIR /
 RUN \
     apt-get update && \
     apt-get install -y curl && \
-    curl -k -L -o jmx_prometheus_javaagent.jar https://repo1.maven.org/maven2/io/prometheus/jmx/jmx_prometheus_javaagent/0.14.0/jmx_prometheus_javaagent-0.14.0.jar && \
-    curl -k -L -o jolokia-agent.jar "https://search.maven.org/remotecontent?filepath=org/jolokia/jolokia-jvm/1.6.2/jolokia-jvm-1.6.2-agent.jar"
+    curl -k -L -o jmx_prometheus_javaagent.jar https://repo1.maven.org/maven2/io/prometheus/jmx/jmx_prometheus_javaagent/0.16.1/jmx_prometheus_javaagent-0.16.1.jar && \
+    curl -k -L -o jolokia-agent.jar "https://repo1.maven.org/maven2/org/jolokia/jolokia-jvm/1.7.1/jolokia-jvm-1.7.1.jar"
 
-FROM openjdk:15-jdk-slim
+FROM openjdk:14-jdk-slim
 
 WORKDIR /
 
 RUN \
     apt-get update && \
-    apt-get install -y curl iproute2 iputils-ping
+    apt-get install -y curl net-tools dnsutils iproute2 iputils-ping jq
 
 ENV \
     ENVIRONMENT="" \
@@ -33,6 +33,5 @@ EXPOSE 7071/tcp 7072/tcp
 
 #ENTRYPOINT ["java"]
 
-CMD /publisher-1.0/bin/streams -b broker-1:9092,broker-2:9092,broker-3:9092
 
-
+CMD ["/publisher-1.0/bin/streams"]

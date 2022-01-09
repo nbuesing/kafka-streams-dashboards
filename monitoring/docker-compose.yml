@@ -65,18 +65,26 @@ services:
       - ./grafana/dashboards.yml:/etc/grafana/provisioning/dashboards/dashboards.yml
       - ./grafana/dashboards:/var/lib/grafana/dashboards
 
-  kowl:
-    image: quay.io/cloudhut/kowl:v1.5.0
-    hostname: kowl
-    container_name: ksd-kowl
-    healthcheck:
-      test: wget --spider http://localhost:8080/ || exit 1
-      start_period: 5s
-      interval: 5s
-      timeout: 5s
-      retries: 3
-    volumes:
-      - ./kowl/config.yaml:/etc/kowl/config.yaml
-    ports:
-      - "8080:8080"
-    entrypoint: ./kowl --config.filepath=/etc/kowl/config.yaml
+#  kowl:
+#    image: quay.io/cloudhut/kowl:v1.5.0
+#    hostname: kowl
+#    container_name: ksd-kowl
+#    healthcheck:
+#      test: wget --spider http://localhost:8080/ || exit 1
+#      start_period: 5s
+#      interval: 5s
+#      timeout: 5s
+#      retries: 3
+#    volumes:
+#      - ./kowl/config.yaml:/etc/kowl/config.yaml
+#    ports:
+#      - "8080:8080"
+#    entrypoint: ./kowl --config.filepath=/etc/kowl/config.yaml
+
+#  akhq:
+#    image: tchiotludo/akhq:latest
+#    container_name: akhq
+#    volumes:
+#      - ./akhq/application.yml:/app/application.yml
+#    ports:
+#      - "8080:8080"

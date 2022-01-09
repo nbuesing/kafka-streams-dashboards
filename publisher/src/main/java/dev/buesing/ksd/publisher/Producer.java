@@ -31,18 +31,14 @@ public class Producer {
     }
 
     private String getRandomSku(int index) {
-        System.out.println("1>>>>>>");
 
         if (options.getSkus() == null) {
-            System.out.println("2>>>>>>");
-            return StringUtils.leftPad(Integer.toString(RANDOM.nextInt(options.getNumberOfProducts())), 10, '0');
+            return StringUtils.leftPad(Integer.toString(RANDOM.nextInt(options.getMaxSku())), 10, '0');
         } else {
-            System.out.println("3>>>>>>");
 
             final int productId = options.getSkus().get(index);
 
-            if (productId < 0 || productId >= options.getNumberOfProducts()) {
-                System.out.println("4>>>>>>");
+            if (productId < 0 || productId >= options.getMaxSku()) {
                 throw new IllegalArgumentException("invalid product number");
             }
 
