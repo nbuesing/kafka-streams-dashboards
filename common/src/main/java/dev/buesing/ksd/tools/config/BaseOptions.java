@@ -35,6 +35,9 @@ public abstract class BaseOptions {
     @Parameter(names = { "--repartition-topic" })
     private String repartitionTopic = "pickup-order-handler-purchase-order-join-product-repartition";
 
+    @Parameter(names = { "--repartition-topic-restore" })
+    private String repartitionTopicRestore = "pickup-order-handler-purchase-order-join-product-repartition-restore";
+
     @Parameter(names = { "--output-topic-prefix" }, description = "")
     private String outputTopicPrefix = "product-statistics";
 

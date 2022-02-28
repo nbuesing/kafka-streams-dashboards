@@ -89,6 +89,12 @@ public class BuildSystem {
         NewTopic repartition = new NewTopic(options.getRepartitionTopic(), PARTITIONS, REPLICATION_FACTOR);
         repartition.configs(CONFIGS);
 
+        NewTopic repartitionAgain = new NewTopic(options.getRepartitionTopic() + "-REPARTITIONED", PARTITIONS * 2, REPLICATION_FACTOR);
+        repartitionAgain.configs(CONFIGS);
+
+        NewTopic repartitionRestore = new NewTopic(options.getRepartitionTopicRestore(), PARTITIONS * 2, REPLICATION_FACTOR);
+        repartitionRestore.configs(CONFIGS);
+
         NewTopic outputTopicTumbling = new NewTopic(options.getOutputTopicPrefix() + "-TUMBLING", PARTITIONS, REPLICATION_FACTOR);
         outputTopicTumbling.configs(CONFIGS);
 
@@ -101,6 +107,9 @@ public class BuildSystem {
         NewTopic outputTopicSession = new NewTopic(options.getOutputTopicPrefix() + "-SESSION", PARTITIONS, REPLICATION_FACTOR);
         outputTopicSession.configs(CONFIGS);
 
+        NewTopic outputTopicNone = new NewTopic(options.getOutputTopicPrefix() + "-NONE", PARTITIONS, REPLICATION_FACTOR);
+        outputTopicNone.configs(CONFIGS);
+
 
         NewTopic customMetricsTopic = new NewTopic(options.getCustomMetricsTopic(), METRICS_PARTITIONS, METRICS_REPLICATION_FACTOR);
         customMetricsTopic.configs(METRICS_CONFIGS);
@@ -112,10 +121,13 @@ public class BuildSystem {
                 purchaseOrders,
                 pickupOrders,
                 repartition,
+                repartitionAgain,
+                repartitionRestore,
                 outputTopicTumbling,
                 outputTopicHopping,
                 outputTopicSliding,
                 outputTopicSession,
+                outputTopicNone,
                 customMetricsTopic
         );
 

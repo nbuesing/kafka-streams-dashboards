@@ -17,7 +17,11 @@ import org.apache.kafka.streams.Topology;
 import org.apache.kafka.streams.errors.LogAndContinueExceptionHandler;
 import org.apache.kafka.streams.errors.StreamsUncaughtExceptionHandler;
 import org.apache.kafka.streams.kstream.*;
+import org.apache.kafka.streams.kstream.internals.graph.StatefulProcessorNode;
+import org.apache.kafka.streams.processor.ProcessorContext;
+import org.apache.kafka.streams.state.KeyValueStore;
 import org.apache.kafka.streams.state.SessionStore;
+import org.apache.kafka.streams.state.ValueAndTimestamp;
 import org.apache.kafka.streams.state.WindowStore;
 
 import java.time.Duration;
@@ -93,6 +97,8 @@ public class Streams {
         final StateObserver observer = new StateObserver(streams, options.getWindowType());
         final ServletDeployment servletDeployment = new ServletDeployment(observer, options.getPort());
 
+        //final StatePurger purger = new StatePurger(streams, options);
+
         servletDeployment.start();
     }
 
@@ -106,6 +112,10 @@ public class Streams {
                 return streamsBuilderSliding();
             case SESSION:
                 return streamsBuilderSession();
+            case NONE:
+                return streamsBuilderNone();
+            case NONE_REPARTITIONED:
+                return streamsBuilderNoneRepartitioned();
             default:
                 return null;
         }
@@ -116,12 +126,12 @@ public class Streams {
         final StreamsBuilder builder = new StreamsBuilder();
 
         final Materialized<String, ProductAnalytic, WindowStore<Bytes, byte[]>> store = Materialized.<String, ProductAnalytic, WindowStore<Bytes, byte[]>>as("TUMBLING-aggregate-purchase-order")
-//                .withRetention(Duration.ofMinutes(23L))
+                .withRetention(Duration.ofHours(2L))
                 .withCachingDisabled()
-                ;
+        ;
 
         builder.<String, PurchaseOrder>stream(options.getTopic(), Consumed.as("TUMBLING-line-item"))
-                .peek((k, v) -> log.info("key={}", k), Named.as("TUMBLING-peek-incoming"))
+//                .peek((k, v) -> log.info("key={}", k), Named.as("TUMBLING-peek-incoming"))
                 .groupByKey(Grouped.as("TUMBLING-groupByKey"))
                 .windowedBy(TimeWindows.of(Duration.ofSeconds(options.getWindowSize()))
                         .grace(Duration.ofSeconds(options.getGracePeriod())))
@@ -130,9 +140,10 @@ public class Streams {
                         Named.as("TUMBLING-aggregate"),
                         store)
                 .toStream(Named.as("TUMBLING-toStream"))
-                .peek((k, v) -> log.info("key={}, value={}", k, v), Named.as("TUMBLING-peek-outgoing"))
+//                .peek((k, v) -> log.info("key={}, value={}", k, v), Named.as("TUMBLING-peek-outgoing"))
                 .selectKey((k, v) -> k.key() + " [" + convert(k.window().startTime()) + "," + convert(k.window().endTime()) + ")")
-                .mapValues(Streams::minimize)
+                .mapValues(Streams::minimize, Named.as("TUMBLING-mapValues"))
+                .peek((k, v) -> log.info("key={}, value={}", k, v), Named.as("TUMBLING-peek-outgoing-2"))
                 .to(options.getOutputTopic() + "-" + options.getWindowType(), Produced.as("TUMBLING-to"));
 
         // e2e
@@ -150,8 +161,7 @@ public class Streams {
 
         final Materialized<String, ProductAnalytic, WindowStore<Bytes, byte[]>> store = Materialized.<String, ProductAnalytic, WindowStore<Bytes, byte[]>>as("HOPPING-aggregate-purchase-order")
                 //.withLoggingDisabled()
-                .withCachingDisabled()
-                ;
+                .withCachingDisabled();
 
         builder.<String, PurchaseOrder>stream(options.getTopic(), Consumed.as("HOPPING-line-item"))
                 .peek((k, v) -> log.info("key={}", k), Named.as("HOPPING-peek-incoming"))
@@ -166,7 +176,7 @@ public class Streams {
                 .toStream(Named.as("HOPPING-toStream"))
                 .peek((k, v) -> log.info("key={}, value={}", k, v), Named.as("HOPPING-peek-outgoing"))
                 .selectKey((k, v) -> k.key() + " [" + convert(k.window().startTime()) + "," + convert(k.window().endTime()) + ")")
-                .mapValues(Streams::minimize)
+                .mapValues(Streams::minimize, Named.as("HOPPING-mapValues"))
                 .to(options.getOutputTopic() + "-" + options.getWindowType(), Produced.as("HOPPING-to"));
 
         // e2e
@@ -186,8 +196,7 @@ public class Streams {
                 //.withLoggingDisabled()
                 .withCachingDisabled()
 //                .withRetention(Duration.ofHours(1L))
-                .withRetention(Duration.ofDays(5L))
-                ;
+                .withRetention(Duration.ofDays(5L));
 
         builder.<String, PurchaseOrder>stream(options.getTopic(), Consumed.as("SLIDING-line-item"))
                 .peek((k, v) -> log.info("key={}", k), Named.as("SLIDING-peek-incoming"))
@@ -202,7 +211,7 @@ public class Streams {
                 .toStream(Named.as("SLIDING-toStream"))
                 .peek((k, v) -> log.info("key={}, value={}", k, v), Named.as("SLIDING-peek-outgoing"))
                 .selectKey((k, v) -> k.key() + " [" + convert(k.window().startTime()) + "," + convert(k.window().endTime()) + ")")
-                .mapValues(Streams::minimize)
+                .mapValues(Streams::minimize, Named.as("SLIDING-mapValues"))
                 .to(options.getOutputTopic() + "-" + options.getWindowType(), Produced.as("SLIDING-to"));
 
         // e2e
@@ -236,7 +245,7 @@ public class Streams {
                 .peek((k, v) -> log.info("key={}, value={}", k, v), Named.as("SESSION-peek-outgoing"))
                 .filter((k, v) -> v != null)
                 .selectKey((k, v) -> k.key() + " [" + convert(k.window().startTime()) + "," + convert(k.window().endTime()) + ")")
-                .mapValues(Streams::minimize)
+                .mapValues(Streams::minimize, Named.as("SESSION-mapValues"))
                 .to(options.getOutputTopic() + "-" + options.getWindowType(), Produced.as("SESSION-to"));
 
         // e2e
@@ -247,6 +256,171 @@ public class Streams {
 
         return builder;
     }
+
+    private StreamsBuilder streamsBuilderNone() {
+
+        final StreamsBuilder builder = new StreamsBuilder();
+
+        final Materialized<String, ProductAnalytic, KeyValueStore<Bytes, byte[]>> store = Materialized.<String, ProductAnalytic, KeyValueStore<Bytes, byte[]>>as("NONE-aggregate-purchase-order")
+                //.withLoggingDisabled()
+                .withCachingDisabled()
+                ;
+        
+        builder.<String, PurchaseOrder>stream(options.getTopic(), Consumed.as("NONE-line-item"))
+                //.peek((k, v) -> log.info("key={}", k), Named.as("NONE-peek-incoming"))
+                .groupByKey(Grouped.as("NONE-groupByKey"))
+                .aggregate(Streams::initialize,
+                        Streams::aggregator,
+                        Named.as("NONE-aggregate"),
+                        store)
+                .toStream(Named.as("NONE-toStream"))
+                .peek((k, v) -> log.info("key={}, value={}", k, v), Named.as("NONE-peek-outgoing"))
+                .mapValues(Streams::minimize, Named.as("NONE-mapValues"))
+                .to(options.getOutputTopic() + "-" + options.getWindowType(), Produced.as("NONE-to"));
+
+        // e2e
+//        if (true) {
+//            builder.<String, ProductAnalyticOut>stream(options.getOutputTopic() + "-" + options.getWindowType(), Consumed.as("NONE-to-consumer"))
+//                    .peek((k, v) -> log.debug("key={}", k), Named.as("NONE-to-consumer-peek"));
+//        }
+
+        return builder;
+    }
+
+    private StreamsBuilder streamsBuilderNoneRepartitioned() {
+
+        final StreamsBuilder builder = new StreamsBuilder();
+
+        final Materialized<String, ProductAnalytic, KeyValueStore<Bytes, byte[]>> store = Materialized.<String, ProductAnalytic, KeyValueStore<Bytes, byte[]>>as("NONE_REPARTITIONED-aggregate-purchase-order")
+                //.withLoggingDisabled()
+                .withCachingDisabled();
+
+
+
+        builder.<String, PurchaseOrder>stream(options.getTopic(), Consumed.as("NONE_REPARTITIONED-line-item"))
+                .repartition(Repartitioned.<String, PurchaseOrder>as("__NONE_REPARTITIONED__").withNumberOfPartitions(8))
+                .peek((k, v) -> log.info("key={}", k), Named.as("NONE_REPARTITIONED-peek-incoming"))
+                .groupByKey(Grouped.as("NONE_REPARTITIONED-groupByKey"))
+                .aggregate(Streams::initialize,
+                        Streams::aggregator,
+                        Named.as("NONE_REPARTITIONED-aggregate"),
+                        store)
+                .toStream(Named.as("NONE_REPARTITIONED-toStream"))
+//                .merge(restore)
+//                .transformValues(() -> new ValueTransformerWithKey<String, ProductAnalytic, ProductAnalytic>() {
+//
+//                    private ProcessorContext context;
+//                    private KeyValueStore<String, ValueAndTimestamp<ProductAnalytic>> store;
+//
+//                    @Override
+//                    public void init(ProcessorContext context) {
+//                        this.context = context;
+//                        store = context.getStateStore("NONE_REPARTITIONED-aggregate-purchase-order");
+//                    }
+//
+//                    @Override
+//                    public ProductAnalytic transform(String key, ProductAnalytic value) {
+//
+//                        if (context.headers().lastHeader("RESTORE") != null) {
+//
+//                            log.info("RESTORE!!! ");
+//
+//                            if (store.get(key) == null) {
+//                                store.put(key, ValueAndTimestamp.make(value, context.timestamp()));
+//                                log.info("stored!");
+//                            }
+//
+//                        }
+//                        //store.all();
+//                        log.info(value.toString());
+//                        return value;
+//                    }
+//
+//                    @Override
+//                    public void close() {
+//                    }
+//                }, "NONE_REPARTITIONED-aggregate-purchase-order")
+                .peek((k, v) -> log.info("key={}, value={}", k, v), Named.as("NONE_REPARTITIONED-peek-outgoing"))
+                .mapValues(Streams::minimize)
+                .to(options.getOutputTopic() + "-" + options.getWindowType(), Produced.as("NONE_REPARTITIONED-to"));
+
+
+        KStream<String, ProductAnalytic> restore = builder
+                .<String, ProductAnalytic>stream(options.getRepartitionTopicRestore(), Consumed.as("NONE_REPARTITIONED-restore"))
+                .peek((k, v) -> log.info("!!!! key={}", k), Named.as("NONE_REPARTITIONED-restore-peek-incoming"))
+                .transformValues(() -> new ValueTransformerWithKey<String, ProductAnalytic, ProductAnalytic>() {
+
+                    private ProcessorContext context;
+                    private KeyValueStore<String, ValueAndTimestamp<ProductAnalytic>> store;
+
+                    @Override
+                    public void init(ProcessorContext context) {
+                        this.context = context;
+                        store = context.getStateStore("NONE_REPARTITIONED-aggregate-purchase-order");
+                    }
+
+                    @Override
+                    public ProductAnalytic transform(String key, ProductAnalytic value) {
+
+                        if (context.headers().lastHeader("RESTORE") != null) {
+
+                            log.info("RESTORE!!! ");
+
+                            if (store.get(key) == null) {
+                                store.put(key, ValueAndTimestamp.make(value, context.timestamp()));
+                                log.info("stored!");
+                            }
+
+                        }
+                        //store.all();
+                        log.info(value.toString());
+                        return value;
+                    }
+
+                    @Override
+                    public void close() {
+                    }
+                }, "NONE_REPARTITIONED-aggregate-purchase-order");
+
+
+        // e2e
+        if (true) {
+            builder.<String, ProductAnalyticOut>stream(options.getOutputTopic() + "-" + options.getWindowType(), Consumed.as("NONE_REPARTITIONED-to-consumer"))
+                    .peek((k, v) -> log.debug("key={}", k), Named.as("NONE_REPARTITIONED-to-consumer-peek"))
+//                    .transformValues(() -> new ValueTransformerWithKey<String, ProductAnalyticOut, ProductAnalyticOut>() {
+//
+//                        private ProcessorContext context;
+//                        private KeyValueStore<String, ValueAndTimestamp<ProductAnalyticOut>> store;
+//
+//                        @Override
+//                        public void init(ProcessorContext context) {
+//                            this.context = context;
+//                            store = context.getStateStore("NONE_REPARTITIONED-aggregate-purchase-order");
+//                        }
+//
+//                        @Override
+//                        public ProductAnalyticOut transform(String key, ProductAnalyticOut value) {
+//
+//                            store.all().forEachRemaining((v) -> {
+//                                log.info("v: " + v.key);
+//                                log.info("v: " + v.value);
+//                            });
+//                            log.info(value.toString());
+//                            return value;
+//                        }
+//
+//                        @Override
+//                        public void close() {
+//                        }
+//                    }, "NONE_REPARTITIONED-aggregate-purchase-order")
+            ;
+
+
+        }
+
+        return builder;
+    }
+
 
     private static ProductAnalytic initialize() {
         return new ProductAnalytic();

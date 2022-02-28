@@ -4,9 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import dev.buesing.ksd.analytics.domain.By;
-import dev.buesing.ksd.analytics.domain.BySku;
-import dev.buesing.ksd.analytics.domain.ByWindow;
+import dev.buesing.ksd.analytics.domain.*;
 import dev.buesing.ksd.common.domain.ProductAnalytic;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -39,15 +37,22 @@ public class StateObserver {
     }
 
     public By getState(String type) {
+
+        log.info("query: windowType={}, type={}", windowType, type);
+
         if ("windowing".equals(type)) {
             if (windowType == Options.WindowType.SESSION) {
                 return populateSession(new ByWindow());
+            } else if (windowType == Options.WindowType.NONE) {
+                return populateKeyValue(new ByFoo());
             } else {
                 return populateWindow(new ByWindow());
             }
         } else {
             if (windowType == Options.WindowType.SESSION) {
                 return populateSession(new BySku());
+            } else if (windowType == Options.WindowType.NONE) {
+                return populateKeyValue(new ByFoo());
             } else {
                 return populateWindow(new BySku());
             }
@@ -55,7 +60,7 @@ public class StateObserver {
     }
 
     private By populateWindow(By by) {
-        ReadOnlyWindowStore<String, ProductAnalytic>  store = streams.store(StoreQueryParameters.fromNameAndType(storeName, QueryableStoreTypes.windowStore()));
+        ReadOnlyWindowStore<String, ProductAnalytic> store = streams.store(StoreQueryParameters.fromNameAndType(storeName, QueryableStoreTypes.windowStore()));
         store.all().forEachRemaining(i -> {
             by.add(i.key.window(), i.value);
         });
@@ -69,5 +74,15 @@ public class StateObserver {
         });
         return by;
     }
+
+    private By populateKeyValue(By by) {
+        ReadOnlyKeyValueStore<String, ValueAndTimestamp<ProductAnalytic>> store = streams.store(StoreQueryParameters.fromNameAndType(storeName, QueryableStoreTypes.timestampedKeyValueStore()));
+        store.all().forEachRemaining(i -> {
+            by.add(null, i.value.value());
+        });
+        return by;
+    }
+
+
 
 }

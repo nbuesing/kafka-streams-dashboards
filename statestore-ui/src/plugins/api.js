@@ -5,6 +5,7 @@ import Vue from "vue"; //this line is important to remove 'protocol' ERROR
 Vue.use(VueAxios, axios)
 
 let apiUrl = window.location.protocol + "//" + window.location.hostname + ":8888";
+//let apiUrl = "http://localhost:8080";
 
 axios.interceptors.response.use(
   res => {

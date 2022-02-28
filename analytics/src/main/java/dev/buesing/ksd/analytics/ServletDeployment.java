@@ -6,8 +6,10 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import dev.buesing.ksd.analytics.domain.ByFoo;
 import dev.buesing.ksd.analytics.domain.BySku;
 import dev.buesing.ksd.analytics.domain.Window;
+import dev.buesing.ksd.analytics.jackson.ByFooSerializer;
 import dev.buesing.ksd.analytics.jackson.BySkuSerializer;
 import dev.buesing.ksd.analytics.domain.ByWindow;
 import dev.buesing.ksd.analytics.jackson.ByWindowSerializer;
@@ -35,6 +37,7 @@ public class ServletDeployment {
             new ObjectMapper()
                     .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
                     .registerModule(new SimpleModule("uuid-module", new Version(1, 0, 0, null, "", ""))
+                            .addSerializer(ByFoo.class, new ByFooSerializer())
                             .addSerializer(ByWindow.class, new ByWindowSerializer())
                             .addSerializer(BySku.class, new BySkuSerializer())
                             .addSerializer(Window.class, new WindowSerializer())
@@ -59,7 +62,6 @@ public class ServletDeployment {
 
     public void x() throws ServletException {
 
-
         DeploymentInfo servletBuilder = Servlets.deployment()
                 .setClassLoader(ServletDeployment.class.getClassLoader())
                 .setContextPath("/")
@@ -77,7 +79,6 @@ public class ServletDeployment {
         PathHandler path = Handlers.path(Handlers.redirect("/myapp"))
                 .addPrefixPath("/myapp", manager.start());
 
-        // TODO make 9999 port default to 8080 and be configurable...
         Undertow server = Undertow.builder()
                 .addHttpListener(port, "0.0.0.0")
                 //  .setHandler(path)

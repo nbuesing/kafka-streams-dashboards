@@ -1,21 +1,41 @@
 import DashboardLayout from '../pages/Layout/DashboardLayout.vue'
-import WindowView from "../pages/WindowView";
+import Tumbling from "../pages/Tumbling";
+import Hopping from "../pages/Hopping";
+import Sliding from "../pages/Sliding";
+import Session from "../pages/Session";
+import KeyStoreView from "../pages/KeyStoreView";
 
 const routes = [
     {
         path: '/',
         component: DashboardLayout,
-        redirect: '/window-view',
+        redirect: '/tumbling',
         children: [
             {
-                name: 'window-view',
-                path: 'window-view',
-                component: WindowView
+                name: 'tumbling',
+                path: 'tumbling',
+                component: Tumbling
             },
             {
-                name: 'window-view2',
-                path: 'window-view2',
-                component: WindowView
+                name: 'hopping',
+                path: 'hopping',
+                component: Hopping
+            },
+            {
+                name: 'sliding',
+                path: 'sliding',
+                component: Sliding
+            },
+            {
+                name: 'session',
+                path: 'session',
+                component: Session
+            },
+            {
+                name: 'no-windowing',
+                path: 'no-windowing',
+                component: KeyStoreView
+
             }
         ]
     }

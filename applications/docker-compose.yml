@@ -108,6 +108,26 @@ services:
       WINDOW_TYPE: SESSION
       COMMIT_INTERVAL: 100
 
+  analytics_none:
+    image: nbuesing/ksd_analytics:latest
+    hostname: analytics_none
+    stop_grace_period: 120s
+    healthcheck:
+      test: /healthcheck.sh || exit 1
+      start_period: 10s
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    volumes:
+      - ./scripts:/scripts
+      - ./stores:/tmp/kafka-streams
+    environment:
+      BOOTSTRAP_SERVERS: broker-1:9092,broker-2:9092,broker-3:9092
+      APPLICATION_ID: 'analytics_none'
+      CLIENT_ID: 'analytics_none'
+      WINDOW_TYPE: NONE
+      COMMIT_INTERVAL: 100
+
   nginx:
     image: nginx:latest
     container_name: nginx

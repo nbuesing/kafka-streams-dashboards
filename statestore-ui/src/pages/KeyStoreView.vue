@@ -1,30 +1,25 @@
 <template>
   <div id="app">
-    <md-toolbar md-elevation="0">
-      <md-radio v-model="groupType" value="windowing">Windowing</md-radio>
-      <md-radio v-model="groupType" value="sku">Sku</md-radio>
-    </md-toolbar>
     <vue-good-table
         ref="windowTable"
         :columns="columns"
         :rows="results"
         theme="black-rhino"
-        :sort-options="{ enabled: true }"
-        :group-options="{enabled: true, collapsable: true, headerPosition: 'top'}"
+        :sort-options="{ enabled: true, initialSortBy: {field: 'timestamp', type: 'desc'} }"
         :pagination-options="{
-            enabled: false,
-            //mode: 'records',
-            //perPage: 100,
-            //position: 'bottom',
-            //perPageDropdown: [10, 50, 100],
-            //dropdownAllowAll: false,
-            // setCurrentPage: 1,
-            // nextLabel: 'next',
-            // prevLabel: 'prev',
-            // rowsPerPageLabel: 'rows per page',
-           //ofLabel: 'of',
-            // pageLabel: 'page', // for 'pages' mode
-            // allLabel: 'all'
+            enabled: true,
+            mode: 'records',
+            perPage: 15,
+            position: 'bottom',
+            perPageDropdown: [15, 50, 100],
+            dropdownAllowAll: false,
+            setCurrentPage: 1,
+            nextLabel: 'next',
+            prevLabel: 'prev',
+            rowsPerPageLabel: 'rows per page',
+           ofLabel: 'of',
+            pageLabel: 'page', // for 'pages' mode
+            allLabel: 'all'
           }">
       <template slot="table-header-row" slot-scope="props">
         <span style="font-weight: bold; color: blue;">{{ props.row.label }}</span>
@@ -53,7 +48,9 @@ export default {
   components: {
     VueGoodTable
   },
-  props: ['windowingType'],
+  props: {
+    windowingType: false
+  },
   watch: {
     windowType: function (newVal, oldVal) {
       this.load()
@@ -78,7 +75,7 @@ export default {
 
       this.sending = true
       this.results = null
-      api.get("/" + this.windowingType, {
+      api.get("/none", {
         params: this.loadParams
       }).then(response => {
         window.console.log(response.data)
@@ -98,7 +95,6 @@ export default {
     return {
       sending: false,
       lastFetched: Date.now(),
-      groupType: 'windowing',
       results: [],
       columns: [
         {
@@ -110,7 +106,7 @@ export default {
         {
           label: 'Timestamp',
           field: 'timestamp',
-          filterable: false,
+          filterable: true,
           sortable: true
         },
         {

@@ -43,4 +43,4 @@ fi
 #  open http://localhost:3000
 #fi
 
-(cd publisher; ../gradlew run)
+(cd publisher; ../gradlew run --args="--max-sku 100")

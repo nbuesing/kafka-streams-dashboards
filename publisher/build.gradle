@@ -7,10 +7,10 @@ application {
     mainClass = "dev.buesing.ksd.${project.name}.Main"
 }
 
-task buildDockerImage(type: Exec) {
-    inputs.files 'Dockerfile'
-    commandLine 'docker', 'rmi', "nbuesing/ksd_${project.name}:latest"
-    commandLine 'docker', 'build', '-t', "nbuesing/ksd_${project.name}:latest", '.'
-}
+//task buildDockerImage(type: Exec) {
+//    inputs.files 'Dockerfile'
+//    commandLine 'docker', 'rmi', "nbuesing/ksd_${project.name}:latest"
+//    commandLine 'docker', 'build', '-t', "nbuesing/ksd_${project.name}:latest", '.'
+//}
 
-build.dependsOn buildDockerImage
+//build.dependsOn buildDockerImage

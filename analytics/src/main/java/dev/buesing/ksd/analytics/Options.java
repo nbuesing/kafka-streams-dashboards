@@ -17,11 +17,13 @@ public class Options extends BaseOptions {
         TUMBLING,                           // [12:00; 12:05), [12:05, 12:10), ...
         HOPPING,                            // [12:00; 12:05), [12:01; 12:06), ...
         SLIDING,
-        SESSION
+        SESSION,
+        NONE,                                // no windowing
+        NONE_REPARTITIONED                   // no windowing - repartitioned on incoming
     };
 
     @Parameter(names = { "-g", "--application-id" }, description = "application id")
-    private String applicationId = "pickup-order-handler-foo";
+    private String applicationId = "analytics_GRADLE";
 
     @Parameter(names = { "--client-id" }, description = "client id")
     private String clientId = "s-" + UUID.randomUUID();
@@ -41,11 +43,14 @@ public class Options extends BaseOptions {
     @Parameter(names = { "--topic" }, description = "")
     private String topic = "pickup-order-handler-purchase-order-join-product-repartition";
 
+    @Parameter(names = { "--restore-topic" }, description = "")
+    private String restoreTopic = "pickup-order-handler-purchase-order-join-product-repartition-restore";
+
     @Parameter(names = { "--output-topic" }, description = "")
     private String outputTopic = "product-statistics";
 
     @Parameter(names = { "--commit-interval" }, description = "")
-    private Long commitInterval = 100L;
+    private Long commitInterval = 5000L;
 
     @Parameter(names = { "--port" }, description = "the port use for introspection of window state")
     private Integer port = 8080;

@@ -7,6 +7,7 @@ import java.time.format.DateTimeFormatter;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import org.apache.kafka.common.utils.Utils;
 
 @Getter
 @AllArgsConstructor
@@ -55,7 +56,17 @@ public class Window implements Comparable<Window> {
      * need a comparable window.
      */
     public static Window convert(final org.apache.kafka.streams.kstream.Window window) {
+
+        //TOOD : TEMP
+        if (window == null) {
+            return new Window(System.currentTimeMillis(), System.currentTimeMillis());
+        }
+
         return new Window(window.start(), window.end());
+    }
+
+    public static void main(String[] args) {
+        System.out.println(Utils.toPositive(Utils.murmur2("0000005348".getBytes())) % 4);
     }
 
 }

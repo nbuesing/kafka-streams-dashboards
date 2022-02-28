@@ -42,6 +42,8 @@ import static org.apache.kafka.streams.processor.internals.metrics.StreamsMetric
 @Slf4j
 public class Streams {
 
+    private static final Duration SHUTDOWN = Duration.ofSeconds(30);
+
     private static final Random RANDOM = new Random();
 
     private Map<String, Object> properties(final Options options) {
@@ -108,7 +110,12 @@ public class Streams {
 
         streams.start();
 
-        Runtime.getRuntime().addShutdownHook(new Thread(streams::close));
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            log.info("Runtime shutdown hook, state={}", streams.state());
+            if (streams.state().isRunningOrRebalancing()) {
+                streams.close(SHUTDOWN);
+            }
+        }));
     }
 
     private StreamsBuilder streamsBuilder(final Options options) {

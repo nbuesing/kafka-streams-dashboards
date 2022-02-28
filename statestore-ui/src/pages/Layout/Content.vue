@@ -8,11 +8,30 @@
         <span class="md-title">Analytic State Store Viewer</span>
       </md-app-toolbar>
       <md-app-drawer :md-active.sync="menuVisible">
-        <md-button @click="navigate('window-view')">
+        <md-button @click="navigate('tumbling')">
           <md-icon>line_style</md-icon>
-          Window View
+          Tumbling
         </md-button>
         <br/>
+        <md-button @click="navigate('hopping')">
+          <md-icon>line_style</md-icon>
+          Hopping
+        </md-button>
+        <br/>
+        <md-button @click="navigate('sliding')">
+          <md-icon>line_style</md-icon>
+          Sliding
+        </md-button>
+        <br/>
+        <md-button @click="navigate('session')">
+          <md-icon>line_style</md-icon>
+          Session
+        </md-button>
+        <br/>
+        <md-button @click="navigate('no-windowing')">
+          <md-icon>line_style</md-icon>
+          No Windowing
+        </md-button>
       </md-app-drawer>
       <md-app-content>
         <router-view></router-view>

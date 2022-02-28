@@ -6,7 +6,6 @@ allprojects {
     repositories {
         mavenLocal()
         mavenCentral()
-        jcenter()
         maven {
             url "https://packages.confluent.io/maven/"
         }
