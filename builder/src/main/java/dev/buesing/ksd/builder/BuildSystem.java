@@ -35,7 +35,7 @@ public class BuildSystem {
     private static final short REPLICATION_FACTOR = 3;
     private static final int PARTITIONS = 4;
     private static final Map<String, String> CONFIGS = Map.ofEntries(
-            Map.entry("retention.ms", "86400") // 1 day
+            Map.entry("retention.ms", "86400000") // 1 day
     );
 
 
@@ -49,7 +49,7 @@ public class BuildSystem {
     private static final short METRICS_REPLICATION_FACTOR = 3;
     private static final int METRICS_PARTITIONS = 4;
     private static final Map<String, String> METRICS_CONFIGS = Map.ofEntries(
-            Map.entry("retention.ms", "3600"), // 1 hour
+            Map.entry("retention.ms", "3600000"), // 1 hour
             Map.entry("min.insync.replicas", "1")
     );
 

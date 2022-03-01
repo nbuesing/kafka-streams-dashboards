@@ -228,6 +228,7 @@ public class Streams {
         final StreamsBuilder builder = new StreamsBuilder();
 
         final Materialized<String, ProductAnalytic, SessionStore<Bytes, byte[]>> store = Materialized.<String, ProductAnalytic, SessionStore<Bytes, byte[]>>as("SESSION-aggregate-purchase-order")
+                //.withRetention(Duration.ofDays(1000L))
                 //.withLoggingDisabled()
                 //.withCachingDisabled()
                 ;
