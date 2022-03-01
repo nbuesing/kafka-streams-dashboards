@@ -21,7 +21,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "iteration": 1641153917883,
+  "iteration": 1646142650441,
   "links": [],
   "liveNow": false,
   "panels": [
@@ -88,8 +88,8 @@
         "y": 0
       },
       "id": 30,
-    "interval" : "2s",
-    "links": [],
+      "interval": "2s",
+      "links": [],
       "options": {
         "legend": {
           "calcs": [
@@ -150,8 +150,8 @@
         "y": 0
       },
       "id": 41,
-    "interval" : "2s",
-    "links": [],
+      "interval": "2s",
+      "links": [],
       "options": {
         "colorMode": "value",
         "graphMode": "area",
@@ -257,8 +257,8 @@
         "y": 8
       },
       "id": 42,
-    "interval" : "2s",
-    "links": [],
+      "interval": "2s",
+      "links": [],
       "options": {
         "legend": {
           "calcs": [
@@ -279,7 +279,7 @@
             "uid": "P1809F7CD0C75ACF3"
           },
           "exemplar": true,
-          "expr": "sum without(partition_id,task_id,thread_id,instance) (kafka_streams_stream_state_metrics{metric=\"fetch-rate\", partition_id=~\"${partition}\", thread_id=~\"${thread}\", instance=~\"${instance}\", cluster_id=~\"${cluster}\"})",
+          "expr": "sum without(partition_id,task_id,thread_id,instance) (kafka_streams_stream_state_metrics{metric=~\"fetch-rate|get-rate\", partition_id=~\"${partition}\", thread_id=~\"${thread}\", instance=~\"${instance}\", cluster_id=~\"${cluster}\"})",
           "format": "time_series",
           "hide": false,
           "instant": false,
@@ -289,7 +289,7 @@
           "refId": "A"
         }
       ],
-      "title": "fetch-rate",
+      "title": "get|fetch-rate",
       "type": "timeseries"
     },
     {
@@ -319,8 +319,8 @@
         "y": 8
       },
       "id": 43,
-    "interval" : "2s",
-    "links": [],
+      "interval": "2s",
+      "links": [],
       "options": {
         "colorMode": "value",
         "graphMode": "area",
@@ -344,7 +344,7 @@
             "uid": "P1809F7CD0C75ACF3"
           },
           "exemplar": false,
-          "expr": "sort_desc(sum without(partition_id,thread_id,instance,job,task_id) (kafka_streams_stream_state_metrics{metric=\"fetch-rate\", partition_id=~\"${partition}\", thread_id=~\"${thread}\", instance=~\"${instance}\", cluster_id=~\"${cluster}\"}))",
+          "expr": "sort_desc(sum without(partition_id,thread_id,instance,job,task_id) (kafka_streams_stream_state_metrics{metric=~\"fetch-rate|get-rate\", partition_id=~\"${partition}\", thread_id=~\"${thread}\", instance=~\"${instance}\", cluster_id=~\"${cluster}\"}))",
           "format": "time_series",
           "hide": false,
           "instant": true,
@@ -354,7 +354,7 @@
           "refId": "A"
         }
       ],
-      "title": "fetch-rate",
+      "title": "get|fetch-rate",
       "transformations": [
         {
           "id": "organize",
@@ -426,8 +426,8 @@
         "y": 16
       },
       "id": 44,
-    "interval" : "2s",
-    "links": [],
+      "interval": "2s",
+      "links": [],
       "options": {
         "legend": {
           "calcs": [
@@ -488,8 +488,8 @@
         "y": 16
       },
       "id": 45,
-    "interval" : "2s",
-    "links": [],
+      "interval": "2s",
+      "links": [],
       "options": {
         "colorMode": "value",
         "graphMode": "area",
@@ -595,8 +595,8 @@
         "y": 24
       },
       "id": 46,
-    "interval" : "2s",
-    "links": [],
+      "interval": "2s",
+      "links": [],
       "options": {
         "legend": {
           "calcs": [
@@ -657,8 +657,8 @@
         "y": 24
       },
       "id": 47,
-    "interval" : "2s",
-    "links": [],
+      "interval": "2s",
+      "links": [],
       "options": {
         "colorMode": "value",
         "graphMode": "area",
@@ -702,7 +702,8 @@
       "type": "stat"
     }
   ],
-  "refresh": "2s",  "schemaVersion": 34,
+  "refresh": "2s",
+  "schemaVersion": 34,
   "style": "dark",
   "tags": [
     "streams"
@@ -713,8 +714,8 @@
         "allValue": ".+",
         "current": {
           "selected": true,
-          "text": "All",
-          "value": "$__all"
+          "text": "analytics",
+          "value": "analytics"
         },
         "datasource": {
           "type": "prometheus",
@@ -834,7 +835,7 @@
       {
         "allValue": "",
         "current": {
-          "selected": true,
+          "selected": false,
           "text": "All",
           "value": "$__all"
         },

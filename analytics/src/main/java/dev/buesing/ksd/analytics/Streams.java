@@ -126,7 +126,7 @@ public class Streams {
         final StreamsBuilder builder = new StreamsBuilder();
 
         final Materialized<String, ProductAnalytic, WindowStore<Bytes, byte[]>> store = Materialized.<String, ProductAnalytic, WindowStore<Bytes, byte[]>>as("TUMBLING-aggregate-purchase-order")
-                .withRetention(Duration.ofHours(2L))
+//                .withRetention(Duration.ofHours(2L))
                 .withCachingDisabled()
         ;
 
