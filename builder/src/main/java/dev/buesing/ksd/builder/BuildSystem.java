@@ -33,7 +33,7 @@ import java.util.stream.IntStream;
 public class BuildSystem {
 
     private static final short REPLICATION_FACTOR = 3;
-    private static final int PARTITIONS = 4;
+    private static final int PARTITIONS = 8;
     private static final Map<String, String> CONFIGS = Map.ofEntries(
             Map.entry("retention.ms", "86400000") // 1 day
     );
@@ -67,69 +67,92 @@ public class BuildSystem {
         populateTables();
     }
 
+
+    private NewTopic create(final String topicName, final int partitions, final Map<String, String> configs) {
+        final NewTopic topic = new NewTopic(topicName, partitions, REPLICATION_FACTOR);
+        topic.configs(configs);
+        return topic;
+    }
+
     private void createTopics() {
 
         final AdminClient admin = KafkaAdminClient.create(properties(options));
 
-        NewTopic store = new NewTopic(options.getStoreTopic(), GLOBAL_PARTITIONS, GLOBAL_REPLICATION_FACTOR);
-        store.configs(GLOBAL_CONFIGS);
+//        NewTopic store = new NewTopic(options.getStoreTopic(), GLOBAL_PARTITIONS, GLOBAL_REPLICATION_FACTOR);
+//        store.configs(GLOBAL_CONFIGS);
 
-        NewTopic user = new NewTopic(options.getUserTopic(), PARTITIONS, REPLICATION_FACTOR);
-        user.configs(GLOBAL_CONFIGS);
-
-        NewTopic product = new NewTopic(options.getProductTopic(), PARTITIONS, REPLICATION_FACTOR);
-        product.configs(GLOBAL_CONFIGS);
-
-        NewTopic purchaseOrders = new NewTopic(options.getPurchaseTopic(), PARTITIONS, REPLICATION_FACTOR);
-        purchaseOrders.configs(CONFIGS);
-
-        NewTopic pickupOrders = new NewTopic(options.getPickupTopic(), PARTITIONS, REPLICATION_FACTOR);
-        pickupOrders.configs(CONFIGS);
-
-        NewTopic repartition = new NewTopic(options.getRepartitionTopic(), PARTITIONS, REPLICATION_FACTOR);
-        repartition.configs(CONFIGS);
-
-        NewTopic repartitionAgain = new NewTopic(options.getRepartitionTopic() + "-REPARTITIONED", PARTITIONS * 2, REPLICATION_FACTOR);
-        repartitionAgain.configs(CONFIGS);
-
-        NewTopic repartitionRestore = new NewTopic(options.getRepartitionTopicRestore(), PARTITIONS * 2, REPLICATION_FACTOR);
-        repartitionRestore.configs(CONFIGS);
-
-        NewTopic outputTopicTumbling = new NewTopic(options.getOutputTopicPrefix() + "-TUMBLING", PARTITIONS, REPLICATION_FACTOR);
-        outputTopicTumbling.configs(CONFIGS);
-
-        NewTopic outputTopicHopping = new NewTopic(options.getOutputTopicPrefix() + "-HOPPING", PARTITIONS, REPLICATION_FACTOR);
-        outputTopicHopping.configs(CONFIGS);
-
-        NewTopic outputTopicSliding = new NewTopic(options.getOutputTopicPrefix() + "-SLIDING", PARTITIONS, REPLICATION_FACTOR);
-        outputTopicSliding.configs(CONFIGS);
-
-        NewTopic outputTopicSession = new NewTopic(options.getOutputTopicPrefix() + "-SESSION", PARTITIONS, REPLICATION_FACTOR);
-        outputTopicSession.configs(CONFIGS);
-
-        NewTopic outputTopicNone = new NewTopic(options.getOutputTopicPrefix() + "-NONE", PARTITIONS, REPLICATION_FACTOR);
-        outputTopicNone.configs(CONFIGS);
-
-
-        NewTopic customMetricsTopic = new NewTopic(options.getCustomMetricsTopic(), METRICS_PARTITIONS, METRICS_REPLICATION_FACTOR);
-        customMetricsTopic.configs(METRICS_CONFIGS);
+//        NewTopic user = new NewTopic(options.getUserTopic(), PARTITIONS, REPLICATION_FACTOR);
+//        user.configs(GLOBAL_CONFIGS);
+//
+//        NewTopic product = new NewTopic(options.getProductTopic(), PARTITIONS, REPLICATION_FACTOR);
+//        product.configs(GLOBAL_CONFIGS);
+//
+//        NewTopic purchaseOrders = new NewTopic(options.getPurchaseTopic(), PARTITIONS, REPLICATION_FACTOR);
+//        purchaseOrders.configs(CONFIGS);
+//
+//        NewTopic pickupOrders = new NewTopic(options.getPickupTopic(), PARTITIONS, REPLICATION_FACTOR);
+//        pickupOrders.configs(CONFIGS);
+//
+//        NewTopic repartition = new NewTopic(options.getRepartitionTopic(), PARTITIONS, REPLICATION_FACTOR);
+//        repartition.configs(CONFIGS);
+//
+//        NewTopic repartitionAgain = new NewTopic(options.getRepartitionTopic() + "-REPARTITIONED", PARTITIONS * 2, REPLICATION_FACTOR);
+//        repartitionAgain.configs(CONFIGS);
+//
+//        NewTopic repartitionRestore = new NewTopic(options.getRepartitionTopicRestore(), PARTITIONS * 2, REPLICATION_FACTOR);
+//        repartitionRestore.configs(CONFIGS);
+//
+//        NewTopic outputTopicTumbling = new NewTopic(options.getOutputTopicPrefix() + "-TUMBLING", PARTITIONS, REPLICATION_FACTOR);
+//        outputTopicTumbling.configs(CONFIGS);
+//
+//        NewTopic outputTopicHopping = new NewTopic(options.getOutputTopicPrefix() + "-HOPPING", PARTITIONS, REPLICATION_FACTOR);
+//        outputTopicHopping.configs(CONFIGS);
+//
+//        NewTopic outputTopicSliding = new NewTopic(options.getOutputTopicPrefix() + "-SLIDING", PARTITIONS, REPLICATION_FACTOR);
+//        outputTopicSliding.configs(CONFIGS);
+//
+//        NewTopic outputTopicSession = new NewTopic(options.getOutputTopicPrefix() + "-SESSION", PARTITIONS, REPLICATION_FACTOR);
+//        outputTopicSession.configs(CONFIGS);
+//
+//        NewTopic outputTopicNone = new NewTopic(options.getOutputTopicPrefix() + "-NONE", PARTITIONS, REPLICATION_FACTOR);
+//        outputTopicNone.configs(CONFIGS);
+//
+//        NewTopic outputTopicNoneRepartitioned = new NewTopic(options.getOutputTopicPrefix() + "-NONE_REPARTITIONED", PARTITIONS, REPLICATION_FACTOR);
+//        outputTopicNoneRepartitioned.configs(CONFIGS);
+//
+//
+//
+//        NewTopic postalSummary = new NewTopic(options.getPostalSummary(), PARTITIONS * 2, REPLICATION_FACTOR);
+//        postalSummary.configs(CONFIGS);
+//
+//        NewTopic postalRestore = new NewTopic(options.getPostalRestore(), PARTITIONS * 2, REPLICATION_FACTOR);
+//        postalRestore.configs(CONFIGS);
+//
+//
+//
+//        NewTopic customMetricsTopic = new NewTopic(options.getCustomMetricsTopic(), METRICS_PARTITIONS, METRICS_REPLICATION_FACTOR);
+//        customMetricsTopic.configs(METRICS_CONFIGS);
 
         final List<NewTopic> topics = Arrays.asList(
-                store,
-                user,
-                product,
-                purchaseOrders,
-                pickupOrders,
-                repartition,
-                repartitionAgain,
-                repartitionRestore,
-                outputTopicTumbling,
-                outputTopicHopping,
-                outputTopicSliding,
-                outputTopicSession,
-                outputTopicNone,
-                customMetricsTopic
+                create(options.getStoreTopic(), GLOBAL_PARTITIONS, GLOBAL_CONFIGS),
+                create(options.getUserTopic(), PARTITIONS, GLOBAL_CONFIGS),
+                create(options.getProductTopic(), PARTITIONS, GLOBAL_CONFIGS),
+                create(options.getPurchaseTopic(), PARTITIONS, CONFIGS),
+                create(options.getPickupTopic(), PARTITIONS, CONFIGS),
+                create(options.getRepartitionTopic(), PARTITIONS, CONFIGS),
+                create(options.getRepartitionTopic() + "-REPARTITIONED", PARTITIONS * 2, CONFIGS),
+                create(options.getRepartitionTopicRestore(), PARTITIONS * 2, CONFIGS),
+                create(options.getOutputTopicPrefix() + "-TUMBLING", PARTITIONS, CONFIGS),
+                create(options.getOutputTopicPrefix() + "-HOPPING", PARTITIONS, CONFIGS),
+                create(options.getOutputTopicPrefix() + "-SLIDING", PARTITIONS, CONFIGS),
+                create(options.getOutputTopicPrefix() + "-SESSION", PARTITIONS, CONFIGS),
+                create(options.getOutputTopicPrefix() + "-NONE", PARTITIONS, CONFIGS),
+                create(options.getOutputTopicPrefix() + "-NONE_REPARTITIONED", PARTITIONS, CONFIGS),
+                create(options.getPostalSummary(), PARTITIONS, CONFIGS),
+                create(options.getPostalRestore(), PARTITIONS, CONFIGS),
+                create(options.getCustomMetricsTopic(), METRICS_PARTITIONS, METRICS_CONFIGS)
         );
+
 
         if (options.isDeleteTopics()) {
             admin.deleteTopics(topics.stream().map(NewTopic::name).collect(Collectors.toList())).values().forEach((k, v) -> {

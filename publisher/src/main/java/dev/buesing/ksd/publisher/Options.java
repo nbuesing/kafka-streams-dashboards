@@ -20,6 +20,9 @@ public class Options extends BaseOptions {
     @Parameter(names = { "--skus" }, description = "")
     private List<Integer> skus;
 
+    @Parameter(names = { "--stores" }, description = "")
+    private List<Integer> stores;
+
     @Parameter(names = { "--max-sku" }, description = "")
     private int maxSku = getNumberOfProducts();
 

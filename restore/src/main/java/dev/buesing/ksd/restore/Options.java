@@ -12,10 +12,7 @@ import java.util.List;
 public class Options extends BaseOptions {
 
     @Parameter(names = { "--changelog-topic" }, description = "")
-    private String changelogTopic= "analytics_GRADLE-NONE-aggregate-purchase-order-changelog";
-
-    @Parameter(names = { "--restore-topic" }, description = "")
-    private String restoreTopic= "pickup-order-handler-purchase-order-join-product-repartition-restore";
+    private String changelogTopic= "pickup-order-analyticsuser-postal-summary-changelog";
 
     @Parameter(names = { "--group-id" }, description = "")
     private String groupId= "restore";

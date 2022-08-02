@@ -31,8 +31,8 @@ configure(subprojects.findAll { project -> file("${project.name}/src/main/java")
 
     group = 'dev.buesing.ksd'
     description = "${project.name}"
-    sourceCompatibility = JavaVersion.VERSION_14
-    targetCompatibility = JavaVersion.VERSION_14
+    sourceCompatibility = JavaVersion.VERSION_18
+    targetCompatibility = JavaVersion.VERSION_18
 
     idea {
         module {

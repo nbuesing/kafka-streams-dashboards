@@ -34,13 +34,14 @@ fi
 ./gradlew build
 
 (cd builder; ../gradlew run)
-(cd monitoring; dc up -d)
+
+#(cd monitoring; dc up -d)
 (cd applications; dc up -d)
-#sleep 1
-#(cd applications; dc up -d)
+
 
 #if [ $(uname) == "Darwin" ]; then
 #  open http://localhost:3000
 #fi
 
-(cd publisher; ../gradlew run --args="--max-sku 100")
+#(cd publisher; ../gradlew run --args="--max-sku 100 --pause 1000")
+(cd publisher; ../gradlew run --args="--max-sku 100 --pause 3000 --stores 2")

@@ -11,7 +11,8 @@
     "labels": {
       "job": "streams",
       "cluster_type": "streams",
-      "cluster_id": "streams"
+      "cluster_id": "streams",
+      "application_id": "streams"
     }
   }
 ]

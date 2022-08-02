@@ -41,6 +41,17 @@ public abstract class BaseOptions {
     @Parameter(names = { "--output-topic-prefix" }, description = "")
     private String outputTopicPrefix = "product-statistics";
 
+
+//    @Parameter(names = { "--postal-repartition" }, description = "")
+//    private String postalRepartition = "pickup-order-analyticsuser-postal-summary-groupByPostalCode-repartition";
+
+    @Parameter(names = { "--postal-summary" }, description = "")
+    private String postalSummary = "postal-summary";
+
+    @Parameter(names = { "--postal-restore" }, description = "")
+    private String postalRestore = "postal-restore";
+
+
     // shared by builder and by producer, producer needs to honor whatever builder creates
     private int numberOfStores = 1000;
     private int numberOfUsers = 10_000;

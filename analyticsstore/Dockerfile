@@ -18,20 +18,26 @@ RUN \
 
 ENV \
     ENVIRONMENT="" \
-    JAVA_OPTS=""
+    JAVA_OPTS="-javaagent:/jmx_prometheus_javaagent.jar=7071:/streams-config.yml -javaagent:/jolokia-agent.jar=port=7072,host=*"
 
 COPY ./build/distributions/*.tar .
-COPY ./docker/client-config.yml /
+COPY ./docker/streams-config.yml /
+COPY ./docker/all-config.yml /
+COPY ./docker/entrypoint.sh /
+COPY ./docker/healthcheck.sh /
 
 COPY --from=build /jmx_prometheus_javaagent.jar /
 COPY --from=build /jolokia-agent.jar /
 
 RUN \
-	tar xfvp /publisher-1.0.tar
+	tar xfvp /analyticsstore-1.0.tar
 
 EXPOSE 7071/tcp 7072/tcp
 
+ENTRYPOINT  ["/entrypoint.sh"]
+
+CMD         ["/streams-1.0/bin/streams"]
+
+
 #ENTRYPOINT ["java"]
-
-
-CMD ["/publisher-1.0/bin/streams"]
+#CMD /streams-1.0/bin/streams -b broker-1:9092,broker-2:9092,broker-3:9092

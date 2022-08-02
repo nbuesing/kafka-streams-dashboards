@@ -2,19 +2,13 @@
 dependencies {
     implementation project(':common')
     implementation group: 'org.apache.kafka', name: 'kafka-streams', version: kafka_version
-    //implementation group: 'org.rocksdb', name: 'rocksdbjni', version: '6.29.4.1'
-
-    constraints {
-        implementation("org.rocksdb:rocksdbjni:6.29.4.1") {
-            because("Mac M1")
-        }
-    }
-
 }
 
 application {
     mainClass = "dev.buesing.ksd.${project.name}.Main"
     //applicationDefaultJvmArgs = ['-javaagent:./jmx_prometheus/jmx_prometheus_javaagent.jar=7071:./docker/streams-config.yml']
+    //applicationDefaultJvmArgs = ['-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=*:5005']
+
 }
 
 task buildDockerImage(type: Exec) {

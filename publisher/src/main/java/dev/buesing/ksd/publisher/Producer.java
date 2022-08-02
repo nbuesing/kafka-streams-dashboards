@@ -51,7 +51,12 @@ public class Producer {
     }
 
     private String getRandomStore() {
-        return Integer.toString(RANDOM.nextInt(options.getNumberOfStores()));
+        if (options.getStores() == null) {
+            return Integer.toString(RANDOM.nextInt(options.getNumberOfStores()));
+        } else {
+            final int index = RANDOM.nextInt(options.getStores().size());
+            return Integer.toString(options.getStores().get(index));
+        }
     }
 
     private int getRandomItemCount() {

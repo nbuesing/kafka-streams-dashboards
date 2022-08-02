@@ -1,5 +1,6 @@
 package dev.buesing.ksd.restore;
 
+import dev.buesing.ksd.common.domain.PostalCodeSummary;
 import dev.buesing.ksd.common.domain.ProductAnalytic;
 import dev.buesing.ksd.common.domain.PurchaseOrder;
 import dev.buesing.ksd.tools.serde.JsonDeserializer;
@@ -15,6 +16,7 @@ import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.header.Headers;
+import org.apache.kafka.common.header.internals.RecordHeaders;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.apache.kafka.common.serialization.StringSerializer;
 
@@ -31,20 +33,65 @@ public class Restore {
 
     public void start() {
 
-        final KafkaConsumer<String, ProductAnalytic> consumer = new KafkaConsumer<>(consumer(options));
-        final KafkaProducer<String, ProductAnalytic> producer = new KafkaProducer<>(producer(options));
+        final KafkaProducer<String, PostalCodeSummary> producer = new KafkaProducer<>(producer(options));
+
+        int count = 0;
+
+        while (true) {
+
+
+            PostalCodeSummary s = new PostalCodeSummary("55053");
+            s.setMetadata("cleared");
+
+            Headers headers = new RecordHeaders();
+            headers.add("RESTORE", "true".getBytes());
+
+            log.info("Sending key={}, value={}", s.getPostalCode(), s);
+            s.setMetadata("" + (count++));
+            producer.send(new ProducerRecord<>(options.getPostalRestore(), null, s.getPostalCode(), s, headers), (metadata, exception) -> {
+                if (exception != null) {
+                    log.error("error producing to kafka", exception);
+                } else {
+                    log.debug("topic={}, partition={}, offset={}", metadata.topic(), metadata.partition(), metadata.offset());
+                }
+            });
+
+
+            producer.flush();
+
+            try {
+                Thread.sleep(1000);
+            } catch (final InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+
+    }
+
+    public void start2() {
+
+        final KafkaConsumer<String, PostalCodeSummary> consumer = new KafkaConsumer<>(consumer(options));
+        final KafkaProducer<String, PostalCodeSummary> producer = new KafkaProducer<>(producer(options));
 
         consumer.subscribe(Collections.singleton(options.getChangelogTopic()));
 
         while (true) {
-            ConsumerRecords<String, ProductAnalytic> records = consumer.poll(Duration.ofMillis(500L));
+            ConsumerRecords<String, PostalCodeSummary> records = consumer.poll(Duration.ofMillis(500L));
 
             records.forEach(record -> {
 
+                PostalCodeSummary s = new PostalCodeSummary("55051");
+                s.setMetadata("cleared");
+
                 record.headers().add("RESTORE", "true".getBytes());
                 //TODO HEADER!!!!
+
+                int total = record.value().getCounts().entrySet().stream().map(e -> e.getValue()).reduce(0, Integer::sum);
+                record.value().setMetadata("totalQuantity=" + total);
+
                 log.info("Sending key={}, value={}", record.key(), record.value());
-                producer.send(new ProducerRecord<>(options.getRestoreTopic(), null, record.key(), record.value(), record.headers()), (metadata, exception) -> {
+                producer.send(new ProducerRecord<>(options.getPostalRestore(), null, record.key(), record.value(), record.headers()), (metadata, exception) -> {
                     if (exception != null) {
                         log.error("error producing to kafka", exception);
                     } else {
