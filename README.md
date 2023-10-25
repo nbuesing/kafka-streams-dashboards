@@ -1,4 +1,12 @@
 
+# For an actively maintained set of dashboards and application to demonstrate those dashboards, please refer to the following
+repository.
+
+https://github.com/kineticedge/kafka-streams-dashboards
+
+# This project is an archive of the project used for my 2021 Kafka Summit Presentation.
+
+
 # Kafka Streams Dashboards
 
 * Showcases the monitoring of Kafka Streams Metrics
